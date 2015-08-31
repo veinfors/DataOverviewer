@@ -1,0 +1,8 @@
+{
+	"name" : "Data Overviewer",
+	"description" : "Get a helicopter view of the data before diving into the details.",
+	"preview": "dataoverviewer.png",
+	"type" : "visualization",
+	"version": "0.5",
+	"author": "Christian Veinfors"
+}

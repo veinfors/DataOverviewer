@@ -1,0 +1,23 @@
+<div qv-extension class="dataoverviewer" ng-class="{'interactive': interactive}">
+
+	<div class="dimension-titles-container" ng-show="!realObjectVisible" ng-style="dimensionTitlesPositioning" qva-context-menu="openContextMenu($event)">
+		<span class="dimension-title" ng-repeat="dimension in dimensionTitles" title="{{dimension}}">{{dimension}}</span>
+	</div>
+	<div class="dimension-scrollbar" ng-style="dimensionScrollbar"></div>
+	<div class="measure-titles-container" ng-show="!realObjectVisible" ng-style="measureTitlesPositioning" qva-context-menu="openContextMenu($event)">
+		<span class="measure-title" ng-repeat="measure in measureTitles" title="{{measure}}">{{measure}}</span>
+	</div>
+	<div class="measure-scrollbar" ng-style="measureScrollbar"></div>
+	<canvas class="grid-canvas" qva-activate="openRealObject($event)"></canvas>
+
+	<button class="qui-plainbuttonicon settings-button" ng-if="!realObjectVisible && interactive" ng-class="{'qui-active': settingsOpen}" qva-activate="openSettings($event)" data-icon="V" title="Settings"></button>
+	<button class="qui-plainbuttonicon reset-zoom" ng-if="!realObjectVisible && interactive" qva-activate="resetZoom()" data-icon="ü" title="Reset zoom"></button>
+	<button class="qui-plainbuttonicon zoom-in" ng-if="!realObjectVisible && interactive" qva-activate="zoomIn()" data-icon="Y" title="Zoom in"></button>
+	<button class="qui-plainbuttonicon zoom-out" ng-if="!realObjectVisible && interactive" qva-activate="zoomOut()" data-icon="Z" title="Zoom out"></button>
+	<button class="qui-plainbuttonicon close-real-object" ng-if="realObjectVisible && interactive" qva-activate="closeRealObject()" data-icon="E" title="Close"></button>
+
+	<div class="settings-container" ng-show="settingsOpen" qva-outside="closeSettings($event)">
+			<button class="chart-type-bar qui-plainbuttonicon" qva-activate="setChartType( 'bar' )" data-icon="!" title="Bar chart"></button>
+			<button class="chart-type-line qui-plainbuttonicon" qva-activate="setChartType( 'line' )" data-icon="%" title="Line chart"></button>
+	</div>
+</div>

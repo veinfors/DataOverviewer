@@ -1,0 +1,208 @@
+.dataoverviewer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.qv-snapshot-enabled .dataoverviewer {
+    padding-right: 2px;
+    padding-bottom: 2px;
+}
+
+.dataoverviewer .grid-canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-left: 1px solid gray;
+    border-bottom: 1px solid gray;
+    z-index: 2;
+}
+
+.dataoverviewer .settings-button,
+.dataoverviewer .reset-zoom,
+.dataoverviewer .zoom-in,
+.dataoverviewer .zoom-out,
+.dataoverviewer .close-real-object {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-block;
+    line-height: 24px;
+    z-index: 5;
+}
+
+.dataoverviewer .zoom-in {
+    top: 45px;
+}
+
+.dataoverviewer .zoom-out {
+    top: 70px;
+}
+
+/* -------------------- Settings ------------------- */
+
+.dataoverviewer .settings-button {
+    right: 40px;
+}
+
+.dataoverviewer .settings-container {
+    position: absolute;
+    top: 45px;
+    right: 10px;
+    width: 10px;
+    height: 60px;
+    background-color: white;
+    z-index: 5;
+    border-radius: 5px;
+    border: 1px solid gray;
+    text-align: center;
+    padding-top: 5px;
+    box-shadow: 0 4px 8px -1px #404040;
+    -webkit-animation: anim 0.6s forwards;
+    -o-animation: anim 0.6s forwards;
+    animation: anim 0.6s forwards;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+@-webkit-keyframes anim {
+    100% {  width: 120px; }
+}
+
+@-o-keyframes anim {
+    100% {  width: 120px; }
+}
+
+@keyframes anim {
+    100% {  width: 120px; }
+}
+
+.dataoverviewer.interactive .grid-canvas,
+.dataoverviewer.interactive .dimension-title,
+.dataoverviewer.interactive .measure-title {
+    cursor: pointer;
+}
+
+.dataoverviewer .settings-container button {
+    font-size: 45px;
+    height: 1em;
+    line-height: 0.8em;
+    width: 1em;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid white;
+    border-radius: 6px;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+.dataoverviewer .settings-container button:hover {
+    border: 2px solid #595959;
+    color: #595959;
+}
+
+.dataoverviewer .settings-container .active-charttype {
+    color: #595959;
+    border: 2px solid #ff9326;
+}
+
+.dataoverviewer .settings-container .active-charttype:hover {
+    border: 2px solid #ff9326;
+}
+
+/* ------------------ "Real objects" ------------------ */
+
+.dataoverviewer .real-object {
+    position: absolute;
+    z-index: 4;
+    height: 0%;
+    width: 0%;
+    -webkit-transition: 0.4s ease-in-out;
+    -moz-transition: 0.4s ease-in-out;
+    -o-transition: 0.4s ease-in-out;
+    transition: 0.4s ease-in-out;
+    background-color: white;
+    border: 1px solid lightgray;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.dataoverviewer .real-object.maximized {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ---------- Dimension and measure titles ----------- */
+
+.dataoverviewer .measure-titles-container {
+    position: absolute;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.dataoverviewer .dimension-titles-container {
+    position: absolute;
+    z-index: 4;
+    bottom: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: visible;
+    left: 9.8em;
+    width: 5.8em;
+    margin-right: 8.5em;
+}
+
+.dataoverviewer .dimension-title,
+.dataoverviewer .measure-title {
+    border-radius: 0.5em;
+    line-height: 1.6em;
+    border: 1px solid gray;
+    width: 93%;
+    font-size: 0.9em;
+    margin-bottom: inherit;
+    margin-right: inherit;
+    position: relative;
+    text-align: center;
+    display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dataoverviewer .dimension-title {
+    display: inline-block;
+    transform: rotate(-45deg);
+    bottom: 2em;
+}
+
+.dataoverviewer .dimension-scrollbar {
+    position: absolute;
+    bottom: 68px;
+    background-color: lightgray;
+    border-radius: 3px;
+    height: 6px;
+    z-index: 3;
+    min-top: 0px;
+}
+
+.dataoverviewer .measure-scrollbar {
+    position: absolute;
+    left: 68px;
+    background-color: lightgray;
+    border-radius: 3px;
+    width: 6px;
+    z-index: 3;
+    min-top: 0px;
+}

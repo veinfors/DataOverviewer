@@ -26,8 +26,6 @@ define( [
 
         this.$scope.dimensionScrollbar.display = scrollbarX ? '' : 'none';
         this.$scope.measureScrollbar.display = scrollbarY ? '' : 'none';
-
-
     }
 
     function zoom ( focusPoint, delta ) {
@@ -216,7 +214,8 @@ define( [
             swipeDelta = {
                 x: 0,
                 y: 0
-            };
+            },
+            objOffset;
 
         /* --------- Handle panning ---------- */
         Touche( this.$element[0] ).swipe( {
@@ -232,6 +231,8 @@ define( [
                         return;
                     }
 
+                    objOffset = self.$element.offset();
+
                     Touche.preventGestures( this.gestureHandler );
                 },
                 update: function ( e, data ) {
@@ -239,7 +240,15 @@ define( [
                     // Throttle..
                     if( !self.pendingPanning ){
                         self.pendingPanning = true;
-                        utils.requestAnimFrame.call( window, pan.bind( self, swipeDelta.x + data.swipe.curDeltaX, swipeDelta.y + data.swipe.curDeltaY ) );
+
+                        if ( data.swipe.startPoint.x - objOffset.left >= self.$scope.doHelper.axisWidth && data.swipe.startPoint.y - objOffset.top <= self.ctx.canvas.height ) {
+                            utils.requestAnimFrame.call( window, pan.bind( self, swipeDelta.x + data.swipe.curDeltaX, swipeDelta.y + data.swipe.curDeltaY ) );
+                        } else if ( data.swipe.startPoint.y - objOffset.top > self.ctx.canvas.height ) {
+                            utils.requestAnimFrame.call( window, pan.bind( self, swipeDelta.x + data.swipe.curDeltaX, 0 ) );
+                        } else {
+                            utils.requestAnimFrame.call( window, pan.bind( self, 0, swipeDelta.y + data.swipe.curDeltaY ) );
+                        }
+
                         swipeDelta.x = swipeDelta.y = 0;
                     } else {
                         swipeDelta.x += data.swipe.curDeltaX;

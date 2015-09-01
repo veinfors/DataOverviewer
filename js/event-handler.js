@@ -260,6 +260,48 @@ define( [
                 }
             } );
 
+            Touche( this.ctx.canvas ).pinch( {
+                id: '.data-overviewer',
+                //options: {
+                    //useMomentum: true,
+                    //inertia: 0.7
+                //},
+                start: function ( e, data ) {
+
+                    if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
+                        this.cancel();
+                        return;
+                    }
+
+                    objOffset = this.$element.find( '.data-overviewer').offset();
+
+                    Touche.preventGestures( this.gestureHandler );
+                },
+                update: function ( e, data ) {
+                    var x, y;
+
+                    if ( !self.pendingPanning ) {
+                        self.pendingPanning = true;
+                        x = data.centerPoint.x - objOffset.left;
+                        y = data.centerPoint.y - objOffset.top;
+                        zoom( { x: x, y: y }, data.scale );
+
+                        startPanZoom.apply( self, [data.centerPoint.x - self._offset.left, data.centerPoint.y - self._offset.top] );
+
+                        swipeDelta.x = swipeDelta.y = 0;
+                    } else {
+                        swipeDelta.x += data.swipe.curDeltaX;
+                        swipeDelta.y += data.swipe.curDeltaY;
+                    }
+
+                    Touche.preventGestures( this.gestureHandler );
+                },
+                end: function ( /* e */ ) {
+                    self._panning = false;
+                }
+
+            } );
+
     }
 
     var eventHandler = function ( $scope, $element, realObject, renderer, dataHandler, ctx, isSnapshot, snapshotData ) {

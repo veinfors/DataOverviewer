@@ -26,8 +26,6 @@ define( [
 
         this.$scope.dimensionScrollbar.display = scrollbarX ? '' : 'none';
         this.$scope.measureScrollbar.display = scrollbarY ? '' : 'none';
-
-
     }
 
     function zoom ( focusPoint, delta ) {
@@ -164,7 +162,7 @@ define( [
 
     function bindEvents( $scope, $element ) {
 
-        handlePanning.call( this );
+        handlePanAndZoom.call( this );
 
         $element[0].addEventListener( 'DOMMouseScroll', scroll.bind( this ) );
         $element[0].addEventListener( 'mousewheel', scroll.bind( this ) );
@@ -210,46 +208,116 @@ define( [
         }
     }
 
-    function handlePanning () {
+    function handlePanAndZoom () {
 
         var self = this,
             swipeDelta = {
                 x: 0,
                 y: 0
-            };
+            },
+            objOffset;
 
         /* --------- Handle panning ---------- */
         Touche( this.$element[0] ).swipe( {
-                id: '.data-overviewer',
-                options: {
-                    which: [1, 2]//,
-                    //radiusThreshold: 1
-                },
-                start: function ( e, data ) {
+            id: '.data-overviewer',
+            options: {
+                which: [1, 2]
+            },
+            start: function ( e, data ) {
 
-                    if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
-                        this.cancel();
-                        return;
-                    }
-
-                    Touche.preventGestures( this.gestureHandler );
-                },
-                update: function ( e, data ) {
-
-                    // Throttle..
-                    if( !self.pendingPanning ){
-                        self.pendingPanning = true;
-                        utils.requestAnimFrame.call( window, pan.bind( self, swipeDelta.x + data.swipe.curDeltaX, swipeDelta.y + data.swipe.curDeltaY ) );
-                        swipeDelta.x = swipeDelta.y = 0;
-                    } else {
-                        swipeDelta.x += data.swipe.curDeltaX;
-                        swipeDelta.y += data.swipe.curDeltaY;
-                    }
-                },
-                end: function () {
-                    self.pendingPanning = false;
+                if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
+                    this.cancel();
+                    return;
                 }
-            } );
+
+                objOffset = self.$element.offset();
+
+                Touche.preventGestures( this.gestureHandler );
+            },
+            update: function ( e, data ) {
+
+                // Throttle..
+                if( !self.pendingPanning ){
+                    self.pendingPanning = true;
+
+                    if ( data.swipe.startPoint.x - objOffset.left >= self.$scope.doHelper.axisWidth && data.swipe.startPoint.y - objOffset.top <= self.ctx.canvas.height ) {
+                        utils.requestAnimFrame.call( window, pan.bind( self, swipeDelta.x + data.swipe.curDeltaX, swipeDelta.y + data.swipe.curDeltaY ) );
+                    } else if ( data.swipe.startPoint.y - objOffset.top > self.ctx.canvas.height ) {
+                        utils.requestAnimFrame.call( window, pan.bind( self, swipeDelta.x + data.swipe.curDeltaX, 0 ) );
+                    } else {
+                        utils.requestAnimFrame.call( window, pan.bind( self, 0, swipeDelta.y + data.swipe.curDeltaY ) );
+                    }
+
+                    swipeDelta.x = swipeDelta.y = 0;
+                } else {
+                    swipeDelta.x += data.swipe.curDeltaX;
+                    swipeDelta.y += data.swipe.curDeltaY;
+                }
+            },
+            end: function () {
+                self.pendingPanning = false;
+            }
+        } );
+
+        var lastCenterPoint;
+
+        Touche( this.ctx.canvas ).pinch( {
+            id: '.data-overviewer',
+            options: {
+                pinchThreshold: 0
+            },
+            start: function ( e, data ) {
+
+                if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
+                    this.cancel();
+                    return;
+                }
+
+                objOffset = self.$element.find( '.grid-canvas').offset();
+
+                lastCenterPoint =  {
+                    x: data.centerPoint.x,
+                    y: data.centerPoint.y
+                };
+
+                Touche.preventGestures( this.gestureHandler );
+            },
+            update: function ( e, data ) {
+
+                var x,
+                    y,
+                    curDeltaX = data.centerPoint.x - lastCenterPoint.x,
+                    curDeltaY = data.centerPoint.y - lastCenterPoint.y;
+
+                if ( !self.pendingPanning ) {
+                    self.pendingPanning = true;
+                    x = data.centerPoint.x - objOffset.left;
+                    y = data.centerPoint.y - objOffset.top;
+
+                    utils.requestAnimFrame.call( window, function () {
+
+                        zoom.call( self, { x: x, y: y }, data.delta / 20 );
+                        pan.call( self, swipeDelta.x + curDeltaX, swipeDelta.y + curDeltaY );
+                    } );
+
+                    swipeDelta.x = swipeDelta.y = 0;
+                } else {
+                    swipeDelta.x += curDeltaX;
+                    swipeDelta.y += curDeltaY;
+                }
+
+                lastCenterPoint = {
+                    x: data.centerPoint.x,
+                    y: data.centerPoint.y
+                };
+
+                Touche.preventGestures( this.gestureHandler );
+            },
+            end: function () {
+                self.pendingpanning = false;
+            }
+
+        } );
 
     }
 

@@ -12,7 +12,7 @@ It's possible to switch between bar chart and line chart representation for now.
 
 ![alt tag](https://cloud.githubusercontent.com/assets/13997395/9591419/8a0b3fcc-503b-11e5-9d94-2709a2edb0aa.gif)
 
-Technical details:
+###Technical details
 Data reduction is used which shows an approximation of the actual data. The approximation gets more accurate the more you zoom in (3 granularity levels).
 
 Clicking on a chart brings up the "real object" which will reveal all the details.
@@ -23,7 +23,7 @@ At low zoom levels, charts are represented by icons, due to performance reasons.
 
 The visualization is (of course) "snapshotable" and will scale properly in storytelling.
 
-Whats next in the pipe?
+###Whats next in the pipe?
 - More configuration possibilities regarding which data fields to include in the grid. Probably through object properties.
 - More aggregation options (Sum is used today)
 - Increased rendering performance (fetch data in a smarter way?)

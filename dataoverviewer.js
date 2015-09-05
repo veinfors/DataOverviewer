@@ -59,11 +59,11 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
             var gridCtx = $scope.gridCanvas.getContext( '2d' );
 
-            $scope.chartType = 'bar'; // Default to line chart
-
-            $scope.dataHandler = new DataHandler( $scope.optimizer, $scope.object.model, $scope.backendApi.isSnapshot, $scope.object.model.layout.snapshotData );
+            $scope.chartType = 'line'; // Default to line chart
 
             $scope.doHelper = new DOHelper( $element );
+
+            $scope.dataHandler = new DataHandler( $scope.optimizer, $scope.doHelper, $scope.object.model, $scope.backendApi.isSnapshot, $scope.object.model.layout.snapshotData );
 
             $scope.realObject = new RealObject( $scope, $element );
 

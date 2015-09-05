@@ -236,7 +236,6 @@ define( [
             },
             update: function ( e, data ) {
 
-                // Throttle..
                 if( !self.pendingPanning ){
                     self.pendingPanning = true;
 

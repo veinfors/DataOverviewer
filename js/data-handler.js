@@ -36,13 +36,16 @@ define( [
     }
 
     // Create a session based (transient) cube to allow property update and no persistance
-    function createCube ( created ) {
+    function createCube () {
 
         var self = this,
-            app = qlik.currApp( this ),
-            emptyCube = {};
+            app = qlik.currApp( this );
 
-        app.createCube( emptyCube, function ( reply, app ) {
+        app.createGenericObject( {
+            "qHyperCubeDef":{},
+            "qInfo":{"qType":"mashup",
+            "qId": 'id-' + Date.now() }
+        }, function ( reply, app ) {
             app.getObject( reply.qInfo.qId ).then( function ( model ) {
                 model.getProperties().then( function () {
                     self.sessionCube = model;
@@ -166,21 +169,51 @@ define( [
         } );
     }
 
-    function isNewData ( newRect, newGranularity, dataInvalidated ) {
+    function update ( newRect, newGranularity, drawCallback, dataInvalidated ) {
 
-        if ( dataInvalidated ) {
-            return true;
-        } else if ( newGranularity === this.granularity && JSON.stringify( newRect ) === JSON.stringify( this.rect ) ) {
-            return false;
+        this.drawCallback = drawCallback;
+
+        if ( this.sessionCube ) {
+            proceedUpdate.call( this );
         } else {
-            return true;
+            this.proceedUpdate = proceedUpdate.bind( this );
         }
 
+        function proceedUpdate () {
+
+            this.proceedUpdate = noop;
+
+            this.nextRect = newRect;
+            this.nextGranularity = newGranularity;
+
+            if ( this.cancelling ) {
+                // Only update rect and granularity
+                return;
+            } else if ( !this.fetchInProgress ) {
+                // start new fetch
+                this.rect = newRect; // Careful! extend object?
+                this.granularity = newGranularity;
+                getReducedDataForDimension.call( this, this.rect.left, dataInvalidated );
+            } else if ( this.fetchInProgress ) {
+
+                // Note: cancelling ongoing requests are not fully supported - therefore wait for ongoing requests to finish
+                // Will await ongoing dimension fetch before starting to fetch new data
+
+                self.cancelling = function () {
+                    self.cancelling = null;
+                    self.rect = self.nextRect; // Careful! extend object?
+                    self.granularity = self.nextGranularity;
+                    // Start new fetch!
+                    getReducedDataForDimension.call( self, self.rect.left, dataInvalidated );
+                };
+
+            }
+        }
     }
 
     /* Class */
 
-    var DataHandler = function ( optimizer, objectModel, isSnapshot, snapshotData ) {
+    var DataHandler = function ( optimizer, doHelper, objectModel, isSnapshot, snapshotData ) {
 
         this.optimizer = optimizer;
         this.objectModel = objectModel;
@@ -201,6 +234,8 @@ define( [
 
         this.fieldsAsDimension = objectModel.layout.fieldsAsDimension || [];
         this.fieldsAsMeasure = objectModel.layout.fieldsAsMeasure || [];
+
+        this.throttledUpdate = doHelper.throttle( update, 200 );
     };
 
     DataHandler.prototype.dimToMeasure = function ( dimName ) {
@@ -295,54 +330,6 @@ define( [
         } );
 
     };
-
-    DataHandler.prototype.throttledUpdate = utils.debounce( update, 200 );
-
-    function update ( newRect, newGranularity, drawCallback, dataInvalidated ) {
-
-        this.drawCallback = drawCallback;
-
-        if ( this.sessionCube ) {
-            proceedUpdate.call( this );
-        } else {
-            this.proceedUpdate = proceedUpdate.bind( this );
-        }
-
-        function proceedUpdate () {
-
-            this.proceedUpdate = noop;
-
-            this.nextRect = newRect;
-            this.nextGranularity = newGranularity;
-
-            if ( this.cancelling ) {
-                // Only update rect and granularity
-                return;
-            } else if ( !this.fetchInProgress ) {
-                // start new fetch
-                this.rect = newRect; // Careful! extend object?
-                this.granularity = newGranularity;
-                getReducedDataForDimension.call( this, this.rect.left, dataInvalidated );
-//            } else if ( this.fetchInProgress && !newData ) {
-//                return;
-            } else if ( this.fetchInProgress/* && newData*/ ) {
-
-
-
-                // Note: cancelling ongoing requests are not fully supported - therefore wait for ongoing requests to finish
-                // Will await ongoing dimension fetch before starting to fetch new data
-
-                self.cancelling = function () {
-                    self.cancelling = null;
-                    self.rect = self.nextRect; // Careful! extend object?
-                    self.granularity = self.nextGranularity;
-                    // Start new fetch!
-                    getReducedDataForDimension.call( self, self.rect.left, dataInvalidated );
-                };
-
-            }
-        }
-    }
 
     DataHandler.prototype.clearMatrix = function () {
         this.matrix.length = 0;

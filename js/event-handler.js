@@ -134,6 +134,10 @@ define( [
         // Change current chartType and re-draw chart
         $scope.chartType = newType || $scope.chartType;
 
+        if ( this.isSnapshot ) {
+            $scope.chartType = this.snapshotData.renderingInfo.chartType;
+        }
+
         this.renderer.setChartType( $scope.chartType );
         if ( this.realObject.visible ) {
             this.realObject.updateChartType( $scope.chartType );
@@ -329,6 +333,8 @@ define( [
         this.dataHandler = dataHandler;
         this.ctx = ctx;
         this.pendingPanning = false;
+        this.isSnapshot = isSnapshot;
+        this.snapshotData = snapshotData;
 
         var gridSize = this.renderer.getGridSize(),
             scrollbarX = this.ctx.canvas.width / gridSize.width < 1,

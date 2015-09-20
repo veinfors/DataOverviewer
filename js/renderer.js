@@ -99,19 +99,19 @@ define( [
 
         for ( var k = 0; k < dataPoints.length; k++ ) {
 
-            if ( isNaN( dataPoints[k][1].qNum ) ) {
-                console.log( 'datapoint qNum isNaN! in linechart' )
-            }
-
-
             w = graphWidth / ( dataPoints.length - 1 );
 
             x = gX + k * w;
             y = gY + graphHeight - ( dataPoints[k][1].qNum - measureMin ) / range * graphHeight;
 
             // This happens when range === 0 - would result in no line drawn
+            // Value can end up out of range because of how data reduction works in sense (approximation) - therefore limit to max/min
             if ( range === 0 || isNaN( y ) ) {
                 y = gY + ( graphHeight / 2 );
+            } else if ( dataPoints[k][1].qNum < measureMin ) {
+                y = gY + graphHeight;
+            } else if ( dataPoints[k][1].qNum > measureMax ) {
+                y = gY;
             }
 
             if ( k === 0 || isNaN( dataPoints[k][1].qNum ) ) {
@@ -276,8 +276,6 @@ define( [
 
     function drawCanvas() {
 
-        // TODO: make sure this is not called when getting new data if s < optimizer.zoomRenderLimit
-
         var gX,
             gY,
             dataMatrix = this.dataHandler.matrix,
@@ -347,7 +345,6 @@ define( [
 
         drawFieldTitles.call( this, s, ctx.canvasMatrix.e, ctx.canvasMatrix.f );
 
-        // TODO: Implement without having to perform $apply() - big Performance hit!
         if ( !$( ctx.canvas ).scope().$root.$$phase ) {
             $( ctx.canvas ).scope().$digest();
         }

@@ -60,8 +60,8 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
             var gridCtx = $scope.gridCanvas.getContext( '2d' );
 
-            $scope.chartType = 'line'; // Default to line chart
-            $scope.aggrFunc = 'sum';
+            $scope.chartType = 'line';  // Default to line chart
+            $scope.aggrFunc = 'sum';    // Default to sum
 
             $scope.doHelper = new DOHelper( $element );
 
@@ -93,7 +93,6 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 // await new matrix after fields have been moved (don't trigger rendering if matrix is empty)
                 if ( !$scope.dataHandler.fetchInProgress && $scope.dataHandler.matrix.length ) {
 
-                    // TODO: remove all data from matrix - but keep dataInvalidated parameter
                     $scope.dataHandler.clearMatrixData();
 
                     $scope.renderer.render( true );

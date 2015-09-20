@@ -161,7 +161,7 @@ define( [
 
         this.dataHandler.setAggrFunc( $scope.aggrFunc );
 
-        // TODO: invalidate data and trigger new rendering!
+        $scope.newData();
     }
 
     function openSettings () {
@@ -375,7 +375,6 @@ define( [
         bindEvents.call( this, $scope, $element );
 
         setChartType.call( this );
-        setAggrFunc.call( this );
     };
 
     eventHandler.prototype.destroy = function () {

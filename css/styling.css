@@ -51,7 +51,7 @@
     top: 45px;
     right: 10px;
     width: 10px;
-    height: 60px;
+    height: 85px;
     background-color: white;
     z-index: 5;
     border-radius: 5px;
@@ -67,15 +67,15 @@
 }
 
 @-webkit-keyframes anim {
-    100% {  width: 120px; }
+    100% {  width: 250px; }
 }
 
 @-o-keyframes anim {
-    100% {  width: 120px; }
+    100% {  width: 250px; }
 }
 
 @keyframes anim {
-    100% {  width: 120px; }
+    100% {  width: 250px; }
 }
 
 .dataoverviewer.interactive .grid-canvas,
@@ -84,7 +84,7 @@
     cursor: pointer;
 }
 
-.dataoverviewer .settings-container button {
+.dataoverviewer .settings-container .chart-btn {
     font-size: 45px;
     height: 1em;
     line-height: 0.8em;
@@ -97,9 +97,10 @@
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
+    margin-bottom: 3px;
 }
 
-.dataoverviewer .settings-container button:hover {
+.dataoverviewer .settings-container .chart-btn:hover {
     border: 2px solid #595959;
     color: #595959;
 }

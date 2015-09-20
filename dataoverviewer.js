@@ -44,6 +44,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
             canvasMatrix: canvasMatrix,
             realObjectVisible: !!this.$scope.realObjectVisible,
             chartType: this.$scope.chartType,
+            aggrFunc: this.$scope.aggrFunc,
             dataMatrix: this.$scope.realObjectVisible ? undefined : this.$scope.dataHandler.matrix, //do not save data matrix if snapshotting "real object"
             chartsAsIcons: Math.round( svgCanvasMatrix.a * 100 ) / 100 < this.$scope.optimizer.zoomRenderLimit
         };
@@ -59,11 +60,12 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
             var gridCtx = $scope.gridCanvas.getContext( '2d' );
 
-            $scope.chartType = 'line'; // Default to line chart
+            $scope.chartType = 'line';  // Default to line chart
+            $scope.aggrFunc = 'sum';    // Default to sum
 
             $scope.doHelper = new DOHelper( $element );
 
-            $scope.dataHandler = new DataHandler( $scope.optimizer, $scope.doHelper, $scope.object.model, $scope.backendApi.isSnapshot, $scope.object.model.layout.snapshotData );
+            $scope.dataHandler = new DataHandler( $scope.optimizer, $scope.doHelper, $scope.object.model, $scope.backendApi.isSnapshot, $scope.object.model.layout.snapshotData, $scope.aggrFunc );
 
             $scope.realObject = new RealObject( $scope, $element );
 
@@ -91,7 +93,6 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 // await new matrix after fields have been moved (don't trigger rendering if matrix is empty)
                 if ( !$scope.dataHandler.fetchInProgress && $scope.dataHandler.matrix.length ) {
 
-                    // TODO: remove all data from matrix - but keep dataInvalidated parameter
                     $scope.dataHandler.clearMatrixData();
 
                     $scope.renderer.render( true );

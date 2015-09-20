@@ -17,7 +17,15 @@
 	<button class="qui-plainbuttonicon close-real-object" ng-if="realObjectVisible && interactive" qva-activate="closeRealObject()" data-icon="E" title="Close"></button>
 
 	<div class="settings-container" ng-show="settingsOpen" qva-outside="closeSettings($event)">
-			<button class="chart-type-bar qui-plainbuttonicon" qva-activate="setChartType( 'bar' )" data-icon="!" title="Bar chart"></button>
-			<button class="chart-type-line qui-plainbuttonicon" qva-activate="setChartType( 'line' )" data-icon="%" title="Line chart"></button>
+			<button class="chart-type-bar chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'bar' )" data-icon="!" title="Bar chart"></button>
+			<button class="chart-type-line chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'line' )" data-icon="%" title="Line chart"></button>
+			<br/>
+			<div class="qui-buttongroup aggr-btn-group">
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'sum'}" qva-activate="setAggrFunc('sum')"><span>Sum</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'avg'}" qva-activate="setAggrFunc('avg')"><span>Avg</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'count'}" qva-activate="setAggrFunc('count')"><span>Count</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'max'}" qva-activate="setAggrFunc('max')"><span>Max</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'min'}" qva-activate="setAggrFunc('min')"><span>Min</span></button>
+			</div>
 	</div>
 </div>

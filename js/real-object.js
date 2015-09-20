@@ -22,12 +22,12 @@ define( [
         return dimensionObj;
     }
 
-    function createMeasureObject ( measureName ) {
+    function createMeasureObject ( aggrFunc, measureName ) {
 
         var measureObj = measure = {
             "qDef": {
                 "autoSort": true,
-                "qDef": 'Sum([' + measureName + '])' //TODO: add other aggregation methods...
+                "qDef": aggrFunc + '([' + measureName + '])'
             }
         };
 
@@ -273,7 +273,7 @@ define( [
         }, 10 );
     }
 
-    function createObject ( chartType, dimensionName, measureName ) {
+    function createObject ( chartType, aggrFunc, dimensionName, measureName ) {
 
         this.dimensionName = dimensionName || this.dimensionName;
         this.measureName = measureName || this.measureName;
@@ -284,7 +284,7 @@ define( [
             app = app = qlik.currApp( this ),
             objProps,
             dimensionObject = createDimensionObject( this.dimensionName ),
-            measureObject = createMeasureObject( this.measureName );
+            measureObject = createMeasureObject( aggrFunc, this.measureName );
 
         if ( chartType === 'bar' ) {
             objProps = getDefaultBarchartProps( id, dimensionObject, measureObject );
@@ -345,7 +345,7 @@ define( [
         this.$scope = $scope;
     };
 
-    realObject.prototype.create = function ( chartType, dimension, measure, animPoint ) {
+    realObject.prototype.create = function ( chartType, aggrFunc, dimension, measure, animPoint ) {
 
         this.chartType = chartType;
 
@@ -355,7 +355,7 @@ define( [
 
         setTimeout( function () {
             self.visible = self.$scope.realObjectVisible = true;
-            createObject.call( self, chartType, dimension, measure );
+            createObject.call( self, chartType, aggrFunc, dimension, measure );
         }, animPoint ? animationTime : 0 );
 
     };

@@ -149,6 +149,21 @@ define( [
         this.$element.find( '.chart-type-' + $scope.chartType ).addClass( 'active-charttype' );
     }
 
+    function setAggrFunc ( newFunc ) {
+
+        var $scope = this.$scope;
+
+        $scope.aggrFunc = newFunc;
+
+        if ( this.isSnapshot ) {
+            $scope.aggrFunc = this.snapshotData.renderingInfo.aggrFunc || 'sum'; // For snapshots missing this info
+        }
+
+        this.dataHandler.setAggrFunc( $scope.aggrFunc );
+
+        // TODO: invalidate data and trigger new rendering!
+    }
+
     function openSettings () {
         this.$scope.settingsOpen = !this.$scope.settingsOpen;
     }
@@ -178,6 +193,7 @@ define( [
         $scope.openSettings = openSettings.bind( this );
         $scope.closeSettings = closeSettings.bind( this );
         $scope.setChartType = setChartType.bind( this );
+        $scope.setAggrFunc = setAggrFunc.bind( this );
     }
 
     function openRealObject ( event ) {
@@ -202,7 +218,7 @@ define( [
             point.x += this.ctx.canvas.offsetLeft;
             point.y += this.ctx.canvas.offsetTop;
 
-            this.realObject.create( this.$scope.chartType, dimension, measure, point );
+            this.realObject.create( this.$scope.chartType, this.$scope.aggrFunc, dimension, measure, point );
         }
     }
 
@@ -352,13 +368,14 @@ define( [
         };
 
         if ( isSnapshot && snapshotData.realObjectVisible ) {
-            this.realObject.create( snapshotData.renderingInfo.chartType, dimension, measure, point );
+            this.realObject.create( snapshotData.renderingInfo.chartType, snapshotData.renderingInfo.aggrFunc, dimension, measure, point );
             return;
         }
 
         bindEvents.call( this, $scope, $element );
 
         setChartType.call( this );
+        setAggrFunc.call( this );
     };
 
     eventHandler.prototype.destroy = function () {

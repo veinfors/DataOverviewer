@@ -87,15 +87,7 @@ define( [
         var newCubeProps = {
             qDimensions: [{
                 "qDef": {
-                    //"qFieldDefs": ["=class( FieldIndex('@dimName', @dimName ) - 1, ceil($(=count(total distinct @dimName))/@granularity))".replace( /@dimName/g, dimName ).replace( /@granularity/g, this.granularity )], //by cvs
-                    //"qFieldDefs": ["=class( aggr(rowno(), @dimName), ceil($(=count(total distinct @dimName))/@granularity))".replace( /@dimName/g, dimName ).replace( /@granularity/g, this.granularity )], //by cvs
-                    //"qFieldDefs": ["=aggr(rowno(), dimName)"],
-
-                    //"qFieldDefs": ["=class( floor(FieldIndex('@dimName', @dimName ) / ceil($(=count(total distinct @dimName)/@granularity))), ceil($(=count(total distinct @dimName))/@granularity))".replace( /@dimName/g, dimName ).replace( /@granularity/g, this.granularity )], //by cvs
-
-                    //"qFieldDefs": ["=class( floor(FieldIndex('@dimName', @dimName ) / ceil(count(All distinct @dimName)/@granularity)), ceil($(=count(total distinct @dimName))/@granularity))".replace( /@dimName/g, dimName ).replace( /@granularity/g, this.granularity )], //by cvs
-                    //floor(FieldIndex('AggKey', AggKey )/ceil(count(All distinct AggKey)/15))
-                    "qFieldDefs": [dimName], //by cvs
+                    "qFieldDefs": [dimName],
                     autoSort: true
                 },
                 "qNullSuppression": true
@@ -115,7 +107,7 @@ define( [
                     measureIndex: i,
                     "qDef": {
                         "autoSort": true,
-                        "qDef": "Sum([" + measureName + "])"//Count(distinct " + dimName + ")" //TODO: add other aggregation methods...
+                        "qDef": this.aggrFunc + "([" + measureName + "])"
 
                     }
                 } );
@@ -213,13 +205,14 @@ define( [
 
     /* Class */
 
-    var DataHandler = function ( optimizer, doHelper, objectModel, isSnapshot, snapshotData ) {
+    var DataHandler = function ( optimizer, doHelper, objectModel, isSnapshot, snapshotData, aggrFunc ) {
 
         this.optimizer = optimizer;
         this.objectModel = objectModel;
         this.proceedUpdate = noop;
         this.cancelling = null;
         this.isSnapshot = isSnapshot;
+        this.aggrFunc = aggrFunc;
 
         if ( isSnapshot ) {
             this.matrix = snapshotData.renderingInfo.dataMatrix;
@@ -345,6 +338,11 @@ define( [
                 matrix[i].measures[j].data = [];
             }
         }
+    };
+
+    DataHandler.prototype.setAggrFunc = function ( func ) {
+
+        this.aggrFunc = func;
     };
 
     return DataHandler;

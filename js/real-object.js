@@ -356,6 +356,10 @@ define( [
         setTimeout( function () {
             self.visible = self.$scope.realObjectVisible = true;
             createObject.call( self, chartType, aggrFunc, dimension, measure );
+
+            // To make selections toolbar visible
+            self.$element.find( '.dataoverviewer' ).css( 'overflow', 'visible' );
+            self.$element.parents( '.qv-object' ).css( 'overflow', 'visible' );
         }, animPoint ? animationTime : 0 );
 
     };
@@ -367,6 +371,10 @@ define( [
             var app = app = qlik.currApp( this );
             app.destroySessionObject( this.currentObjectId );
         }
+
+        // Prevent field titles from overflowing
+        this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;
@@ -388,6 +396,10 @@ define( [
             var app = app = qlik.currApp( this );
             app.destroySessionObject( this.currentObjectId );
         }
+
+        // Prevent field titles from overflowing
+        this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;

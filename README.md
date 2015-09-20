@@ -24,6 +24,6 @@ At low zoom levels, charts are represented by icons, due to performance reasons.
 The visualization is (of course) "snapshotable" and will scale properly in storytelling.
 
 ###Whats next in the pipe?
-- More configuration possibilities regarding which data fields to include in the grid. Probably through object properties.
-- More aggregation options (Sum is used today)
-- Increased rendering performance (fetch data in a smarter way?)
+- [ ] More configuration possibilities regarding which data fields to include in the grid. Probably through object properties.
+- [x] More aggregation functions (Sum is used today)
+- [ ] Increased rendering performance (fetch data in a smarter way?)

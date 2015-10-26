@@ -156,7 +156,7 @@ define( [
         $scope.aggrFunc = newFunc;
 
         if ( this.isSnapshot ) {
-            $scope.aggrFunc = this.snapshotData.renderingInfo.aggrFunc || 'sum'; // For snapshots missing this info
+            $scope.aggrFunc = this.snapshotData.renderingInfo.aggrFunc || 'Sum'; // For snapshots missing this info
         }
 
         this.dataHandler.setAggrFunc( $scope.aggrFunc );
@@ -245,7 +245,7 @@ define( [
             },
             start: function ( e, data ) {
 
-                if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
+                if ( !self.$scope.interactive || self.realObject.visible ) {
                     this.cancel();
                     return;
                 }
@@ -287,7 +287,7 @@ define( [
             },
             start: function ( e, data ) {
 
-                if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
+                if ( !self.$scope.interactive || self.realObject.visible ) {
                     this.cancel();
                     return;
                 }

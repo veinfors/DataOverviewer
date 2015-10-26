@@ -85,13 +85,13 @@ define( [
         var dimName = this.matrix[dimIndex].name;
 
         var newCubeProps = {
-            qDimensions: [{
+            qDimensions: [ {
                 "qDef": {
                     "qFieldDefs": [dimName],
                     autoSort: true
                 },
                 "qNullSuppression": true
-            }],
+            } ],
             qMeasures: [],
             qSuppressMissing: true,
             qAlwaysFullyExpanded: true,
@@ -203,6 +203,23 @@ define( [
         }
     }
 
+    /**
+     * Verifies if master item (dim or meas.) is included in properties
+     * @param currentList
+     * @param item
+     */
+    function isIncludedInList ( currentList, item ) {
+
+        for ( var i = 0; i < currentList.length; i++ ) {
+            if ( currentList[i].qInfo.qId === item.qInfo.qId ) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
     /* Class */
 
     var DataHandler = function ( optimizer, doHelper, objectModel, isSnapshot, snapshotData, aggrFunc ) {
@@ -225,12 +242,13 @@ define( [
         this.rect = null;
         this.granularity = null;
 
-        this.fieldsAsDimension = objectModel.layout.fieldsAsDimension || [];
-        this.fieldsAsMeasure = objectModel.layout.fieldsAsMeasure || [];
+        this.fieldsAsDimension = [];
+        this.fieldsAsMeasure = [];
 
         this.throttledUpdate = doHelper.throttle( update, 200 );
     };
 
+    // This is only supported "on the fly" - not persisted in properties
     DataHandler.prototype.dimToMeasure = function ( dimName ) {
 
         if ( this.fieldsAsDimension.contains( dimName ) ) {
@@ -241,7 +259,7 @@ define( [
             this.fieldsAsMeasure.push( dimName );
         }
 
-        if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
+        /*if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
 
             var self = this;
 
@@ -250,9 +268,10 @@ define( [
                 props.fieldsAsDimension = self.fieldsAsDimension;
                 self.objectModel.save();
             } );
-        }
+        }*/
     };
 
+    // This is only supported "on the fly" - not persisted in properties
     DataHandler.prototype.measureToDim = function ( measureName ) {
 
         if ( this.fieldsAsMeasure.contains( measureName ) ) {
@@ -263,7 +282,7 @@ define( [
             this.fieldsAsDimension.push( measureName );
         }
 
-        if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
+        /*if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
 
             var self = this;
 
@@ -272,10 +291,15 @@ define( [
                 props.fieldsAsDimension = self.fieldsAsDimension;
                 self.objectModel.save();
             } );
-        }
+        }*/
     };
 
-    DataHandler.prototype.fetchAllFields = function ( callback, initialFetch ) {
+    /**
+     * returns fields, dimensions and measures and populates the data matrix with it according to properties
+     * @param callback
+     * @returns {*}
+     */
+    DataHandler.prototype.fetchAllFields = function ( callback ) {
 
         if ( this.isSnapshot ) {
             callback();
@@ -283,44 +307,27 @@ define( [
         }
 
         var self = this,
-            app = qlik.currApp( this );
+            startTime = Date.now(),
+            fieldsSettings = this.objectModel.layout.fields;
 
-        /* GET ALL FIELDS - but only once! */
-
-        app.getList( 'FieldList').then( function( sessionObj ) {
-
-            var startTime = Date.now();
-
-            sessionObj.getLayout().then( function ( reply ) {
-
-                reply.qFieldList.qItems.sort( utils.sortFields );
-
+        if ( fieldsSettings && fieldsSettings.auto ) {
+            utils.subscribeFieldUpdates( function ( data, initialFetch ) {
                 var responseTime = Date.now() - startTime;
+
+                self.fields = data;
+                self.populateDataMatrix();
+
                 if ( initialFetch ) {
                     self.optimizer.updateNetworkSpeedParam( responseTime ); // this is only done once, and the nbr of fields aren't taken into account
+                    callback();
                 }
-
-                var measures = [];
-
-                reply.qFieldList.qItems.forEach( function( value ) {
-
-                    if ( isDimension.call( self, value ) ) {
-                        self.matrix.push( { name: value.qName, measures: [], cardinal: value.qCardinal } );
-                    } else {
-                        measures.push( value.qName );
-                    }
-                });
-
-                self.matrix.forEach( function ( dimension ) {
-                    dimension['measures'] = [];
-                    measures.forEach( function ( measureName ) {
-                        dimension['measures'].push( { name: measureName, data: [] } );
-                    } );
-                } );
-
-                callback();
             } );
-        } );
+        } else {
+            self.populateDataMatrix();
+            callback();
+        }
+
+
 
     };
 
@@ -343,6 +350,46 @@ define( [
     DataHandler.prototype.setAggrFunc = function ( func ) {
 
         this.aggrFunc = func;
+    };
+
+    DataHandler.prototype.populateDataMatrix = function () {
+
+        var self = this,
+            measures = [],
+            fieldsSettings = this.objectModel.layout.fields;
+
+        if ( fieldsSettings && fieldsSettings.auto ) {
+            this.fields.qFieldList.qItems.forEach( function( item ) {
+
+                if ( isDimension.call( self, item ) ) {
+                    self.matrix.push( { name: item.qName, measures: [] } );
+                } else {
+                    measures.push( { name: item.qName, aggrFunc: item.aggrFunc, data: [] } );
+                }
+            } );
+        } else {
+            var listProps = this.objectModel.layout.fields;
+
+
+            if ( listProps.x && listProps.y ) {
+                listProps.x.forEach( function ( item ) {
+                    self.matrix.push( { libraryId: item.id, title: item.title, measures: [] } );
+                } );
+
+                listProps.y.forEach( function ( item ) {
+                    measures.push( { libraryId: item.id, title: item.title, aggrFunc: item.aggrFunc, data: [] } );
+                } );
+            }
+        }
+
+        self.matrix.forEach( function ( dimension ) {
+            dimension['measures'] = [];
+            measures.forEach( function ( measure ) {
+                dimension['measures'].push( measure );
+            } );
+        } );
+
+
     };
 
     return DataHandler;

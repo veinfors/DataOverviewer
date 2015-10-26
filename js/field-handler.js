@@ -2,10 +2,7 @@ define( [
     "jquery"
 ], function ( $ ) {
 
-
     function moveField ( dimension, measure ) {
-
-        var self = this;
 
         if ( dimension ) {
             this.dataHandler.dimToMeasure( dimension.dimension );
@@ -15,9 +12,8 @@ define( [
 
         this.dataHandler.clearMatrix();
 
-        this.dataHandler.fetchAllFields( function () {
-            self.renderer.render( true );
-        } );
+        this.dataHandler.populateDataMatrix();
+        this.renderer.render( true );
     }
 
     var fieldHandler = function ( $scope, renderer, dataHandler ) {

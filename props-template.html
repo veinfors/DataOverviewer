@@ -1,0 +1,31 @@
+<div class="pp-component do-props">
+	<p class="do-props-label" ng-if="dimensions">Dimensions</p>
+	<ul qva-activate="onClick($event, 'dimension')">
+		<li ng-repeat="dimension in dimensions track by dimension.qMeta.title" class="do-props-list-item" ng-class="{'selected': dimension.selected}">
+			<span class="do-props-item-name">{{dimension.qMeta.title}}</span>
+		</li>
+	</ul>
+	<p class="do-props-label" ng-if="measures">Measures</p>
+	<ul qva-activate="onClick($event, 'measure')">
+		<li ng-repeat="measure in measures track by measure.qMeta.title" class="do-props-list-item" ng-class="{'selected': measure.selected}">
+			<span class="do-props-item-name">{{measure.qMeta.title}}</span>
+		</li>
+	</ul>
+	<p class="do-props-label">Fields</p>
+	<ul qva-activate="onClick($event, 'field')">
+		<li ng-repeat="field in fields track by field.qName" class="do-props-list-item" ng-class="{'selected': field.selected}">
+			<button class="do-props-aggr-btn" ng-if="field.selected" ng-class="{'active': pickerForScopeId === $id }">{{field.aggrFunc || 'Sum'}}</button><span class="do-props-item-name">{{field.qName}}</span>
+		</li>
+	</ul>
+
+	<div class="do-props-aggr-picker" ng-show="aggrPickerOpen" qva-outside="closeAggrPicker($event)" ng-style="aggrPickerPosition">
+		<p class="do-props-aggr-picker-label">Aggregation function</p>
+		<div class="qui-buttongroup aggr-btn-group">
+			<button class="qui-button" ng-class="{'qui-active': pickingAggrForModel.aggrFunc === 'Sum'}" qva-activate="setAggrFunc('Sum')"><span>Sum</span></button>
+			<button class="qui-button" ng-class="{'qui-active': pickingAggrForModel.aggrFunc === 'Avg'}" qva-activate="setAggrFunc('Avg')"><span>Avg</span></button>
+			<button class="qui-button" ng-class="{'qui-active': pickingAggrForModel.aggrFunc === 'Count'}" qva-activate="setAggrFunc('Count')"><span>Count</span></button>
+			<button class="qui-button" ng-class="{'qui-active': pickingAggrForModel.aggrFunc === 'Max'}" qva-activate="setAggrFunc('Max')"><span>Max</span></button>
+			<button class="qui-button" ng-class="{'qui-active': pickingAggrForModel.aggrFunc === 'Min'}" qva-activate="setAggrFunc('Min')"><span>Min</span></button>
+		</div>
+	</div>
+</div>

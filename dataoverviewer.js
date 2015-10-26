@@ -8,9 +8,10 @@ define( [
     "./js/do-helper",
     "./js/field-handler",
     "./js/real-object",
+    "./js/data-properties",
     "qlik",
     "text!./css/styling.css"],
-function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHelper, FieldHandler, RealObject, qlik, cssContent ) {
+function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHelper, FieldHandler, RealObject, DataProps, qlik, cssContent ) {
 
     'use strict';
 
@@ -61,7 +62,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
             var gridCtx = $scope.gridCanvas.getContext( '2d' );
 
             $scope.chartType = 'line';  // Default to line chart
-            $scope.aggrFunc = 'sum';    // Default to sum
+            $scope.aggrFunc = 'Sum';    // Default to sum
 
             $scope.doHelper = new DOHelper( $element );
 
@@ -99,6 +100,13 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 }
             };
 
+            $scope.propertiesChanged = function () {
+
+                $scope.dataHandler.clearMatrix();
+                $scope.dataHandler.populateDataMatrix();
+                $scope.renderer.render( true );
+            };
+
             $scope.dataHandler.fetchAllFields( function () {
 
                 setTimeout( function () { // Timeout needed to await elements to get their correct size
@@ -115,9 +123,10 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                     if ( !$scope.backendApi.isSnapshot ) {
                         var app = qlik.currApp();
                         app.model.Validated.bind( $scope.newData );
+                        $scope.object.model.Validated.bind( $scope.propertiesChanged )
                     }
                 }, 0 );
-            }, true );
+            } );
 
             $scope.fieldHandler = new FieldHandler( $scope, $scope.renderer, $scope.dataHandler );
 
@@ -164,9 +173,82 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
         snapshot: {
             canTakeSnapshot : true
         },
+        // TODO: backwards compatibility! try with old objects!
+        definition: {
+            type: "items",
+            component: "accordion",
+            items: {
+                data: {
+                    type: 'items',
+                    label: "Data",
+                    items: {
+                        autoSetting: {
+                            type: "boolean",
+                            component: "switch",
+                            label: "Included fields",
+                            ref: "fields.auto",
+                            options: [{
+                                value: true,
+                                label: "Auto"
+                            }, {
+                                value: false,
+                                label: "Custom"
+                            }],
+                            defaultValue: true
+                        },
+                        aggFunction: {
+                            show: function ( layout ) {
+                                return !layout.fields.auto;
+                            },
+                            type: "boolean",
+                            component: "switch",
+                            label: "AGGRfield buttons",
+                            ref: "fields.auto222",
+                            options: [{
+                                value: true,
+                                label: "Auto"
+                            }, {
+                                value: false,
+                                label: "Custom"
+                            }],
+                            defaultValue: true
+                        },
+                        lists: {
+                            component: "expandable-items",
+                            items: {
+                                xAxis: {
+                                    show: function ( layout ) {
+                                        return !layout.fields.auto;
+                                    },
+                                    component: DataProps,
+                                    //type: "boolean",
+                                    label: "X-axis",
+                                    axis: 'x'
+                                    //ref: "dims.item2.show"
+                                },
+                                yAxis: {
+                                    show: function ( layout ) {
+                                        return !layout.fields.auto;
+                                    },
+                                    component: DataProps,
+                                    //type: "boolean",
+                                    label: "Y-axis",
+                                    axis: 'y'
+                                    //ref: "dims.item2.show"
+                                }
+                            }
+                        }
+                    }
+                },
+                appearance: {
+                    uses: "settings"
+                }
+            }
+        },
         destroy: function () {
             var app = qlik.currApp();
             app.model.Validated.unbind( this.$scope.newData );
+            this.$scope.object.model.Validated.unbind( this.$scope.propertiesChanged );
             this.$scope.realObject.destroy();
             this.$scope.eventHandler.destroy();
         }

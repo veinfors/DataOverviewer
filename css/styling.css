@@ -40,80 +40,6 @@
     top: 70px;
 }
 
-/* -------------------- Settings ------------------- */
-
-.dataoverviewer .settings-button {
-    right: 40px;
-}
-
-.dataoverviewer .settings-container {
-    position: absolute;
-    top: 45px;
-    right: 10px;
-    width: 10px;
-    height: 85px;
-    background-color: white;
-    z-index: 5;
-    border-radius: 5px;
-    border: 1px solid gray;
-    text-align: center;
-    padding-top: 5px;
-    box-shadow: 0 4px 8px -1px #404040;
-    -webkit-animation: anim 0.6s forwards;
-    -o-animation: anim 0.6s forwards;
-    animation: anim 0.6s forwards;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-@-webkit-keyframes anim {
-    100% {  width: 250px; }
-}
-
-@-o-keyframes anim {
-    100% {  width: 250px; }
-}
-
-@keyframes anim {
-    100% {  width: 250px; }
-}
-
-.dataoverviewer.interactive .grid-canvas,
-.dataoverviewer.interactive .dimension-title,
-.dataoverviewer.interactive .measure-title {
-    cursor: pointer;
-}
-
-.dataoverviewer .settings-container .chart-btn {
-    font-size: 45px;
-    height: 1em;
-    line-height: 0.8em;
-    width: 1em;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    border: 2px solid white;
-    border-radius: 6px;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    margin-bottom: 3px;
-}
-
-.dataoverviewer .settings-container .chart-btn:hover {
-    border: 2px solid #595959;
-    color: #595959;
-}
-
-.dataoverviewer .settings-container .active-charttype {
-    color: #595959;
-    border: 2px solid #ff9326;
-}
-
-.dataoverviewer .settings-container .active-charttype:hover {
-    border: 2px solid #ff9326;
-}
-
 /* ------------------ "Real objects" ------------------ */
 
 .dataoverviewer .real-object {
@@ -180,6 +106,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: default;
 }
 
 .dataoverviewer .dimension-title {
@@ -206,4 +133,169 @@
     width: 6px;
     z-index: 3;
     min-top: 0px;
+}
+
+/* -------------------- On the fly settings ------------------- */
+
+.dataoverviewer .settings-button {
+    right: 40px;
+}
+
+.dataoverviewer .settings-container {
+    position: absolute;
+    top: 45px;
+    right: 10px;
+    width: 10px;
+    height: 85px;
+    background-color: white;
+    z-index: 5;
+    border-radius: 5px;
+    border: 1px solid gray;
+    text-align: center;
+    padding-top: 5px;
+    box-shadow: 0 4px 8px -1px #404040;
+    -webkit-animation: anim 0.6s forwards;
+    -o-animation: anim 0.6s forwards;
+    animation: anim 0.6s forwards;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dataoverviewer.interactive .grid-canvas,
+.dataoverviewer.interactive .dimension-title,
+.dataoverviewer.interactive .measure-title {
+    cursor: pointer;
+}
+
+.dataoverviewer .settings-container .chart-btn {
+    font-size: 45px;
+    height: 1em;
+    line-height: 0.8em;
+    width: 1em;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid white;
+    border-radius: 6px;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    margin-bottom: 3px;
+}
+
+.dataoverviewer .settings-container .chart-btn:hover {
+    border: 2px solid #595959;
+    color: #595959;
+}
+
+.dataoverviewer .settings-container .active-charttype {
+    color: #595959;
+    border: 2px solid #ff9326;
+}
+
+.dataoverviewer .settings-container .active-charttype:hover {
+    border: 2px solid #ff9326;
+}
+
+/* --------------- Properties panel -------------- */
+
+.do-props {
+    padding: 0;
+    position: relative;
+}
+
+.do-props .do-props-list-item {
+    white-space: nowrap;
+    overflow: hidden;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    border-bottom: 1px solid #d9d9d9;
+    padding: 5px;
+}
+
+.do-props .do-props-list-item:hover {
+    background-color: #F2F2F2;
+}
+
+.do-props .do-props-list-item.selected {
+    background-color: #52CC52;
+    color: #FFFFFF;
+    border-bottom: 1px solid #BAEBBA;
+}
+
+.do-props .do-props-label {
+    font-weight: bold;
+    border-bottom: 3px solid #595959;
+    padding: 5px;
+}
+
+.do-props .do-props-aggr-btn {
+    background-color: white;
+    border: 1px solid darkgray;
+    padding: 5px;
+    margin-right: 4px;
+    cursor: pointer;
+    border-radius: 3px;
+    line-height: 17px;
+}
+
+.do-props .do-props-aggr-btn:hover {
+    border: 1px solid black;
+}
+
+.do-props .do-props-aggr-btn.active {
+    color: #ffffff;
+    border-color: #595959;
+    background: #595959;
+}
+
+.do-props-aggr-picker {
+    position: absolute;
+    width: 10px;
+    height: 67px;
+    background-color: white;
+    z-index: 5;
+    border-radius: 5px;
+    border: 1px solid gray;
+    text-align: center;
+    padding-top: 5px;
+    box-shadow: 0 4px 8px -1px #404040;
+    -webkit-animation: anim 0.6s forwards;
+    -o-animation: anim 0.6s forwards;
+    animation: anim 0.6s forwards;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.do-props-aggr-picker .qui-button {
+    padding: 1px 1px;
+    min-width: 39px;
+}
+
+.do-props-aggr-picker .qui-button span {
+    padding: 0 5px;
+}
+
+.aggr-btn-group {
+    position: absolute;
+    left: 5px;
+}
+
+.do-props-aggr-picker-label {
+    text-align: left;
+    margin: 5px;
+}
+
+/* animation for revealing popup in a nice way */
+@-webkit-keyframes anim {
+    100% {  width: 214px; }
+}
+
+@-o-keyframes anim {
+    100% {  width: 214px; }
+}
+
+@keyframes anim {
+    100% {  width: 214px; }
 }

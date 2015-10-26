@@ -27,7 +27,7 @@ define( [
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = "12px Verdana";
-        ctx.fillText( "No data", x, y, graphWidth );
+        ctx.fillText( "No data", x, y, graphWidth);
     }
 
     function drawBarChart ( ctx, gX, gY, dataPoints, measureMax, measureMin ) {
@@ -410,6 +410,13 @@ define( [
 
     renderer.prototype.render = function ( dataInvalidated ) {
 
+        if ( !this.dataHandler.matrix[0] ) {
+            // No fields added for rendering - display message about this
+            // TODO: add message
+            noChartData( this.ctx, this.ctx.canvas.clientWidth / 2, this.ctx.canvas.clientHeight / 2 )
+            return;
+        }
+
         if ( this.isSnapshot ) {
             scaleSnapshot.call( this, this.$element, this.ctx, this.snapshotData, this.doHelper );
         }
@@ -545,7 +552,7 @@ define( [
 
         var s = this.ctx.getScale(),
             nbrOfDimensions = this.dataHandler.matrix.length,
-            nbrOfMeasures = this.dataHandler.matrix[0].measures.length,
+            nbrOfMeasures = this.dataHandler.matrix.length ? this.dataHandler.matrix[0].measures.length : 0,
             cellHeight = s * ( graphHeight + graphSpace ), // + s for grid lines?
             cellWidth = s * ( graphWidth + graphSpace );
 

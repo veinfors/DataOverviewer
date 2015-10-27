@@ -35,8 +35,10 @@ function ( $, qlik, utils, template ) {
 	function selectAccordingToProps ( propsFields, fields, type ) {
 
 		for ( var i = 0; i < fields.length; i++ ) {
-			if ( propsFields && indexOfField( propsFields, fields[i], type ) > -1 ) {
+			var foundIndex = propsFields && indexOfField( propsFields, fields[i], type );
+			if ( foundIndex > -1 ) {
 				fields[i].selected = true;
+				fields[i].aggrFunc = propsFields[foundIndex].aggrFunc;
 			}
 		}
 	}

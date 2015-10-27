@@ -14,7 +14,7 @@
 	<p class="do-props-label">Fields</p>
 	<ul qva-activate="onClick($event, 'field')">
 		<li ng-repeat="field in fields track by field.qName" class="do-props-list-item" ng-class="{'selected': field.selected}">
-			<button class="do-props-aggr-btn" ng-if="field.selected" ng-class="{'active': pickerForScopeId === $id }">{{field.aggrFunc || 'Sum'}}</button><span class="do-props-item-name">{{field.qName}}</span>
+			<button class="do-props-aggr-btn" ng-if="definition.axis === 'y' && field.selected" ng-class="{'active': pickerForScopeId === $id }">{{field.aggrFunc || 'Sum'}}</button><span class="do-props-item-name">{{field.qName}}</span>
 		</li>
 	</ul>
 

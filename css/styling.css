@@ -40,6 +40,15 @@
     top: 70px;
 }
 
+.do-needs-x-and-y-fields {
+    text-align: center;
+    position: relative;
+    top: 47%;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 75px;
+}
+
 /* ------------------ "Real objects" ------------------ */
 
 .dataoverviewer .real-object {

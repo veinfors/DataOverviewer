@@ -307,28 +307,19 @@ define( [
         }
 
         var self = this,
-            startTime = Date.now(),
-            fieldsSettings = this.objectModel.layout.fields;
+            startTime = Date.now();
 
-        if ( fieldsSettings && fieldsSettings.auto ) {
-            utils.subscribeFieldUpdates( function ( data, initialFetch ) {
-                var responseTime = Date.now() - startTime;
+        utils.subscribeFieldUpdates( function ( data, initialFetch ) {
+            var responseTime = Date.now() - startTime;
 
-                self.fields = data;
-                self.populateDataMatrix();
-
-                if ( initialFetch ) {
-                    self.optimizer.updateNetworkSpeedParam( responseTime ); // this is only done once, and the nbr of fields aren't taken into account
-                    callback();
-                }
-            } );
-        } else {
+            self.fields = data;
             self.populateDataMatrix();
-            callback();
-        }
 
-
-
+            if ( initialFetch ) {
+                self.optimizer.updateNetworkSpeedParam( responseTime ); // this is only done once, and the nbr of fields aren't taken into account
+                callback();
+            }
+        } );
     };
 
     DataHandler.prototype.clearMatrix = function () {
@@ -370,14 +361,13 @@ define( [
         } else {
             var listProps = this.objectModel.layout.fields;
 
-
             if ( listProps.x && listProps.y ) {
                 listProps.x.forEach( function ( item ) {
-                    self.matrix.push( { libraryId: item.id, title: item.title, measures: [] } );
+                    self.matrix.push( { libraryId: item.id, title: item.title, name: item.name, measures: [] } );
                 } );
 
                 listProps.y.forEach( function ( item ) {
-                    measures.push( { libraryId: item.id, title: item.title, aggrFunc: item.aggrFunc, data: [] } );
+                    measures.push( { libraryId: item.id, title: item.title, name: item.name, aggrFunc: item.aggrFunc, data: [] } );
                 } );
             }
         }

@@ -26,9 +26,24 @@ function ( $, qlik, utils, template ) {
 
 	}
 
+	/**
+	 *
+	 * @param propsFields - dimensions, measures and fields included in properties for current axis
+	 * @param fields - all dimensions, measures or fields
+	 * @param type - dimension, measure or field
+	 */
+	function selectAccordingToProps ( propsFields, fields, type ) {
+
+		for ( var i = 0; i < fields.length; i++ ) {
+			if ( propsFields && indexOfField( propsFields, fields[i], type ) > -1 ) {
+				fields[i].selected = true;
+			}
+		}
+	}
+
 	function updateProps ( $scope, fieldModel, fieldType ) {
 
-		var axis = $scope.axis;
+		var axis = $scope.definition.axis;
 
 		if ( !$scope.data.fields[axis] ) {
 			$scope.data.fields[axis] = [];
@@ -85,11 +100,14 @@ function ( $, qlik, utils, template ) {
 
 				if ( $scope.definition.axis === 'x' ) {
 					$scope.dimensions = data.qDimensionList.qItems;
+					selectAccordingToProps( $scope.data.fields.x, $scope.dimensions, 'dimension' );
 				} else {
 					$scope.measures = data.qMeasureList.qItems;
+					selectAccordingToProps( $scope.data.fields.y, $scope.measures, 'measure' );
 				}
 
 				$scope.fields = data.qFieldList.qItems;
+				selectAccordingToProps( $scope.data.fields[$scope.definition.axis], $scope.fields, 'field' );
 			} );
 
 			$scope.onClick = function ( e, fieldType ) {

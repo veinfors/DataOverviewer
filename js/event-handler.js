@@ -212,13 +212,10 @@ define( [
 
         if ( chartInfo ) {
 
-            var dimension = chartInfo.dimensionName,
-                measure = chartInfo.measureName;
-
             point.x += this.ctx.canvas.offsetLeft;
             point.y += this.ctx.canvas.offsetTop;
 
-            this.realObject.create( this.$scope.chartType, this.$scope.aggrFunc, dimension, measure, point );
+            this.realObject.create( this.$scope.chartType, this.$scope.aggrFunc, chartInfo, point );
         }
     }
 

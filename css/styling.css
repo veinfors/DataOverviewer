@@ -154,25 +154,33 @@
     position: absolute;
     top: 45px;
     right: 10px;
-    width: 10px;
-    height: 85px;
+    width: 0;
+    height: auto;
     background-color: white;
     z-index: 5;
     border-radius: 5px;
     border: 1px solid gray;
     text-align: center;
-    padding-top: 5px;
+    padding: 5px;
     box-shadow: 0 4px 8px -1px #404040;
-    -webkit-animation: anim 0.6s forwards;
-    -o-animation: anim 0.6s forwards;
-    animation: anim 0.6s forwards;
+    -webkit-animation: animNarrow 0.4s forwards;
+    -o-animation: animNarrow 0.4s forwards;
+    animation: animNarrow 0.4s forwards;
     overflow: hidden;
     white-space: nowrap;
 }
 
+.dataoverviewer.auto-mode .settings-container {
+    -webkit-animation: animWide 0.4s forwards;
+    -o-animation: animWide 0.4s forwards;
+    animation: animWide 0.4s forwards;
+    height: 108px;
+    padding: 5px 0px;
+}
+
 .dataoverviewer.interactive .grid-canvas,
-.dataoverviewer.interactive .dimension-title,
-.dataoverviewer.interactive .measure-title {
+.dataoverviewer.interactive.auto-mode .dimension-title,
+.dataoverviewer.interactive.auto-mode .measure-title {
     cursor: pointer;
 }
 
@@ -204,6 +212,20 @@
 
 .dataoverviewer .settings-container .active-charttype:hover {
     border: 2px solid #ff9326;
+}
+
+.aggr-btn-group .qui-button {
+    padding: 1px 1px;
+    min-width: 39px;
+}
+
+.aggr-btn-group .qui-button span {
+    padding: 0 5px;
+}
+
+.aggr-btn-group {
+    position: absolute;
+    left: 5px;
 }
 
 /* --------------- Properties panel -------------- */
@@ -261,8 +283,8 @@
 
 .do-props-aggr-picker {
     position: absolute;
-    width: 10px;
-    height: 67px;
+    width: 0;
+    height: 61px;
     background-color: white;
     z-index: 5;
     border-radius: 5px;
@@ -270,25 +292,11 @@
     text-align: center;
     padding-top: 5px;
     box-shadow: 0 4px 8px -1px #404040;
-    -webkit-animation: anim 0.6s forwards;
-    -o-animation: anim 0.6s forwards;
-    animation: anim 0.6s forwards;
+    -webkit-animation: animWide 0.6s forwards;
+    -o-animation: animWide 0.6s forwards;
+    animation: animWide 0.6s forwards;
     overflow: hidden;
     white-space: nowrap;
-}
-
-.do-props-aggr-picker .qui-button {
-    padding: 1px 1px;
-    min-width: 39px;
-}
-
-.do-props-aggr-picker .qui-button span {
-    padding: 0 5px;
-}
-
-.aggr-btn-group {
-    position: absolute;
-    left: 5px;
 }
 
 .do-props-aggr-picker-label {
@@ -297,14 +305,26 @@
 }
 
 /* animation for revealing popup in a nice way */
-@-webkit-keyframes anim {
+@-webkit-keyframes animNarrow {
+    100% {  width: 103px; }
+}
+
+@-o-keyframes animNarrow {
+    100% {  width: 103px; }
+}
+
+@keyframes animNarrow {
+    100% {  width: 103px; }
+}
+
+@-webkit-keyframes animWide {
     100% {  width: 214px; }
 }
 
-@-o-keyframes anim {
+@-o-keyframes animWide {
     100% {  width: 214px; }
 }
 
-@keyframes anim {
+@keyframes animWide {
     100% {  width: 214px; }
 }

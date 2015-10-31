@@ -63,6 +63,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
             $scope.chartType = 'line';  // Default to line chart
             $scope.aggrFunc = 'Sum';    // Default to sum
+            $scope.autoMode = $scope.object.layout.fields ? $scope.object.layout.fields.auto : true;
 
             $scope.doHelper = new DOHelper( $element );
 
@@ -105,6 +106,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 $scope.dataHandler.clearMatrix();
                 $scope.dataHandler.populateDataMatrix();
                 $scope.renderer.render( true );
+                $scope.autoMode = $scope.object.layout.fields.auto;
             };
 
             $scope.dataHandler.fetchAllFields( function () {

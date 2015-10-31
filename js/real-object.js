@@ -6,12 +6,16 @@ define( [
 
     /* Private functions */
 
-    function createDimensionObject ( dimensionName ) {
+    function createDimensionObject ( dimension ) {
+
+        var dimName = dimension.name,
+            dimLibraryId = dimension.libraryId;
 
         var dimensionObj = {
+            "qLibraryId": dimLibraryId || undefined,
             "qDef": {
                 "qGrouping": "N",
-                "qFieldDefs": [dimensionName],
+                "qFieldDefs": dimName ? [dimName] : [],
                 "qFieldLabels": [""],
                 "qNumberPresentations": [],
                 "qActiveField": 0,
@@ -22,12 +26,17 @@ define( [
         return dimensionObj;
     }
 
-    function createMeasureObject ( aggrFunc, measureName ) {
+    function createMeasureObject ( aggrFunc, measure ) {
 
-        var measureObj = measure = {
+        var measureName = measure.name,
+            measureAggrFunc = measure.aggrFunc || aggrFunc,
+            measureLibraryId = measure.libraryId;
+
+        var measureObj = {
+            "qLibraryId": measureLibraryId || undefined,
             "qDef": {
                 "autoSort": true,
-                "qDef": aggrFunc + '([' + measureName + '])'
+                "qDef": measureName ? measureAggrFunc + '([' + measureName + '])' : undefined
             }
         };
 
@@ -273,18 +282,18 @@ define( [
         }, 10 );
     }
 
-    function createObject ( chartType, aggrFunc, dimensionName, measureName ) {
+    function createObject ( chartType, aggrFunc, chartInfo ) {
 
-        this.dimensionName = dimensionName || this.dimensionName;
-        this.measureName = measureName || this.measureName;
+        this.dimension = chartInfo ? chartInfo.dimension : this.dimension;
+        this.measure = chartInfo ? chartInfo.measure : this.measure;
         this.currentObjectId = 'id-' + Date.now();
 
         var self = this,
             id = this.currentObjectId,
             app = app = qlik.currApp( this ),
             objProps,
-            dimensionObject = createDimensionObject( this.dimensionName ),
-            measureObject = createMeasureObject( aggrFunc, this.measureName );
+            dimensionObject = createDimensionObject( this.dimension ),
+            measureObject = createMeasureObject( aggrFunc, this.measure );
 
         if ( chartType === 'bar' ) {
             objProps = getDefaultBarchartProps( id, dimensionObject, measureObject );
@@ -345,7 +354,7 @@ define( [
         this.$scope = $scope;
     };
 
-    realObject.prototype.create = function ( chartType, aggrFunc, dimension, measure, animPoint ) {
+    realObject.prototype.create = function ( chartType, aggrFunc, chartInfo, animPoint ) {
 
         this.chartType = chartType;
 
@@ -355,7 +364,7 @@ define( [
 
         setTimeout( function () {
             self.visible = self.$scope.realObjectVisible = true;
-            createObject.call( self, chartType, aggrFunc, dimension, measure );
+            createObject.call( self, chartType, aggrFunc, chartInfo );
 
             // To make selections toolbar visible
             self.$element.find( '.dataoverviewer' ).css( 'overflow', 'visible' );

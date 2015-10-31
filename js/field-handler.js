@@ -30,7 +30,7 @@ define( [
 
     fieldHandler.prototype.openContextMenu = function ( $event ) {
 
-        if ( !this.$scope.interactive ) {
+        if ( !this.$scope.interactive || !this.$scope.autoMode ) {
             return;
         }
 

@@ -128,7 +128,7 @@ define( [
 
     }
 
-    function drawChartIcon( ctx, chartType, gX, gY ) {
+    function drawChartIcon ( ctx, chartType, gX, gY ) {
 
         ctx.fillStyle = "#A5A5A5";
         ctx.textAlign = 'center';
@@ -204,11 +204,11 @@ define( [
         this.measureTitles.length = 0;
 
         for( var i = gridsOutsideLeft; i < lastVisibleCol; i++ ) {
-            this.dimensionTitles.push( dataMatrix[i].name );
+            this.dimensionTitles.push( dataMatrix[i].name || dataMatrix[i].title );
         }
 
         for ( var i = gridsOutsideTop; i < lastVisibleRow; i++ ) {
-            this.measureTitles.push( dataMatrix[0].measures[i].name );
+            this.measureTitles.push( dataMatrix[0].measures[i].title || dataMatrix[0].measures[i].name );
         }
 
         // Set styling to get the title positions correct
@@ -507,8 +507,8 @@ define( [
 
         if ( this.dataHandler.matrix[dimensionIndex] && this.dataHandler.matrix[0].measures[measureIndex] ) {
             return {
-                dimensionName: this.dataHandler.matrix[dimensionIndex].name,
-                measureName: this.dataHandler.matrix[0].measures[measureIndex].name
+                dimension: this.dataHandler.matrix[dimensionIndex],
+                measure: this.dataHandler.matrix[0].measures[measureIndex]
             };
         } else {
             return null;

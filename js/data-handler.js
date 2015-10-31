@@ -50,7 +50,6 @@ define( [
                 model.getProperties().then( function () {
                     self.sessionCube = model;
                     model.Invalidated.unbind(); // only once!
-                    window.debugCubeNbr = 0;
                     self.proceedUpdate();
                 });
             } );
@@ -82,33 +81,36 @@ define( [
             return;
         }
 
-        var dimName = this.matrix[dimIndex].name;
+        var dimName = this.matrix[dimIndex].name,
+            dimLibraryId = this.matrix[dimIndex].libraryId;
 
         var newCubeProps = {
             qDimensions: [ {
-                "qDef": {
-                    "qFieldDefs": [dimName],
+                qLibraryId: dimLibraryId,
+                qDef: {
+                    qFieldDefs: dimName ? [dimName] : [],
                     autoSort: true
                 },
-                "qNullSuppression": true
+                qNullSuppression: true
             } ],
             qMeasures: [],
             qSuppressMissing: true,
-            qAlwaysFullyExpanded: true,
-            debugCubeNbr: ++window.debugCubeNbr
+            qAlwaysFullyExpanded: true
         };
 
         for ( var i = this.rect.top; i < this.rect.top + this.rect.height; i++ ) {
             if ( dataInvalidated || this.granularity !== this.matrix[dimIndex].measures[i].granularity ) {
 
-                var measureName = this.matrix[dimIndex].measures[i].name;
+                var measureName = this.matrix[dimIndex].measures[i].name,
+                    measureAggrFunc = this.matrix[dimIndex].measures[i].aggrFunc || this.aggrFunc,
+                    measureLibraryId = this.matrix[dimIndex].measures[i].libraryId;
 
                 newCubeProps.qMeasures.push( {
+                    qLibraryId: measureLibraryId || undefined,
                     measureIndex: i,
-                    "qDef": {
+                    qDef: {
                         "autoSort": true,
-                        "qDef": this.aggrFunc + "([" + measureName + "])"
-
+                        qDef: measureName ? measureAggrFunc + "([" + measureName + "])" : undefined
                     }
                 } );
             }
@@ -203,23 +205,6 @@ define( [
         }
     }
 
-    /**
-     * Verifies if master item (dim or meas.) is included in properties
-     * @param currentList
-     * @param item
-     */
-    function isIncludedInList ( currentList, item ) {
-
-        for ( var i = 0; i < currentList.length; i++ ) {
-            if ( currentList[i].qInfo.qId === item.qInfo.qId ) {
-                return true;
-            }
-        }
-
-        return false;
-
-    }
-
     /* Class */
 
     var DataHandler = function ( optimizer, doHelper, objectModel, isSnapshot, snapshotData, aggrFunc ) {
@@ -258,17 +243,6 @@ define( [
         if ( !this.fieldsAsMeasure.contains( dimName ) ) {
             this.fieldsAsMeasure.push( dimName );
         }
-
-        /*if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
-
-            var self = this;
-
-            this.objectModel.getProperties().then( function ( props ) {
-                props.fieldsAsMeasure = self.fieldsAsMeasure;
-                props.fieldsAsDimension = self.fieldsAsDimension;
-                self.objectModel.save();
-            } );
-        }*/
     };
 
     // This is only supported "on the fly" - not persisted in properties
@@ -281,17 +255,6 @@ define( [
         if ( !this.fieldsAsDimension.contains( measureName ) ) {
             this.fieldsAsDimension.push( measureName );
         }
-
-        /*if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
-
-            var self = this;
-
-            this.objectModel.getProperties().then( function ( props ) {
-                props.fieldsAsMeasure = self.fieldsAsMeasure;
-                props.fieldsAsDimension = self.fieldsAsDimension;
-                self.objectModel.save();
-            } );
-        }*/
     };
 
     /**
@@ -355,7 +318,7 @@ define( [
                 if ( isDimension.call( self, item ) ) {
                     self.matrix.push( { name: item.qName, measures: [] } );
                 } else {
-                    measures.push( { name: item.qName, aggrFunc: item.aggrFunc, data: [] } );
+                    measures.push( { name: item.qName, data: [] } );
                 }
             } );
         } else {
@@ -375,7 +338,7 @@ define( [
         self.matrix.forEach( function ( dimension ) {
             dimension['measures'] = [];
             measures.forEach( function ( measure ) {
-                dimension['measures'].push( measure );
+                dimension['measures'].push( { libraryId: measure.libraryId, title: measure.title, name: measure.name, aggrFunc: measure.aggrFunc, data: [] } );
             } );
         } );
 

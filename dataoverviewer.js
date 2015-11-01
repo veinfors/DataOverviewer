@@ -9,9 +9,11 @@ define( [
     "./js/field-handler",
     "./js/real-object",
     "./js/data-properties",
+    "./js/aggr-props",
+	"./js/chart-props",
     "qlik",
     "text!./css/styling.css"],
-function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHelper, FieldHandler, RealObject, DataProps, qlik, cssContent ) {
+function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHelper, FieldHandler, RealObject, DataProps, AggrProps, ChartProps, qlik, cssContent ) {
 
     'use strict';
 
@@ -61,13 +63,15 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
             var gridCtx = $scope.gridCanvas.getContext( '2d' );
 
-            $scope.chartType = 'line';  // Default to line chart
-            $scope.aggrFunc = 'Sum';    // Default to sum
-            $scope.autoMode = $scope.object.layout.fields ? $scope.object.layout.fields.auto : true;
+			var layout = $scope.object.layout;
+
+            $scope.chartType = layout.chartType ? layout.chartType : 'line';   // Default to line chart
+            $scope.aggrFunc = layout.fields && layout.fields.aggrFunc ? layout.fields.aggrFunc : 'Sum';    // Default to sum
+            $scope.autoMode = layout.fields ? !!layout.fields.auto : true;
 
             $scope.doHelper = new DOHelper( $element );
 
-            $scope.dataHandler = new DataHandler( $scope.optimizer, $scope.doHelper, $scope.object.model, $scope.backendApi.isSnapshot, $scope.object.model.layout.snapshotData, $scope.aggrFunc );
+            $scope.dataHandler = new DataHandler( $scope.optimizer, $scope.doHelper, $scope.object.model, $scope.backendApi.isSnapshot, layout.snapshotData, $scope.aggrFunc );
 
             $scope.realObject = new RealObject( $scope, $element );
 
@@ -88,7 +92,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 'margin-right': 0
             };
 
-            $scope.renderer = new Renderer( $element, gridCtx, $scope.dataHandler, $scope.optimizer, $scope.chartType, $scope.dimensionTitles, $scope.measureTitles, $scope.dimensionTitlesPositioning, $scope.measureTitlesPositioning, $scope.doHelper, !!$scope.backendApi.isSnapshot, $scope.object.model.layout.snapshotData );
+            $scope.renderer = new Renderer( $element, gridCtx, $scope.dataHandler, $scope.optimizer, $scope.chartType, $scope.dimensionTitles, $scope.measureTitles, $scope.dimensionTitlesPositioning, $scope.measureTitlesPositioning, $scope.doHelper, !!$scope.backendApi.isSnapshot, layout.snapshotData );
 
             $scope.newData = function () {
 
@@ -106,7 +110,13 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 $scope.dataHandler.clearMatrix();
                 $scope.dataHandler.populateDataMatrix();
                 $scope.renderer.render( true );
-                $scope.autoMode = $scope.object.layout.fields.auto;
+                $scope.autoMode = layout.fields.auto;
+				if ( layout.fields.aggrFunc && layout.fields.aggrFunc !== $scope.aggrFunc ) {
+					$scope.setAggrFunc( layout.fields.aggrFunc );
+				}
+				if ( layout.chartType && layout.chartType !== $scope.chartType ) {
+					$scope.setChartType( layout.chartType );
+				}
             };
 
             $scope.dataHandler.fetchAllFields( function () {
@@ -120,7 +130,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
                     $scope.renderer.setOptimizedZoom();
 
-                    $scope.eventHandler = new EventHandler( $scope, $element, $scope.realObject, $scope.renderer, $scope.dataHandler, gridCtx, $scope.backendApi.isSnapshot, $scope.object.model.layout.snapshotData );
+                    $scope.eventHandler = new EventHandler( $scope, $element, $scope.realObject, $scope.renderer, $scope.dataHandler, gridCtx, $scope.backendApi.isSnapshot, layout.snapshotData );
 
                     if ( !$scope.backendApi.isSnapshot ) {
                         var app = qlik.currApp();
@@ -200,20 +210,10 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                         },
                         aggFunction: {
                             show: function ( layout ) {
-                                return !layout.fields.auto;
+                                return layout.fields.auto;
                             },
-                            type: "boolean",
-                            component: "switch",
-                            label: "AGGRfield buttons",
-                            ref: "fields.auto222",
-                            options: [{
-                                value: true,
-                                label: "Auto"
-                            }, {
-                                value: false,
-                                label: "Custom"
-                            }],
-                            defaultValue: true
+                            component: AggrProps,
+                            label: "Aggregation function"
                         },
                         lists: {
                             component: "expandable-items",
@@ -223,27 +223,29 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                                         return !layout.fields.auto;
                                     },
                                     component: DataProps,
-                                    //type: "boolean",
                                     label: "X-axis",
                                     axis: 'x'
-                                    //ref: "dims.item2.show"
                                 },
                                 yAxis: {
                                     show: function ( layout ) {
                                         return !layout.fields.auto;
                                     },
                                     component: DataProps,
-                                    //type: "boolean",
                                     label: "Y-axis",
                                     axis: 'y'
-                                    //ref: "dims.item2.show"
                                 }
                             }
                         }
                     }
                 },
                 appearance: {
-                    uses: "settings"
+                    uses: "settings",
+					items: {
+						presentation: {
+							label: "Presentation",
+							component: ChartProps
+						}
+					}
                 }
             }
         },

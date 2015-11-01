@@ -2,7 +2,7 @@ define( [
 	"jquery",
 	"qlik",
 	"./utils",
-	"text!../props-template.html"],
+	"text!../data-props-template.html"],
 function ( $, qlik, utils, template ) {
 
 	var defaultAggrFunc = 'Sum';

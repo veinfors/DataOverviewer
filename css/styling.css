@@ -184,6 +184,7 @@
     cursor: pointer;
 }
 
+.do-chart-type-props .chart-btn,
 .dataoverviewer .settings-container .chart-btn {
     font-size: 45px;
     height: 1em;
@@ -198,18 +199,31 @@
     -moz-box-sizing: content-box;
     box-sizing: content-box;
     margin-bottom: 3px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    color: #595959 !important;
+    background: transparent !important;
 }
 
+.pp-component.do-chart-type-props .chart-btn {
+    font-size: 75px;
+    margin: 5px;
+}
+
+.do-chart-type-props .chart-btn:hover,
 .dataoverviewer .settings-container .chart-btn:hover {
     border: 2px solid #595959;
     color: #595959;
 }
 
+.do-chart-type-props .active-charttype,
 .dataoverviewer .settings-container .active-charttype {
     color: #595959;
     border: 2px solid #ff9326;
 }
 
+.do-chart-type-props .active-charttype:hover,
 .dataoverviewer .settings-container .active-charttype:hover {
     border: 2px solid #ff9326;
 }
@@ -223,7 +237,8 @@
     padding: 0 5px;
 }
 
-.aggr-btn-group {
+.settings-container .aggr-btn-group,
+.do-props-aggr-picker .aggr-btn-group {
     position: absolute;
     left: 5px;
 }
@@ -302,6 +317,18 @@
 .do-props-aggr-picker-label {
     text-align: left;
     margin: 5px;
+}
+
+.do-aggr-props .aggr-btn-group {
+    margin: 5px 0px;
+}
+
+.do-chart-type-props {
+    text-align: center;
+}
+
+.do-chart-type-props .do-props-label {
+    text-align: left;
 }
 
 /* animation for revealing popup in a nice way */

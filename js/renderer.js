@@ -410,7 +410,7 @@ define( [
 
     renderer.prototype.render = function ( dataInvalidated ) {
 
-        if ( !this.dataHandler.matrix[0] ) {
+        if ( this.dataHandler.insufficientFields ) {
             return;
         }
 

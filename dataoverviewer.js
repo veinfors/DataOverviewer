@@ -97,7 +97,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
             $scope.newData = function () {
 
                 // await new matrix after fields have been moved (don't trigger rendering if matrix is empty)
-                if ( !$scope.dataHandler.fetchInProgress && $scope.dataHandler.matrix.length ) {
+                if ( !$scope.dataHandler.fetchInProgress && $scope.dataHandler.matrix.length && !$scope.object.model.isValidating ) {
 
                     $scope.dataHandler.clearMatrixData();
 
@@ -135,7 +135,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                     if ( !$scope.backendApi.isSnapshot ) {
                         var app = qlik.currApp();
                         app.model.Validated.bind( $scope.newData );
-                        $scope.object.model.Validated.bind( $scope.propertiesChanged )
+                        $scope.object.model.Validated.bind( $scope.propertiesChanged );
                     }
                 }, 0 );
             } );

@@ -1,4 +1,4 @@
-<div qv-extension class="dataoverviewer" ng-class="{'interactive': interactive, 'auto-mode': autoMode}">
+<div qv-extension class="dataoverviewer" ng-class="{'interactive': interactive, 'auto-mode': autoMode, 'insufficient-fields': dataHandler.insufficientFields }">
 
 	<div class="dimension-titles-container" ng-show="!realObjectVisible" ng-style="dimensionTitlesPositioning" qva-context-menu="openContextMenu($event)">
 		<span class="dimension-title" ng-repeat="dimension in dimensionTitles " title="{{dimension}}">{{dimension}}</span>
@@ -28,5 +28,5 @@
 				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'Min'}" qva-activate="setAggrFunc('Min')"><span>Min</span></button>
 			</div>
 	</div>
-	<div class="do-needs-x-and-y-fields" ng-if="!dataHandler.matrix.length || !dataHandler.matrix[0].measures.length">Needs data on X and Y axis</div>
+	<div class="do-needs-x-and-y-fields">Needs data on X and Y axis</div>
 </div>

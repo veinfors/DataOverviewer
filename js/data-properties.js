@@ -139,14 +139,6 @@ function ( $, qlik, utils, template ) {
 				}
 
 			};
-
-			$scope.onChange = function () {
-				console.log('oChange!');
-			};
-
-			$scope.$on( "datachanged", function () {
-				console.log( 'datachanged' )
-			} );
 		}]
 	};
 

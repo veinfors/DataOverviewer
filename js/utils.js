@@ -46,11 +46,7 @@ function ( qlik ) {
         },
 
         sortFields: function ( a, b ) {
-            return utils.sort( a.qName, b.qName );
-        },
-
-        sortDimOrMeasures: function ( a, b ) {
-            return utils.sort( a.qMeta.title, b.qMeta.title );
+            return utils.sort( a.name || a.title, b.name || b.title );
         },
 
         getGranularity: function ( scaling ) {
@@ -66,15 +62,15 @@ function ( qlik ) {
 
         /**
          * Notifies callback every time fields, dimensions or measures are changed + initial fetch
-         * Also sorts the data fields alphabetically
          * @param callback
          */
         subscribeFieldUpdates: function ( callback ) {
 
             var app = qlik.currApp( this ),
-                initialFetch = true; // Used for perf optimization
+                initialFetch = true, // Used for perf optimization
+                lastJSONString = '';
 
-            app.createGenericObject( {
+            return app.createGenericObject( {
                 "qInfo": {
                     "qId": "",
                     "qType": "SessionLists"
@@ -90,12 +86,18 @@ function ( qlik ) {
                 }
             }, function ( data ) {
 
-                data.qFieldList.qItems.sort( utils.sortFields );
-                data.qDimensionList.qItems.sort( utils.sortDimOrMeasures );
-                data.qMeasureList.qItems.sort( utils.sortDimOrMeasures );
+                var newJSONString = JSON.stringify( data );
 
-                callback( data, initialFetch );
-                initialFetch = false;
+                // Do not call callback unless fields, dimensions or measures has actually changed
+                // We come here on every app data change (selections...)
+                if ( newJSONString === lastJSONString ) {
+                    return;
+                } else {
+                    lastJSONString = newJSONString;
+
+                    callback( data, initialFetch );
+                    initialFetch = false;
+                }
             } );
         }
 

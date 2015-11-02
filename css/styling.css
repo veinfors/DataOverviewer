@@ -41,12 +41,27 @@
 }
 
 .do-needs-x-and-y-fields {
+    display: none;
+}
+
+.insufficient-fields .do-needs-x-and-y-fields {
+    display: block;
     text-align: center;
-    position: relative;
+    position: absolute;
+    z-index: 6;
+    width: 100%;
+    height: 100%;
     top: 47%;
     font-size: 15px;
     font-weight: bold;
-    margin-left: 75px;
+}
+
+.insufficient-fields .dimension-titles-container,
+.insufficient-fields .dimension-scrollbar,
+.insufficient-fields .measure-titles-container,
+.insufficient-fields .measure-scrollbar,
+.insufficient-fields .qui-plainbuttonicon {
+    display: none;
 }
 
 /* ------------------ "Real objects" ------------------ */

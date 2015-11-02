@@ -229,6 +229,7 @@ define( [
 
         this.fieldsAsDimension = [];
         this.fieldsAsMeasure = [];
+        this.insufficientFields = false;
 
         this.throttledUpdate = doHelper.throttle( update, 200 );
     };
@@ -335,6 +336,10 @@ define( [
             }
         }
 
+        // Sort dimensions and measures
+        self.matrix.sort( utils.sortFields );
+        measures.sort( utils.sortFields );
+
         self.matrix.forEach( function ( dimension ) {
             dimension['measures'] = [];
             measures.forEach( function ( measure ) {
@@ -342,6 +347,7 @@ define( [
             } );
         } );
 
+        self.insufficientFields = !self.matrix.length || !self.matrix[0].measures.length;
 
     };
 

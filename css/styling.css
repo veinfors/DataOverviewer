@@ -133,6 +133,12 @@
     cursor: default;
 }
 
+.dataoverviewer:not(.auto-mode) .dimension-title,
+.dataoverviewer:not(.auto-mode) .measure-title {
+    border: none;
+    text-align: right;
+}
+
 .dataoverviewer .dimension-title {
     display: inline-block;
     transform: rotate(-45deg);

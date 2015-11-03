@@ -194,7 +194,8 @@ define( [
             areaHeight = this.$element.height() - axisWidth * 0.93,
             areaWidth = this.$element.width() - axisWidth,
             lastVisibleRow = Math.round( ( areaHeight - offsetY ) / gridHeight ),
-            lastVisibleCol = Math.ceil( ( areaWidth - offsetX ) / gridWidth );
+            lastVisibleCol = Math.ceil( ( areaWidth - offsetX ) / gridWidth ),
+            measure;
 
         lastVisibleRow = lastVisibleRow < dataMatrix[0].measures.length ? lastVisibleRow : dataMatrix[0].measures.length;
         lastVisibleCol = lastVisibleCol < dataMatrix.length ? lastVisibleCol : dataMatrix.length;
@@ -208,7 +209,12 @@ define( [
         }
 
         for ( var i = gridsOutsideTop; i < lastVisibleRow; i++ ) {
-            this.measureTitles.push( dataMatrix[0].measures[i].title || dataMatrix[0].measures[i].name );
+            measure = dataMatrix[0].measures[i];
+            if ( measure.name ) {
+                this.measureTitles.push( measure.aggrFunc ? measure.aggrFunc + '(' + measure.name + ')' : measure.name );
+            } else {
+                this.measureTitles.push( measure.title );
+            }
         }
 
         // Set styling to get the title positions correct

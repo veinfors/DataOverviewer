@@ -358,17 +358,16 @@ define( [
 
     function scaleSnapshot ( $element, ctx, snapshotData ) {
 
-        if ( snapshotData.object.freeResize ) {
-            this.chartScale = 1;
-            return;
-        }
-
         var m = snapshotData.renderingInfo.canvasMatrix;
 
         var origWidth = snapshotData.object.size.w,
             currentWidth = $element.width();
 
-        this.doHelper.setChartScale( currentWidth / origWidth );
+        if ( snapshotData.object.freeResize ) {
+            this.doHelper.setChartScale( 1 );
+        } else {
+            this.doHelper.setChartScale( currentWidth / origWidth );
+        }
 
         this.chartScale = this.doHelper.chartScale;
 

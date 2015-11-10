@@ -311,9 +311,10 @@ define( [
 
         var self = this,
             measures = [],
-            fieldsSettings = this.objectModel.layout.fields;
+            fieldProps = this.objectModel.layout.fields;
 
-        if ( fieldsSettings && fieldsSettings.auto ) {
+        // Support old objects missing fields settings
+        if ( !fieldProps || fieldProps.auto ) {
             this.fields.qFieldList.qItems.forEach( function( item ) {
 
                 if ( isDimension.call( self, item ) ) {
@@ -323,14 +324,13 @@ define( [
                 }
             } );
         } else {
-            var listProps = this.objectModel.layout.fields;
 
-            if ( listProps.x && listProps.y ) {
-                listProps.x.forEach( function ( item ) {
+            if ( fieldProps.x && fieldProps.y ) {
+                fieldProps.x.forEach( function ( item ) {
                     self.matrix.push( { libraryId: item.id, title: item.title, name: item.name, measures: [] } );
                 } );
 
-                listProps.y.forEach( function ( item ) {
+                fieldProps.y.forEach( function ( item ) {
                     measures.push( { libraryId: item.id, title: item.title, name: item.name, aggrFunc: item.aggrFunc, data: [] } );
                 } );
             }

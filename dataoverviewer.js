@@ -210,7 +210,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                         },
                         aggFunction: {
                             show: function ( layout ) {
-                                return layout.fields.auto;
+                                return !!layout.fields && layout.fields.auto;
                             },
                             component: AggrProps,
                             label: "Aggregation function"
@@ -220,7 +220,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                             items: {
                                 xAxis: {
                                     show: function ( layout ) {
-                                        return !layout.fields.auto;
+                                        return !!layout.fields && !layout.fields.auto;
                                     },
                                     component: DataProps,
                                     label: "X-axis",
@@ -228,7 +228,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                                 },
                                 yAxis: {
                                     show: function ( layout ) {
-                                        return !layout.fields.auto;
+                                        return !!layout.fields && !layout.fields.auto;
                                     },
                                     component: DataProps,
                                     label: "Y-axis",

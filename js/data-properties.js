@@ -123,10 +123,19 @@ function ( $, qlik, utils, template ) {
 				}
 
 				if ( $target.hasClass( 'do-props-aggr-btn' ) ) {
+
+					var top = $target[0].offsetTop + 32;
+					var aggPickerHeight = 73;
+					var propsBottomPadding = 30;
+					var listBottom = $element[0].clientHeight;
+					if ( top + aggPickerHeight > listBottom + propsBottomPadding ) {
+						top = $target[0].offsetTop - 2 - aggPickerHeight;
+					}
+
 					$scope.aggrPickerPosition = {
 						left: 3 + 'px',
-						top: ( $target[0].offsetTop + 32 ) + 'px'
-					}
+						top: top + 'px'
+					};
 					$scope.aggrPickerOpen = !$scope.aggrPickerOpen;
 					$scope.pickingAggrForModel = $target.scope()[fieldType];
 					$scope.pickingAggrFieldType = fieldType;

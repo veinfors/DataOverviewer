@@ -159,11 +159,16 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
             this.onStateChanged = function () {
                 self.$scope.interactive = utils.allowInteraction( self.$scope.backendApi.isSnapshot );
+                self.resetZoomPanBeforeRender = true;
+                if ( utils.isInEditState() ) {
+                    self.$scope.closeRealObject();
+                }
             };
         },
         resize: function ( $element ) {
 
-            var $scope = this.$scope;
+            var $scope = this.$scope,
+                self = this;
 
             if ( !$scope.renderer.isRendered() ) {
                 return;
@@ -180,6 +185,11 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 $scope.renderer.setOptimizedZoom( true );
 
                 $scope.renderer.resize();
+
+                if ( self.resetZoomPanBeforeRender ) {
+                    $scope.resetZoom();
+                    self.resetZoomPanBeforeRender = false;
+                }
             }, 0 );
         },
         snapshot: {

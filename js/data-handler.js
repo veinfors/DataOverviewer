@@ -43,8 +43,9 @@ define( [
 
         app.createGenericObject( {
             "qHyperCubeDef":{},
-            "qInfo":{"qType":"mashup",
-            "qId": 'id-' + Date.now() }
+            "qInfo":{
+                "qType": "mashup"
+            }
         }, function ( reply, app ) {
             app.getObject( reply.qInfo.qId ).then( function ( model ) {
                 model.getProperties().then( function () {
@@ -349,6 +350,13 @@ define( [
 
         self.insufficientFields = !self.matrix.length || !self.matrix[0].measures.length;
 
+    };
+
+    DataHandler.prototype.destroy = function () {
+
+        // Destroy session objects to unsubscribe from data updates
+        this.sessionCube.close();
+        qlik.currApp().destroySessionObject( this.fields.qInfo.qId );
     };
 
     return DataHandler;

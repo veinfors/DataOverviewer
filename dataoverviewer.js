@@ -97,7 +97,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
             $scope.newData = function () {
 
                 // await new matrix after fields have been moved (don't trigger rendering if matrix is empty)
-                if ( !$scope.dataHandler.fetchInProgress && $scope.dataHandler.matrix.length && !$scope.object.model.isValidating ) {
+                if ( !$scope.object.model.isClosed && !$scope.dataHandler.fetchInProgress && $scope.dataHandler.matrix.length && !$scope.object.model.isValidating ) {
 
                     $scope.dataHandler.clearMatrixData();
 
@@ -109,14 +109,17 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
 
                 $scope.dataHandler.clearMatrix();
                 $scope.dataHandler.populateDataMatrix();
-                $scope.renderer.render( true );
-                $scope.autoMode = layout.fields.auto;
-				if ( layout.fields.aggrFunc && layout.fields.aggrFunc !== $scope.aggrFunc ) {
-					$scope.setAggrFunc( layout.fields.aggrFunc );
-				}
-				if ( layout.chartType && layout.chartType !== $scope.chartType ) {
-					$scope.setChartType( layout.chartType );
-				}
+
+                setTimeout( function () { // Timeout needed to await scope variable insufficientFields to get effect in template
+                    $scope.renderer.render( true );
+                    $scope.autoMode = layout.fields.auto;
+                    if ( layout.fields.aggrFunc && layout.fields.aggrFunc !== $scope.aggrFunc ) {
+                        $scope.setAggrFunc( layout.fields.aggrFunc );
+                    }
+                    if ( layout.chartType && layout.chartType !== $scope.chartType ) {
+                        $scope.setChartType( layout.chartType );
+                    }
+                } );
             };
 
             $scope.dataHandler.fetchAllFields( function () {
@@ -263,6 +266,7 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
             var app = qlik.currApp();
             app.model.Validated.unbind( this.$scope.newData );
             this.$scope.object.model.Validated.unbind( this.$scope.propertiesChanged );
+            this.$scope.dataHandler.destroy();
             this.$scope.realObject.destroy();
             this.$scope.eventHandler.destroy();
         }

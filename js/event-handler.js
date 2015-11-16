@@ -376,7 +376,7 @@ define( [
 
     eventHandler.prototype.destroy = function () {
         Touche( this.$element[0] ).off( "*", '.data-overviewer' );
-    }
+    };
 
     return eventHandler;
 } );

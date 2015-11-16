@@ -74,6 +74,8 @@ function ( $, qlik, utils, template ) {
 		template: template,
 		controller: ["$scope", "$element", function ( $scope, $element ) {
 
+			var unsubscribeSessionId;
+
 			$scope.aggrFunc = defaultAggrFunc;
 
 			$scope.setAggrFunc = function ( aggrFunc ) {
@@ -110,6 +112,8 @@ function ( $, qlik, utils, template ) {
 
 				$scope.fields = data.qFieldList.qItems;
 				selectAccordingToProps( $scope.data.fields[$scope.definition.axis], $scope.fields, 'field' );
+
+				unsubscribeSessionId = data.qInfo.qId;
 			} );
 
 			$scope.onClick = function ( e, fieldType ) {
@@ -148,6 +152,10 @@ function ( $, qlik, utils, template ) {
 				}
 
 			};
+
+			$scope.$on( '$destroy', function () {
+				qlik.currApp().destroySessionObject( unsubscribeSessionId );
+			} );
 		}]
 	};
 

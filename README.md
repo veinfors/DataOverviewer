@@ -11,7 +11,7 @@ The charts show data with different granularity depending on zoom level.
 
 It's possible to switch between bar chart and line chart representation.
 
-![alt tag](https://cloud.githubusercontent.com/assets/13997395/9591419/8a0b3fcc-503b-11e5-9d94-2709a2edb0aa.gif)
+![alt tag](https://cloud.githubusercontent.com/assets/13997395/9591419/8a0b3fcc-503b-11e5-9d94-2709a2edb0aa.gif)<br />
 ![alt tag](https://cloud.githubusercontent.com/assets/13997395/11484620/4b425882-97af-11e5-8f59-8663eb756d43.gif)
 
 ###Technical details

@@ -1,0 +1,383 @@
+.qv-object-dataoverviewer {
+    font-size: inherit;
+}
+
+.dataoverviewer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.qv-snapshot-enabled .dataoverviewer {
+    padding-right: 2px;
+    padding-bottom: 2px;
+}
+
+.dataoverviewer .grid-canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-left: 1px solid gray;
+    border-bottom: 1px solid gray;
+    z-index: 2;
+}
+
+.dataoverviewer .settings-button,
+.dataoverviewer .reset-zoom,
+.dataoverviewer .zoom-in,
+.dataoverviewer .zoom-out,
+.dataoverviewer .close-real-object {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-block;
+    line-height: 24px;
+    z-index: 5;
+}
+
+.dataoverviewer .zoom-in {
+    top: 45px;
+}
+
+.dataoverviewer .zoom-out {
+    top: 70px;
+}
+
+.do-needs-x-and-y-fields {
+    display: none;
+}
+
+.insufficient-fields .do-needs-x-and-y-fields {
+    display: block;
+    text-align: center;
+    position: absolute;
+    z-index: 6;
+    width: 100%;
+    height: 100%;
+    top: 47%;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.insufficient-fields .dimension-titles-container,
+.insufficient-fields .dimension-scrollbar,
+.insufficient-fields .measure-titles-container,
+.insufficient-fields .measure-scrollbar,
+.insufficient-fields .qui-plainbuttonicon,
+.insufficient-fields .grid-canvas {
+    display: none;
+}
+
+/* ------------------ "Real objects" ------------------ */
+
+.dataoverviewer .real-object {
+    position: absolute;
+    z-index: 4;
+    height: 0%;
+    width: 0%;
+    -webkit-transition: 0.4s ease-in-out;
+    -moz-transition: 0.4s ease-in-out;
+    -o-transition: 0.4s ease-in-out;
+    transition: 0.4s ease-in-out;
+    background-color: white;
+    border: 1px solid lightgray;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.dataoverviewer .real-object.maximized {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ---------- Dimension and measure titles ----------- */
+
+.dataoverviewer .measure-titles-container {
+    position: absolute;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.dataoverviewer .dimension-titles-container {
+    position: absolute;
+    z-index: 4;
+    bottom: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: visible;
+    left: 9.8em;
+    width: 5.8em;
+    margin-right: 8.5em;
+}
+
+.dataoverviewer .dimension-title,
+.dataoverviewer .measure-title {
+    border-radius: 0.5em;
+    line-height: 1.6em;
+    border: 1px solid gray;
+    width: 93%;
+    font-size: 0.9em;
+    margin-bottom: inherit;
+    margin-right: inherit;
+    position: relative;
+    text-align: center;
+    display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+}
+
+.dataoverviewer:not(.auto-mode) .dimension-title,
+.dataoverviewer:not(.auto-mode) .measure-title {
+    border: none;
+    text-align: right;
+}
+
+.dataoverviewer .dimension-title {
+    display: inline-block;
+    transform: rotate(-45deg);
+    bottom: 2em;
+}
+
+.dataoverviewer .dimension-scrollbar {
+    position: absolute;
+    bottom: 68px;
+    background-color: lightgray;
+    border-radius: 3px;
+    height: 6px;
+    z-index: 3;
+    min-top: 0px;
+}
+
+.dataoverviewer .measure-scrollbar {
+    position: absolute;
+    left: 67px;
+    background-color: lightgray;
+    border-radius: 3px;
+    width: 6px;
+    z-index: 3;
+    min-top: 0px;
+}
+
+/* -------------------- On the fly settings ------------------- */
+
+.dataoverviewer .settings-button {
+    right: 40px;
+}
+
+.dataoverviewer .settings-container {
+    position: absolute;
+    top: 45px;
+    right: 10px;
+    width: 0;
+    height: auto;
+    background-color: white;
+    z-index: 5;
+    border-radius: 5px;
+    border: 1px solid gray;
+    text-align: center;
+    padding: 5px;
+    box-shadow: 0 4px 8px -1px #404040;
+    -webkit-animation: animNarrow 0.4s forwards;
+    -o-animation: animNarrow 0.4s forwards;
+    animation: animNarrow 0.4s forwards;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dataoverviewer.auto-mode .settings-container {
+    -webkit-animation: animWide 0.4s forwards;
+    -o-animation: animWide 0.4s forwards;
+    animation: animWide 0.4s forwards;
+    height: 108px;
+    padding: 5px 0px;
+}
+
+.dataoverviewer.interactive .grid-canvas,
+.dataoverviewer.interactive.auto-mode .dimension-title,
+.dataoverviewer.interactive.auto-mode .measure-title {
+    cursor: pointer;
+}
+
+.do-chart-type-props .chart-btn,
+.dataoverviewer .settings-container .chart-btn {
+    font-size: 45px;
+    height: 1em;
+    line-height: 0.8em;
+    width: 1em;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid white;
+    border-radius: 6px;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    margin-bottom: 3px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    color: #595959 !important;
+    background: transparent !important;
+}
+
+.pp-component.do-chart-type-props .chart-btn {
+    font-size: 75px;
+    margin: 5px;
+}
+
+.do-chart-type-props .chart-btn:hover,
+.dataoverviewer .settings-container .chart-btn:hover {
+    border: 2px solid #595959;
+    color: #595959;
+}
+
+.do-chart-type-props .active-charttype,
+.dataoverviewer .settings-container .active-charttype {
+    color: #595959;
+    border: 2px solid #ff9326;
+}
+
+.do-chart-type-props .active-charttype:hover,
+.dataoverviewer .settings-container .active-charttype:hover {
+    border: 2px solid #ff9326;
+}
+
+.aggr-btn-group .qui-button {
+    padding: 1px 1px;
+    min-width: 39px;
+}
+
+.aggr-btn-group .qui-button span {
+    padding: 0 5px;
+}
+
+.settings-container .aggr-btn-group,
+.do-props-aggr-picker .aggr-btn-group {
+    position: absolute;
+    left: 5px;
+}
+
+/* --------------- Properties panel -------------- */
+
+.do-props {
+    padding: 0;
+    position: relative;
+}
+
+.do-props .do-props-list-item {
+    white-space: nowrap;
+    overflow: hidden;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    border-bottom: 1px solid #d9d9d9;
+    padding: 5px;
+}
+
+.do-props .do-props-list-item:hover {
+    background-color: #F2F2F2;
+}
+
+.do-props .do-props-list-item.selected {
+    background-color: #52CC52;
+    color: #FFFFFF;
+    border-bottom: 1px solid #BAEBBA;
+}
+
+.do-props .do-props-label {
+    font-weight: bold;
+    border-bottom: 3px solid #595959;
+    padding: 5px;
+}
+
+.do-props .do-props-aggr-btn {
+    background-color: white;
+    border: 1px solid darkgray;
+    padding: 5px;
+    margin-right: 4px;
+    cursor: pointer;
+    border-radius: 3px;
+    line-height: 17px;
+}
+
+.do-props .do-props-aggr-btn:hover {
+    border: 1px solid black;
+}
+
+.do-props .do-props-aggr-btn.active {
+    color: #ffffff;
+    border-color: #595959;
+    background: #595959;
+}
+
+.do-props-aggr-picker {
+    position: absolute;
+    width: 0;
+    height: 61px;
+    background-color: white;
+    z-index: 5;
+    border-radius: 5px;
+    border: 1px solid gray;
+    text-align: center;
+    padding-top: 5px;
+    box-shadow: 0 4px 8px -1px #404040;
+    -webkit-animation: animWide 0.6s forwards;
+    -o-animation: animWide 0.6s forwards;
+    animation: animWide 0.6s forwards;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.do-props-aggr-picker-label {
+    text-align: left;
+    margin: 5px;
+}
+
+.do-aggr-props .aggr-btn-group {
+    margin: 5px 0px;
+}
+
+.do-chart-type-props {
+    text-align: center;
+}
+
+.do-chart-type-props .do-props-label {
+    text-align: left;
+}
+
+/* animation for revealing popup in a nice way */
+@-webkit-keyframes animNarrow {
+    100% {  width: 103px; }
+}
+
+@-o-keyframes animNarrow {
+    100% {  width: 103px; }
+}
+
+@keyframes animNarrow {
+    100% {  width: 103px; }
+}
+
+@-webkit-keyframes animWide {
+    100% {  width: 214px; }
+}
+
+@-o-keyframes animWide {
+    100% {  width: 214px; }
+}
+
+@keyframes animWide {
+    100% {  width: 214px; }
+}

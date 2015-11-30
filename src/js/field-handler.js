@@ -1,11 +1,6 @@
-define( [
-    "jquery"
-], function ( $ ) {
-
+define( [], function () {
 
     function moveField ( dimension, measure ) {
-
-        var self = this;
 
         if ( dimension ) {
             this.dataHandler.dimToMeasure( dimension.dimension );
@@ -15,9 +10,8 @@ define( [
 
         this.dataHandler.clearMatrix();
 
-        this.dataHandler.fetchAllFields( function () {
-            self.renderer.render( true );
-        } );
+        this.dataHandler.populateDataMatrix();
+        this.renderer.render( true );
     }
 
     var fieldHandler = function ( $scope, renderer, dataHandler ) {
@@ -34,7 +28,7 @@ define( [
 
     fieldHandler.prototype.openContextMenu = function ( $event ) {
 
-        if ( !this.$scope.interactive ) {
+        if ( !this.$scope.interactive || !this.$scope.autoMode ) {
             return;
         }
 

@@ -1,7 +1,7 @@
-<div qv-extension class="dataoverviewer" ng-class="{'interactive': interactive}">
+<div qv-extension class="dataoverviewer" ng-class="{'interactive': interactive, 'auto-mode': autoMode, 'insufficient-fields': dataHandler.insufficientFields }">
 
 	<div class="dimension-titles-container" ng-show="!realObjectVisible" ng-style="dimensionTitlesPositioning" qva-context-menu="openContextMenu($event)">
-		<span class="dimension-title" ng-repeat="dimension in dimensionTitles" title="{{dimension}}">{{dimension}}</span>
+		<span class="dimension-title" ng-repeat="dimension in dimensionTitles " title="{{dimension}}">{{dimension}}</span>
 	</div>
 	<div class="dimension-scrollbar" ng-style="dimensionScrollbar"></div>
 	<div class="measure-titles-container" ng-show="!realObjectVisible" ng-style="measureTitlesPositioning" qva-context-menu="openContextMenu($event)">
@@ -19,13 +19,14 @@
 	<div class="settings-container" ng-show="settingsOpen" qva-outside="closeSettings($event)">
 			<button class="chart-type-bar chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'bar' )" data-icon="!" title="Bar chart"></button>
 			<button class="chart-type-line chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'line' )" data-icon="%" title="Line chart"></button>
-			<br/>
-			<div class="qui-buttongroup aggr-btn-group">
-				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'sum'}" qva-activate="setAggrFunc('sum')"><span>Sum</span></button>
-				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'avg'}" qva-activate="setAggrFunc('avg')"><span>Avg</span></button>
-				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'count'}" qva-activate="setAggrFunc('count')"><span>Count</span></button>
-				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'max'}" qva-activate="setAggrFunc('max')"><span>Max</span></button>
-				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'min'}" qva-activate="setAggrFunc('min')"><span>Min</span></button>
+			<p class="do-props-aggr-picker-label" ng-if="autoMode">Aggregation function</p>
+			<div class="qui-buttongroup aggr-btn-group" ng-if="autoMode">
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'Sum'}" qva-activate="setAggrFunc('Sum')"><span>Sum</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'Avg'}" qva-activate="setAggrFunc('Avg')"><span>Avg</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'Count'}" qva-activate="setAggrFunc('Count')"><span>Count</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'Max'}" qva-activate="setAggrFunc('Max')"><span>Max</span></button>
+				<button class="qui-button" ng-class="{'qui-active': aggrFunc === 'Min'}" qva-activate="setAggrFunc('Min')"><span>Min</span></button>
 			</div>
 	</div>
+	<div class="do-needs-x-and-y-fields">Needs data on X and Y axis</div>
 </div>

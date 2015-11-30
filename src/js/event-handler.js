@@ -156,7 +156,7 @@ define( [
         $scope.aggrFunc = newFunc;
 
         if ( this.isSnapshot ) {
-            $scope.aggrFunc = this.snapshotData.renderingInfo.aggrFunc || 'sum'; // For snapshots missing this info
+            $scope.aggrFunc = this.snapshotData.renderingInfo.aggrFunc || 'Sum'; // For snapshots missing this info
         }
 
         this.dataHandler.setAggrFunc( $scope.aggrFunc );
@@ -212,13 +212,10 @@ define( [
 
         if ( chartInfo ) {
 
-            var dimension = chartInfo.dimensionName,
-                measure = chartInfo.measureName;
-
             point.x += this.ctx.canvas.offsetLeft;
             point.y += this.ctx.canvas.offsetTop;
 
-            this.realObject.create( this.$scope.chartType, this.$scope.aggrFunc, dimension, measure, point );
+            this.realObject.create( this.$scope.chartType, this.$scope.aggrFunc, chartInfo, point );
         }
     }
 
@@ -245,7 +242,7 @@ define( [
             },
             start: function ( e, data ) {
 
-                if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
+                if ( !self.$scope.interactive || self.realObject.visible ) {
                     this.cancel();
                     return;
                 }
@@ -287,7 +284,7 @@ define( [
             },
             start: function ( e, data ) {
 
-                if ( !self.$scope.interactive || utils.isInEditState() || self.realObject.visible ) {
+                if ( !self.$scope.interactive || self.realObject.visible ) {
                     this.cancel();
                     return;
                 }
@@ -379,7 +376,7 @@ define( [
 
     eventHandler.prototype.destroy = function () {
         Touche( this.$element[0] ).off( "*", '.data-overviewer' );
-    }
+    };
 
     return eventHandler;
 } );

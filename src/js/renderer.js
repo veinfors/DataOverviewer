@@ -1,9 +1,8 @@
 define( [
-    "jquery",
     'qlik',
     "./transform-tracker",
     "./utils"
-], function ( $, qlik, TransformTracker, utils ) {
+], function ( qlik, TransformTracker, utils ) {
 
     'use strict';
 
@@ -128,7 +127,7 @@ define( [
 
     }
 
-    function drawChartIcon( ctx, chartType, gX, gY ) {
+    function drawChartIcon ( ctx, chartType, gX, gY ) {
 
         ctx.fillStyle = "#A5A5A5";
         ctx.textAlign = 'center';
@@ -194,7 +193,8 @@ define( [
             areaHeight = this.$element.height() - axisWidth * 0.93,
             areaWidth = this.$element.width() - axisWidth,
             lastVisibleRow = Math.round( ( areaHeight - offsetY ) / gridHeight ),
-            lastVisibleCol = Math.ceil( ( areaWidth - offsetX ) / gridWidth );
+            lastVisibleCol = Math.ceil( ( areaWidth - offsetX ) / gridWidth ),
+            measure;
 
         lastVisibleRow = lastVisibleRow < dataMatrix[0].measures.length ? lastVisibleRow : dataMatrix[0].measures.length;
         lastVisibleCol = lastVisibleCol < dataMatrix.length ? lastVisibleCol : dataMatrix.length;
@@ -204,11 +204,16 @@ define( [
         this.measureTitles.length = 0;
 
         for( var i = gridsOutsideLeft; i < lastVisibleCol; i++ ) {
-            this.dimensionTitles.push( dataMatrix[i].name );
+            this.dimensionTitles.push( dataMatrix[i].name || dataMatrix[i].title );
         }
 
         for ( var i = gridsOutsideTop; i < lastVisibleRow; i++ ) {
-            this.measureTitles.push( dataMatrix[0].measures[i].name );
+            measure = dataMatrix[0].measures[i];
+            if ( measure.name ) {
+                this.measureTitles.push( measure.aggrFunc ? measure.aggrFunc + '(' + measure.name + ')' : measure.name );
+            } else {
+                this.measureTitles.push( measure.title );
+            }
         }
 
         // Set styling to get the title positions correct
@@ -352,17 +357,16 @@ define( [
 
     function scaleSnapshot ( $element, ctx, snapshotData ) {
 
-        if ( snapshotData.object.freeResize ) {
-            this.chartScale = 1;
-            return;
-        }
-
         var m = snapshotData.renderingInfo.canvasMatrix;
 
         var origWidth = snapshotData.object.size.w,
             currentWidth = $element.width();
 
-        this.doHelper.setChartScale( currentWidth / origWidth );
+        if ( snapshotData.object.freeResize ) {
+            this.doHelper.setChartScale( 1 );
+        } else {
+            this.doHelper.setChartScale( currentWidth / origWidth );
+        }
 
         this.chartScale = this.doHelper.chartScale;
 
@@ -409,6 +413,10 @@ define( [
     };
 
     renderer.prototype.render = function ( dataInvalidated ) {
+
+        if ( this.dataHandler.insufficientFields ) {
+            return;
+        }
 
         if ( this.isSnapshot ) {
             scaleSnapshot.call( this, this.$element, this.ctx, this.snapshotData, this.doHelper );
@@ -503,8 +511,8 @@ define( [
 
         if ( this.dataHandler.matrix[dimensionIndex] && this.dataHandler.matrix[0].measures[measureIndex] ) {
             return {
-                dimensionName: this.dataHandler.matrix[dimensionIndex].name,
-                measureName: this.dataHandler.matrix[0].measures[measureIndex].name
+                dimension: this.dataHandler.matrix[dimensionIndex],
+                measure: this.dataHandler.matrix[0].measures[measureIndex]
             };
         } else {
             return null;
@@ -545,7 +553,7 @@ define( [
 
         var s = this.ctx.getScale(),
             nbrOfDimensions = this.dataHandler.matrix.length,
-            nbrOfMeasures = this.dataHandler.matrix[0].measures.length,
+            nbrOfMeasures = this.dataHandler.matrix.length ? this.dataHandler.matrix[0].measures.length : 0,
             cellHeight = s * ( graphHeight + graphSpace ), // + s for grid lines?
             cellWidth = s * ( graphWidth + graphSpace );
 

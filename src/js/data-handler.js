@@ -1,8 +1,7 @@
 define( [
-    "jquery",
     'qlik',
     './utils'
-], function ( $, qlik, utils ) {
+], function ( qlik, utils ) {
 
     'use strict';
 
@@ -50,7 +49,6 @@ define( [
                 model.getProperties().then( function () {
                     self.sessionCube = model;
                     model.Invalidated.unbind(); // only once!
-                    window.debugCubeNbr = 0;
                     self.proceedUpdate();
                 });
             } );
@@ -82,33 +80,36 @@ define( [
             return;
         }
 
-        var dimName = this.matrix[dimIndex].name;
+        var dimName = this.matrix[dimIndex].name,
+            dimLibraryId = this.matrix[dimIndex].libraryId;
 
         var newCubeProps = {
-            qDimensions: [{
-                "qDef": {
-                    "qFieldDefs": [dimName],
+            qDimensions: [ {
+                qLibraryId: dimLibraryId,
+                qDef: {
+                    qFieldDefs: dimName ? [dimName] : [],
                     autoSort: true
                 },
-                "qNullSuppression": true
-            }],
+                qNullSuppression: true
+            } ],
             qMeasures: [],
             qSuppressMissing: true,
-            qAlwaysFullyExpanded: true,
-            debugCubeNbr: ++window.debugCubeNbr
+            qAlwaysFullyExpanded: true
         };
 
         for ( var i = this.rect.top; i < this.rect.top + this.rect.height; i++ ) {
             if ( dataInvalidated || this.granularity !== this.matrix[dimIndex].measures[i].granularity ) {
 
-                var measureName = this.matrix[dimIndex].measures[i].name;
+                var measureName = this.matrix[dimIndex].measures[i].name,
+                    measureAggrFunc = this.matrix[dimIndex].measures[i].aggrFunc || this.aggrFunc,
+                    measureLibraryId = this.matrix[dimIndex].measures[i].libraryId;
 
                 newCubeProps.qMeasures.push( {
+                    qLibraryId: measureLibraryId || undefined,
                     measureIndex: i,
-                    "qDef": {
+                    qDef: {
                         "autoSort": true,
-                        "qDef": this.aggrFunc + "([" + measureName + "])"
-
+                        qDef: measureName ? measureAggrFunc + "([" + measureName + "])" : undefined
                     }
                 } );
             }
@@ -225,12 +226,14 @@ define( [
         this.rect = null;
         this.granularity = null;
 
-        this.fieldsAsDimension = objectModel.layout.fieldsAsDimension || [];
-        this.fieldsAsMeasure = objectModel.layout.fieldsAsMeasure || [];
+        this.fieldsAsDimension = [];
+        this.fieldsAsMeasure = [];
+        this.insufficientFields = false;
 
         this.throttledUpdate = doHelper.throttle( update, 200 );
     };
 
+    // This is only supported "on the fly" - not persisted in properties
     DataHandler.prototype.dimToMeasure = function ( dimName ) {
 
         if ( this.fieldsAsDimension.contains( dimName ) ) {
@@ -240,19 +243,9 @@ define( [
         if ( !this.fieldsAsMeasure.contains( dimName ) ) {
             this.fieldsAsMeasure.push( dimName );
         }
-
-        if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
-
-            var self = this;
-
-            this.objectModel.getProperties().then( function ( props ) {
-                props.fieldsAsMeasure = self.fieldsAsMeasure;
-                props.fieldsAsDimension = self.fieldsAsDimension;
-                self.objectModel.save();
-            } );
-        }
     };
 
+    // This is only supported "on the fly" - not persisted in properties
     DataHandler.prototype.measureToDim = function ( measureName ) {
 
         if ( this.fieldsAsMeasure.contains( measureName ) ) {
@@ -262,20 +255,14 @@ define( [
         if ( !this.fieldsAsDimension.contains( measureName ) ) {
             this.fieldsAsDimension.push( measureName );
         }
-
-        if ( utils.isInEditState() && this.objectModel.layout.permissions.update ) {
-
-            var self = this;
-
-            this.objectModel.getProperties().then( function ( props ) {
-                props.fieldsAsMeasure = self.fieldsAsMeasure;
-                props.fieldsAsDimension = self.fieldsAsDimension;
-                self.objectModel.save();
-            } );
-        }
     };
 
-    DataHandler.prototype.fetchAllFields = function ( callback, initialFetch ) {
+    /**
+     * returns fields, dimensions and measures and populates the data matrix with it according to properties
+     * @param callback
+     * @returns {*}
+     */
+    DataHandler.prototype.fetchAllFields = function ( callback ) {
 
         if ( this.isSnapshot ) {
             callback();
@@ -283,45 +270,19 @@ define( [
         }
 
         var self = this,
-            app = qlik.currApp( this );
+            startTime = Date.now();
 
-        /* GET ALL FIELDS - but only once! */
+        utils.subscribeFieldUpdates( function ( data, initialFetch ) {
+            var responseTime = Date.now() - startTime;
 
-        app.getList( 'FieldList').then( function( sessionObj ) {
+            self.fields = data;
+            self.populateDataMatrix();
 
-            var startTime = Date.now();
-
-            sessionObj.getLayout().then( function ( reply ) {
-
-                reply.qFieldList.qItems.sort( utils.sortFields );
-
-                var responseTime = Date.now() - startTime;
-                if ( initialFetch ) {
-                    self.optimizer.updateNetworkSpeedParam( responseTime ); // this is only done once, and the nbr of fields aren't taken into account
-                }
-
-                var measures = [];
-
-                reply.qFieldList.qItems.forEach( function( value ) {
-
-                    if ( isDimension.call( self, value ) ) {
-                        self.matrix.push( { name: value.qName, measures: [], cardinal: value.qCardinal } );
-                    } else {
-                        measures.push( value.qName );
-                    }
-                });
-
-                self.matrix.forEach( function ( dimension ) {
-                    dimension['measures'] = [];
-                    measures.forEach( function ( measureName ) {
-                        dimension['measures'].push( { name: measureName, data: [] } );
-                    } );
-                } );
-
+            if ( initialFetch ) {
+                self.optimizer.updateNetworkSpeedParam( responseTime ); // this is only done once, and the nbr of fields aren't taken into account
                 callback();
-            } );
+            }
         } );
-
     };
 
     DataHandler.prototype.clearMatrix = function () {
@@ -343,6 +304,62 @@ define( [
     DataHandler.prototype.setAggrFunc = function ( func ) {
 
         this.aggrFunc = func;
+    };
+
+    DataHandler.prototype.populateDataMatrix = function () {
+
+        var self = this,
+            measures = [],
+            fieldProps = this.objectModel.layout.fields;
+
+        // Support old objects missing fields settings
+        if ( !fieldProps || fieldProps.auto ) {
+            this.fields.qFieldList.qItems.forEach( function( item ) {
+
+                if ( isDimension.call( self, item ) ) {
+                    self.matrix.push( { name: item.qName, measures: [] } );
+                } else {
+                    measures.push( { name: item.qName, data: [] } );
+                }
+            } );
+        } else {
+
+            if ( fieldProps.x && fieldProps.y ) {
+                fieldProps.x.forEach( function ( item ) {
+                    self.matrix.push( { libraryId: item.id, title: item.title, name: item.name, measures: [] } );
+                } );
+
+                fieldProps.y.forEach( function ( item ) {
+                    measures.push( { libraryId: item.id, title: item.title, name: item.name, aggrFunc: item.aggrFunc, data: [] } );
+                } );
+            }
+        }
+
+        // Sort dimensions and measures
+        self.matrix.sort( utils.sortFields );
+        measures.sort( utils.sortFields );
+
+        self.matrix.forEach( function ( dimension ) {
+            dimension['measures'] = [];
+            measures.forEach( function ( measure ) {
+                dimension['measures'].push( { libraryId: measure.libraryId, title: measure.title, name: measure.name, aggrFunc: measure.aggrFunc, data: [] } );
+            } );
+        } );
+
+        self.insufficientFields = !self.matrix.length || !self.matrix[0].measures.length;
+
+    };
+
+    DataHandler.prototype.destroy = function () {
+
+        // Destroy session objects to unsubscribe from data updates
+        if ( this.sessionCube ) {
+            this.sessionCube.close();
+        }
+
+        if ( this.fields ) {
+            qlik.currApp().destroySessionObject( this.fields.qInfo.qId );
+        }
     };
 
     return DataHandler;

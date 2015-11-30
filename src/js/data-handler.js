@@ -1,8 +1,7 @@
 define( [
-    "jquery",
     'qlik',
     './utils'
-], function ( $, qlik, utils ) {
+], function ( qlik, utils ) {
 
     'use strict';
 
@@ -43,9 +42,8 @@ define( [
 
         app.createGenericObject( {
             "qHyperCubeDef":{},
-            "qInfo":{
-                "qType": "mashup"
-            }
+            "qInfo":{"qType":"mashup",
+            "qId": 'id-' + Date.now() }
         }, function ( reply, app ) {
             app.getObject( reply.qInfo.qId ).then( function ( model ) {
                 model.getProperties().then( function () {
@@ -355,8 +353,13 @@ define( [
     DataHandler.prototype.destroy = function () {
 
         // Destroy session objects to unsubscribe from data updates
-        this.sessionCube.close();
-        qlik.currApp().destroySessionObject( this.fields.qInfo.qId );
+        if ( this.sessionCube ) {
+            this.sessionCube.close();
+        }
+
+        if ( this.fields ) {
+            qlik.currApp().destroySessionObject( this.fields.qInfo.qId );
+        }
     };
 
     return DataHandler;

@@ -1,5 +1,6 @@
 define( [
-    "text!./template.html",
+    "qlik",
+    "text!./html/template.html",
     "./js/data-handler",
     "./js/utils",
     "./js/renderer",
@@ -11,9 +12,8 @@ define( [
     "./js/data-properties",
     "./js/aggr-props",
 	"./js/chart-props",
-    "qlik",
     "text!./css/styling.css"],
-function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHelper, FieldHandler, RealObject, DataProps, AggrProps, ChartProps, qlik, cssContent ) {
+function ( qlik, template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHelper, FieldHandler, RealObject, DataProps, AggrProps, ChartProps, cssContent ) {
 
     'use strict';
 
@@ -51,6 +51,20 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
             dataMatrix: this.$scope.realObjectVisible ? undefined : this.$scope.dataHandler.matrix, //do not save data matrix if snapshotting "real object"
             chartsAsIcons: Math.round( svgCanvasMatrix.a * 100 ) / 100 < this.$scope.optimizer.zoomRenderLimit
         };
+    }
+
+    function onStateChanged () {
+
+        this.$scope.interactive = utils.allowInteraction( this.$scope.backendApi.isSnapshot );
+
+        if ( this.$scope.backendApi.isSnapshot ) {
+            return;
+        }
+
+        this.resetZoomPanBeforeRender = true;
+        if ( utils.isInEditState() && this.$scope.closeRealObject ) {
+            this.$scope.closeRealObject();
+        }
     }
 
     return {
@@ -156,17 +170,11 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                 }
             };
         }],
-        paint: function( $element, layout ) {
-
-            var self = this;
-
-            this.onStateChanged = function () {
-                self.$scope.interactive = utils.allowInteraction( self.$scope.backendApi.isSnapshot );
-                self.resetZoomPanBeforeRender = true;
-                if ( utils.isInEditState() ) {
-                    self.$scope.closeRealObject();
-                }
-            };
+        paint: function() {
+            this.onStateChanged = onStateChanged.bind( this );
+        },
+        setInteractionState: function () {
+            onStateChanged.call( this );
         },
         resize: function ( $element ) {
 
@@ -198,7 +206,6 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
         snapshot: {
             canTakeSnapshot : true
         },
-        // TODO: backwards compatibility! try with old objects!
         definition: {
             type: "items",
             component: "accordion",
@@ -209,16 +216,8 @@ function ( template, DataHandler, utils, Renderer, EventHandler, Optimizer, DOHe
                     items: {
                         autoSetting: {
                             type: "boolean",
-                            component: "switch",
-                            label: "Included fields",
+                            label: "Include all data fields",
                             ref: "fields.auto",
-                            options: [{
-                                value: true,
-                                label: "Auto"
-                            }, {
-                                value: false,
-                                label: "Custom"
-                            }],
                             defaultValue: true
                         },
                         aggFunction: {

@@ -1,5 +1,5 @@
 define( [
-	"text!../chart-type-props.html"],
+	"text!../html/properties-chart-type.html"],
 function ( template ) {
 
 	var defaultChartType = 'line';

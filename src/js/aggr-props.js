@@ -1,5 +1,5 @@
 define( [
-	"text!../aggr-props.html"],
+	"text!../html/properties-aggr.html"],
 function ( template ) {
 
 	var defaultAggrFunc = 'Sum';

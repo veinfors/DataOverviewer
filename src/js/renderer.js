@@ -1,9 +1,8 @@
 define( [
-    "jquery",
     'qlik',
     "./transform-tracker",
     "./utils"
-], function ( $, qlik, TransformTracker, utils ) {
+], function ( qlik, TransformTracker, utils ) {
 
     'use strict';
 

@@ -1,9 +1,8 @@
 define( [
-	"jquery",
 	"qlik",
 	"./utils",
-	"text!../data-props-template.html"],
-function ( $, qlik, utils, template ) {
+	"text!../html/properties-data.html"],
+function ( qlik, utils, template ) {
 
 	var defaultAggrFunc = 'Sum';
 

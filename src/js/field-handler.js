@@ -1,6 +1,4 @@
-define( [
-    "jquery"
-], function ( $ ) {
+define( [], function () {
 
     function moveField ( dimension, measure ) {
 

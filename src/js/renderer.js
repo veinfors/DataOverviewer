@@ -132,7 +132,7 @@ define( [
         ctx.fillStyle = "#A5A5A5";
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = "50px QlikView Icons";
+        ctx.font = "50px LUI icons";
 
         var charCode;
 

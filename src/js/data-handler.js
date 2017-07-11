@@ -57,11 +57,16 @@ define( [
 
     function updateCubeProps ( sessionCube, newCubeProps, updated ) {
 
-        $.extend( sessionCube.properties.qHyperCubeDef, newCubeProps, true );
 
-        sessionCube.save().then( function () {
-            sessionCube.getLayout().then( function ( cubeLayout ) {
-                updated( cubeLayout );
+
+        sessionCube.getProperties().then( function ( props ) {
+
+            $.extend( props.qHyperCubeDef, newCubeProps, true );
+
+            sessionCube.setProperties( props ).then( function () {
+                sessionCube.getLayout().then( function ( cubeLayout ) {
+                    updated( cubeLayout );
+                } );
             } );
         } );
 
@@ -136,7 +141,11 @@ define( [
                 qHeight: this.granularity//500
             }];
 
-        self.sessionCube.rpc( "GetHyperCubeReducedData", "qDataPages", ['/qHyperCubeDef', pages, -1, "D1"]).then( function ( p ) {
+        // Keep 2 variants for backwards compatibility (old Qlik Sense versions)
+        var reducedDataPromise = self.sessionCube.rpc ? self.sessionCube.rpc( "GetHyperCubeReducedData", "qDataPages", ['/qHyperCubeDef', pages, -1, "D1"])
+            : self.sessionCube.getHyperCubeReducedData( "/qHyperCubeDef", pages, -1, "D1" );
+
+        reducedDataPromise.then( function ( p ) {
         //self.sessionCube.rpc( "GetHyperCubeData", "qDataPages", ["/qHyperCubeDef", pages]).then( function ( p ) {
 
             // Add to matrix

@@ -363,7 +363,7 @@ define( [
 
         // Destroy session objects to unsubscribe from data updates
         if ( this.sessionCube ) {
-            this.sessionCube.close();
+            qlik.currApp().destroySessionObject( this.sessionCube.id );
         }
 
         if ( this.fields ) {

@@ -1,4 +1,4 @@
-A vizualization extension for Qlik Sense
+A visualization extension for Qlik Sense
 
 Data Overviewer gives the user a helicopter view of the data through an interactive grid of charts.
 

@@ -329,7 +329,13 @@ define( [
 
             // Switch layout temporarily go get the snapshot we want
             self.object = objectScope.$$childHead.object;
-            self.object.ext.snapshot.canTakeSnapshot = false;
+
+            // backwards compatibility (older versions of qlik sense)
+            if ( self.object.ext.snapshot ) {
+                self.object.ext.snapshot.canTakeSnapshot = false;
+            } else if ( self.object.ext.support ) {
+                self.object.ext.support.snapshot = false;
+            }
 
             self.object.layout.qInfo.qId = gridScope.object.layout.qInfo.qId;
 
@@ -342,7 +348,13 @@ define( [
 
         var gridScope = this.$scope;
 
-        this.$scope.ext.snapshot.canTakeSnapshot = true;
+        // backwards compatibility (older versions of qlik sense)
+        if ( this.$scope.ext.snapshot ) {
+            this.$scope.ext.snapshot.canTakeSnapshot = true;
+        } else if ( this.$scope.ext.support ) {
+            this.$scope.ext.support.snapshot = true;
+        }
+
         gridScope.object.layout = gridScope.object.model.layout = gridScope.ext.model.layout = this.gridLayoutRef;
     }
 
@@ -368,7 +380,7 @@ define( [
 
             // To make selections toolbar visible
             self.$element.find( '.dataoverviewer' ).css( 'overflow', 'visible' );
-            self.$element.parents( '.qv-object' ).css( 'overflow', 'visible' );
+            self.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', 'visible' );
         }, animPoint ? animationTime : 0 );
 
     };
@@ -383,7 +395,7 @@ define( [
 
         // Prevent field titles from overflowing
         this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
-        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;
@@ -408,7 +420,7 @@ define( [
 
         // Prevent field titles from overflowing
         this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
-        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;

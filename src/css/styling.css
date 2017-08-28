@@ -244,7 +244,7 @@
 }
 
 .pp-component.do-chart-type-props .chart-btn {
-    font-size: 75px;
+    font-size: 55px;
     margin: 5px;
 }
 
@@ -374,15 +374,15 @@
 
 /* animation for revealing popup in a nice way */
 @-webkit-keyframes animNarrow {
-    100% {  width: 103px; }
+    100% {  width: 153px; }
 }
 
 @-o-keyframes animNarrow {
-    100% {  width: 103px; }
+    100% {  width: 153px; }
 }
 
 @keyframes animNarrow {
-    100% {  width: 103px; }
+    100% {  width: 153px; }
 }
 
 @-webkit-keyframes animWide {

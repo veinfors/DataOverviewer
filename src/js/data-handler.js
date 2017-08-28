@@ -7,9 +7,11 @@ define( [
 
     var noop = function () {};
 
+    var PIE_MEASURE_EXPR = "=concat(aggr(if(rank({{aggr_func}}([{{measure}}]),4)<=" + ( utils.PIE_CHART_OTHERS_LIMIT + 1 ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}]),';')&'-'&{{aggr_func}}(TOTAL [{{measure}}])";
+
     /* Private functions */
 
-    function isDimension( field ) {
+    function isDimension ( field ) {
 
         if ( this.fieldsAsDimension.contains( field.qName ) ) {
             return true;
@@ -19,7 +21,7 @@ define( [
 
         var isDim = false;
 
-        field.qTags.forEach( function( value ) {
+        field.qTags.forEach( function ( value ) {
 
             //if ( value === '$ascii' || value === '$text' || value === '$key' || value === '$timestamp' || value === '$date' ) {
             if ( value.match( /^(\$ascii|\$text|\$key|\$timestamp|\$date|\$geopolygon)$/ ) ) {
@@ -41,22 +43,23 @@ define( [
             app = qlik.currApp( this );
 
         app.createGenericObject( {
-            "qHyperCubeDef":{},
-            "qInfo":{"qType":"mashup",
-            "qId": 'id-' + Date.now() }
+            "qHyperCubeDef": {},
+            "qInfo": {
+                "qType": "mashup",
+                "qId": 'id-' + Date.now()
+            }
         }, function ( reply, app ) {
             app.getObject( reply.qInfo.qId ).then( function ( model ) {
                 model.getProperties().then( function () {
                     self.sessionCube = model;
                     model.Invalidated.unbind(); // only once!
                     self.proceedUpdate();
-                });
+                } );
             } );
         } );
     }
 
     function updateCubeProps ( sessionCube, newCubeProps, updated ) {
-
 
 
         sessionCube.getProperties().then( function ( props ) {
@@ -89,14 +92,14 @@ define( [
             dimLibraryId = this.matrix[dimIndex].libraryId;
 
         var newCubeProps = {
-            qDimensions: [ {
+            qDimensions: [{
                 qLibraryId: dimLibraryId,
                 qDef: {
                     qFieldDefs: dimName ? [dimName] : [],
                     autoSort: true
                 },
                 qNullSuppression: true
-            } ],
+            }],
             qMeasures: [],
             qSuppressMissing: true,
             qAlwaysFullyExpanded: true
@@ -124,14 +127,84 @@ define( [
 
         if ( newCubeProps.qMeasures.length ) {
             updateCubeProps( this.sessionCube, newCubeProps, function ( cubeLayout ) {
-                fetchCubeData.call( self, newCubeProps, cubeLayout, dimIndex, dataInvalidated );
+                fetchReducedDataForOneDim.call( self, newCubeProps, cubeLayout, dimIndex, dataInvalidated );
             } );
         } else {
             getReducedDataForDimension.call( this, dimIndex + 1, dataInvalidated );
         }
     }
 
-    function fetchCubeData ( newCubeProps, cubeLayout, dimIndex, dataInvalidated ) {
+    function prepPieMeasureExpression ( aggrFunc, measure, dimension ) {
+
+        var expression = PIE_MEASURE_EXPR;
+
+        expression = expression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
+        expression = expression.replace(/\{\{measure\}\}/g, measure );
+        expression = expression.replace(/\{\{dimension\}\}/g, dimension );
+
+        return expression;
+    }
+
+    // Iterate through all measures and add the data to "matrix" - then call drawCallback
+    function getPieDataForDimension ( dimIndex, dataInvalidated ) {
+
+        this.fetchInProgress = true;
+
+        if ( this.cancelling || dimIndex >= this.rect.left + this.rect.width ) {
+            this.fetchInProgress = false;
+            if ( this.cancelling ) {
+                this.cancelling();
+            }
+            return;
+        }
+
+        var dummyDimExpression = "ValueList('dummy')",
+            dimName = this.matrix[dimIndex].name,
+            dimLibraryId = this.matrix[dimIndex].libraryId;
+
+        var newCubeProps = {
+            qDimensions: [{
+                qDef: {
+                    qFieldDefs: [dummyDimExpression]
+                }
+            }],
+            qMeasures: [],
+            qSuppressMissing: true,
+            qAlwaysFullyExpanded: true
+        };
+
+        var measureName, measureAggrFunc, measureLibraryId, measureExpression;
+
+        for ( var i = this.rect.top; i < this.rect.top + this.rect.height; i++ ) {
+            if ( dataInvalidated || this.granularity !== this.matrix[dimIndex].measures[i].granularity ) {
+
+                measureName = this.matrix[dimIndex].measures[i].name;
+                measureAggrFunc = this.matrix[dimIndex].measures[i].aggrFunc || this.aggrFunc;
+                measureLibraryId = this.matrix[dimIndex].measures[i].libraryId;
+
+                measureExpression = prepPieMeasureExpression( measureAggrFunc, measureName || measureLibraryId, dimName || dimLibraryId );
+
+                newCubeProps.qMeasures.push( {
+                    measureIndex: i,
+                    qDef: {
+                        qDef: measureExpression
+                    }
+                } );
+            }
+        }
+
+        var self = this;
+
+        if ( newCubeProps.qMeasures.length ) {
+            updateCubeProps( this.sessionCube, newCubeProps, function ( cubeLayout ) {
+                fetchPieDataForOneDim.call( self, newCubeProps, cubeLayout, dimIndex, dataInvalidated );
+            } );
+        } else {
+            getPieDataForDimension.call( this, dimIndex + 1, dataInvalidated );
+        }
+    }
+
+    function fetchReducedDataForOneDim ( newCubeProps, cubeLayout, dimIndex, dataInvalidated ) {
 
         var self = this,
             pages = [{
@@ -142,11 +215,10 @@ define( [
             }];
 
         // Keep 2 variants for backwards compatibility (old Qlik Sense versions)
-        var reducedDataPromise = self.sessionCube.rpc ? self.sessionCube.rpc( "GetHyperCubeReducedData", "qDataPages", ['/qHyperCubeDef', pages, -1, "D1"])
+        var reducedDataPromise = self.sessionCube.rpc ? self.sessionCube.rpc( "GetHyperCubeReducedData", "qDataPages", ['/qHyperCubeDef', pages, -1, "D1"] )
             : self.sessionCube.getHyperCubeReducedData( "/qHyperCubeDef", pages, -1, "D1" );
 
         reducedDataPromise.then( function ( p ) {
-        //self.sessionCube.rpc( "GetHyperCubeData", "qDataPages", ["/qHyperCubeDef", pages]).then( function ( p ) {
 
             // Add to matrix
 
@@ -171,7 +243,54 @@ define( [
         } );
     }
 
-    function update ( newRect, newGranularity, drawCallback, dataInvalidated ) {
+    function fetchPieDataForOneDim ( newCubeProps, cubeLayout, dimIndex, dataInvalidated ) {
+
+        var self = this,
+            pages = [{
+                qTop: 0,
+                qLeft: 0,
+                qWidth: newCubeProps.qMeasures.length + 1,
+                qHeight: this.granularity//500
+            }];
+
+        var dataPromise = self.sessionCube.getHyperCubeData( "/qHyperCubeDef", pages );
+
+        dataPromise.then( function ( p ) {
+
+            // Add to matrix
+
+            var index, result, textValues, total, dataPoints;
+
+            for ( var i = 0; i < newCubeProps.qMeasures.length; i++ ) {
+
+                index = newCubeProps.qMeasures[i].measureIndex;
+
+                result = p[0].qMatrix[0][i].qText.split( "-" );
+
+                dataPoints = result[0].split( ";" ).map( function ( value ) {
+                    return parseFloat( value );
+                } );
+
+                dataPoints.sort( function ( a, b ) {
+                    return b - a;
+                } );
+
+                self.matrix[dimIndex].measures[index]['data'] = dataPoints;
+
+                total = parseFloat( result[1] );
+
+                self.matrix[dimIndex].measures[index]['total'] = total;
+
+                self.matrix[dimIndex].measures[index]['granularity'] = self.granularity;
+            }
+
+            // Keep fetching...
+            self.drawCallback( self.matrix, self.rect );
+            getPieDataForDimension.call( self, dimIndex + 1, dataInvalidated );
+        } );
+    }
+
+    function update ( newRect, newGranularity, drawCallback, dataInvalidated, chartType ) {
 
         this.drawCallback = drawCallback;
 
@@ -182,6 +301,8 @@ define( [
         }
 
         function proceedUpdate () {
+
+            var self = this;
 
             this.proceedUpdate = noop;
 
@@ -195,10 +316,13 @@ define( [
                 // start new fetch
                 this.rect = newRect; // Careful! extend object?
                 this.granularity = newGranularity;
-                getReducedDataForDimension.call( this, this.rect.left, dataInvalidated );
+                if ( chartType === "pie" ) {
+                    getPieDataForDimension.call( this, this.rect.top, dataInvalidated );
+                } else {
+                    getReducedDataForDimension.call( this, this.rect.left, dataInvalidated );
+                }
             } else if ( this.fetchInProgress ) {
 
-                // Note: cancelling ongoing requests are not fully supported - therefore wait for ongoing requests to finish
                 // Will await ongoing dimension fetch before starting to fetch new data
 
                 self.cancelling = function () {
@@ -206,7 +330,11 @@ define( [
                     self.rect = self.nextRect; // Careful! extend object?
                     self.granularity = self.nextGranularity;
                     // Start new fetch!
-                    getReducedDataForDimension.call( self, self.rect.left, dataInvalidated );
+                    if ( chartType === "pie" ) {
+                        getPieDataForDimension.call( self, self.rect.left, dataInvalidated );
+                    } else {
+                        getReducedDataForDimension.call( self, self.rect.left, dataInvalidated );
+                    }
                 };
 
             }
@@ -302,7 +430,7 @@ define( [
 
         var i, j, matrix = this.matrix;
 
-        for ( i = 0; i <  matrix.length; i++ ) {
+        for ( i = 0; i < matrix.length; i++ ) {
             for ( j = 0; j < matrix[i].measures.length; j++ ) {
                 delete matrix[i].measures[j].granularity;
                 matrix[i].measures[j].data = [];
@@ -323,7 +451,7 @@ define( [
 
         // Support old objects missing fields settings
         if ( !fieldProps || fieldProps.auto ) {
-            this.fields.qFieldList.qItems.forEach( function( item ) {
+            this.fields.qFieldList.qItems.forEach( function ( item ) {
 
                 if ( isDimension.call( self, item ) ) {
                     self.matrix.push( { name: item.qName, measures: [] } );
@@ -339,7 +467,13 @@ define( [
                 } );
 
                 fieldProps.y.forEach( function ( item ) {
-                    measures.push( { libraryId: item.id, title: item.title, name: item.name, aggrFunc: item.aggrFunc, data: [] } );
+                    measures.push( {
+                        libraryId: item.id,
+                        title: item.title,
+                        name: item.name,
+                        aggrFunc: item.aggrFunc,
+                        data: []
+                    } );
                 } );
             }
         }
@@ -351,7 +485,13 @@ define( [
         self.matrix.forEach( function ( dimension ) {
             dimension['measures'] = [];
             measures.forEach( function ( measure ) {
-                dimension['measures'].push( { libraryId: measure.libraryId, title: measure.title, name: measure.name, aggrFunc: measure.aggrFunc, data: [] } );
+                dimension['measures'].push( {
+                    libraryId: measure.libraryId,
+                    title: measure.title,
+                    name: measure.name,
+                    aggrFunc: measure.aggrFunc,
+                    data: []
+                } );
             } );
         } );
 

@@ -127,6 +127,66 @@ define( [
 
     }
 
+    function isPieDataValid ( dataPoints, total ) {
+
+        var validPieData = total > 0;
+
+        dataPoints.forEach( function ( value ) {
+            if ( value <= 0 ) {
+                validPieData = false;
+                return;
+            }
+        } );
+
+        return validPieData;
+    }
+
+    function drawPieChart ( ctx, gX, gY, dataPoints, total ) {
+
+        // Check for zero or negative values
+        if ( !isPieDataValid( dataPoints, total ) ) {
+
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = "12px Verdana";
+            ctx.fillText( "Invalid data", gX + graphWidth / 2, gY + graphHeight / 2, graphWidth );
+
+            return;
+        }
+
+        var lastend = -Math.PI / 2;
+
+        var hasOthers = dataPoints.length > utils.PIE_CHART_OTHERS_LIMIT;
+        var palette;
+
+        if ( hasOthers ) {
+            palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 2, dataPoints.length - 2 )];
+        } else {
+            var palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 1 )];
+        }
+
+        for ( var i = 0; i < dataPoints.length; i++ ) {
+
+            ctx.beginPath();
+            ctx.moveTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            if ( i < utils.PIE_CHART_OTHERS_LIMIT - 1 || !hasOthers ) {
+                ctx.fillStyle = palette[i];
+                ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, lastend + ( Math.PI * 2 * ( dataPoints[i] / total ) ), false );
+            } else {
+                ctx.fillStyle = "#A5A5A5";
+                ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, -Math.PI / 2, false );
+            }
+
+
+            ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            ctx.fill();
+            lastend += Math.PI * 2 * ( dataPoints[i] / total );
+        }
+    }
+
     function drawChartIcon ( ctx, chartType, gX, gY ) {
 
         ctx.fillStyle = "#A5A5A5";
@@ -140,6 +200,8 @@ define( [
             charCode = '0x0021';
         } else if ( chartType === 'line' ) {
             charCode = '0x0025';
+        } else if ( chartType === 'pie' ) {
+            charCode = '0x0026';
         }
 
         ctx.fillText( String.fromCharCode( charCode ), gX + graphWidth / 2, gY + graphHeight / 2 - 4 );
@@ -321,18 +383,14 @@ define( [
 
                 gY = j * graphHeight + j * graphSpace + graphSpace / 2;
 
-                //ctx.clearRect( gX - ( graphSpace / 4 ), gY - ( graphHeight / 2 ), graphWidth + graphSpace / 2, graphHeight + graphSpace / 2);
-
-                //ctx.strokeStyle = 'green';
-                //ctx.strokeRect( gX, gY, graphWidth, graphHeight);
-                //ctx.strokeStyle = 'blue';
-
                 if ( !chartsAsIcons && dataPoints.length ) {
 
                     if ( chartType === 'bar' ) {
                         drawBarChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
                     } else if ( chartType === 'line' ) {
                         drawLineChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
+                    } else if ( chartType === 'pie' ) {
+                        drawPieChart( ctx, gX, gY, dataPoints, measure.total );
                     }
                 } else {
                     drawChartIcon( ctx, chartType, gX, gY );
@@ -433,7 +491,7 @@ define( [
         drawCanvas.call( this );
 
         if ( !this.isSnapshot && s > this.optimizer.zoomDataLimit && !Object.keys( this.animation ).length ) {
-            this.dataHandler.throttledUpdate( this.visibleArea, granularity, drawCanvas.bind( this ), dataInvalidated );
+            this.dataHandler.throttledUpdate( this.visibleArea, granularity, drawCanvas.bind( this ), dataInvalidated, this.chartType );
         }
     };
 

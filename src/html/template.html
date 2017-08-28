@@ -19,6 +19,7 @@
 	<div class="settings-container" ng-show="settingsOpen" qva-outside="closeSettings($event)">
 			<button class="chart-type-bar chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'bar' )" data-icon="!" title="Bar chart"></button>
 			<button class="chart-type-line chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'line' )" data-icon="%" title="Line chart"></button>
+			<button class="chart-type-pie chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'pie' )" data-icon="&" title="Pie chart"></button>
 			<p class="do-props-aggr-picker-label" ng-if="autoMode">Aggregation function</p>
 			<div class="lui-buttongroup aggr-btn-group" ng-if="autoMode">
 				<button class="lui-button" ng-class="{'lui-active': aggrFunc === 'Sum'}" qva-activate="setAggrFunc('Sum')"><span>Sum</span></button>

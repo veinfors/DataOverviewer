@@ -564,7 +564,7 @@ define( [
         var gridHeight = graphHeight + graphSpace,
             gridWidth = graphWidth + graphSpace,
             transformedPoint = this.ctx.transformedPoint( point.x, point.y ),
-            dimensionIndex = Math.floor( ( transformedPoint.x  ) / gridWidth),
+            dimensionIndex = Math.floor( ( transformedPoint.x  ) / gridWidth ),
             measureIndex = Math.floor( ( transformedPoint.y  ) / gridHeight );
 
         if ( this.dataHandler.matrix[dimensionIndex] && this.dataHandler.matrix[0].measures[measureIndex] ) {

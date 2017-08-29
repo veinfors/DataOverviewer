@@ -142,8 +142,7 @@ define( [
                 "max": 10,
                 "logarithmic": false
             },
-            "visualization": "linechart",
-            "version": 0.96
+            "visualization": "linechart"
         };
 
         return props;
@@ -248,12 +247,135 @@ define( [
                 "min": 0,
                 "max": 10
             },
-            "visualization": "barchart",
-            "version": 0.96
+            "visualization": "barchart"
         };
 
         return props;
 
+    }
+
+    function getDefaultPiechartProps ( id, dimensionObject, measureObject ) {
+
+        dimensionObject.qOtherTotalSpec = {
+            "qOtherMode" : "OTHER_COUNTED",
+                "qOtherCounted" : {
+                "qv" : "10"
+            },
+            "qOtherLimit" : {
+                "qv" : "0"
+            },
+            "qOtherLimitMode" : "OTHER_GE_LIMIT",
+                "qForceBadValueKeeping" : true,
+                "qApplyEvenWhenPossiblyWrongResult" : true,
+                "qOtherSortMode" : "OTHER_SORT_DESCENDING",
+                "qTotalMode" : "TOTAL_OFF",
+                "qReferencedExpression" : {}
+        };
+
+        dimensionObject.qDef.othersLabel = "Others";
+
+        dimensionObject.qDef.qSortCriterias = [{
+            "qSortByAscii" : 1,
+            "qSortByLoadOrder" : 1,
+            "qExpression" : {}
+        }];
+
+        measureObject.qSortBy = {
+            "qSortByNumeric" : -1,
+                "qSortByLoadOrder" : 1,
+                "qExpression" : {}
+        };
+
+        var props = {
+            "qInfo" : {
+                "qId" : id,
+                "qType" : "piechart"
+            },
+            "qMetaDef" : {},
+            "qHyperCubeDef" : {
+                "qDimensions": [dimensionObject],
+                "qMeasures": [measureObject],
+                "qInterColumnSortOrder" : [1, 0],
+                "qSuppressMissing" : true,
+                "qInitialDataFetch" : [{
+                    "qLeft" : 0,
+                    "qTop" : 0,
+                    "qWidth" : 10,
+                    "qHeight" : 500
+                }
+                ],
+                "qReductionMode" : "N",
+                "qMode" : "S",
+                "qPseudoDimPos" : -1,
+                "qNoOfLeftDims" : -1,
+                "qMaxStackedCells" : 5000,
+                "qCalcCond" : {},
+                "qTitle" : {},
+                "customErrorMessage" : {
+                    "calcCond" : ""
+                },
+                "qLayoutExclude" : {
+                    "qHyperCubeDef" : {
+                        "qDimensions" : [],
+                        "qMeasures" : [],
+                        "qInterColumnSortOrder" : [],
+                        "qInitialDataFetch" : [],
+                        "qReductionMode" : "N",
+                        "qMode" : "S",
+                        "qPseudoDimPos" : -1,
+                        "qNoOfLeftDims" : -1,
+                        "qMaxStackedCells" : 5000,
+                        "qCalcCond" : {},
+                        "qTitle" : {}
+                    }
+                }
+            },
+            "showTitles" : true,
+            "title" : "",
+            "subtitle" : "",
+            "footnote" : "",
+            "showDetails" : false,
+            "donut" : {
+                "showAsDonut" : false
+            },
+            "dimensionTitle" : true,
+            "dataPoint" : {
+                "auto" : true,
+                "labelMode" : "share"
+            },
+            "color" : {
+                "auto" : true,
+                "mode" : "primary",
+                "useBaseColors" : "off",
+                "paletteColor" : {
+                    "index" : 6
+                },
+                "persistent" : false,
+                "useDimColVal" : true,
+                "expressionIsColor" : true,
+                "expressionLabel" : "",
+                "measureScheme" : "sg",
+                "reverseScheme" : false,
+                "dimensionScheme" : "12",
+                "autoMinMax" : true,
+                "measureMin" : 0,
+                "measureMax" : 10,
+                "byDimDef" : {
+                    "label" : "Cvbxj",
+                    "key" : "Cvbxj",
+                    "type" : "libraryItem"
+                },
+                "altLabel" : "Cvbxj"
+            },
+            "legend" : {
+                "show" : false,
+                "dock" : "auto",
+                "showTitle" : true
+            },
+            "visualization" : "piechart"
+        };
+
+        return props;
     }
 
     function createObjectElement ( animPoint ) {
@@ -297,8 +419,10 @@ define( [
 
         if ( chartType === 'bar' ) {
             objProps = getDefaultBarchartProps( id, dimensionObject, measureObject );
-        } else {
+        } else if ( chartType === 'line' ) {
             objProps = getDefaultLinechartProps( id, dimensionObject, measureObject );
+        } else {
+            objProps = getDefaultPiechartProps( id, dimensionObject, measureObject );
         }
 
         app.model.createSessionObject( objProps ).then(

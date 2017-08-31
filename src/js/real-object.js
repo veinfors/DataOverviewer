@@ -280,6 +280,16 @@ define( [
             "qExpression" : {}
         }];
 
+        dimensionObject.qAttributeDimensions = [{
+            "qDef": dimensionObject.qDef.qFieldDefs[0],
+            "qSortBy": {
+                "qSortByAscii": 1,
+                "qExpression": {}
+            },
+            "id": "colorByAlternative",
+            "label": dimensionObject.qDef.qFieldDefs[0]
+        }];
+
         measureObject.qSortBy = {
             "qSortByNumeric" : -1,
                 "qSortByLoadOrder" : 1,
@@ -344,8 +354,8 @@ define( [
                 "labelMode" : "share"
             },
             "color" : {
-                "auto" : true,
-                "mode" : "primary",
+                "auto" : false,
+                "mode" : "byDimension",
                 "useBaseColors" : "off",
                 "paletteColor" : {
                     "index" : 6
@@ -360,12 +370,12 @@ define( [
                 "autoMinMax" : true,
                 "measureMin" : 0,
                 "measureMax" : 10,
-                "byDimDef" : {
-                    "label" : "Cvbxj",
-                    "key" : "Cvbxj",
-                    "type" : "libraryItem"
+                /*"byDimDef" : {
+                    "label" : "[Address Number Header]",
+                    "key" : "[Address Number Header]",
+                    "type" : "expression"
                 },
-                "altLabel" : "Cvbxj"
+                "altLabel" : "[Address Number Header]"*/
             },
             "legend" : {
                 "show" : false,

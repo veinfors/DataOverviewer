@@ -129,19 +129,12 @@ define( [
 
     function isPieDataValid ( dataPoints, total ) {
 
-        var validPieData = total > 0;
-
-        dataPoints.forEach( function ( value ) {
-            if ( value <= 0 ) {
-                validPieData = false;
-                return;
-            }
-        } );
+        var validPieData = total > 0 && dataPoints[0].value > 0;
 
         return validPieData;
     }
 
-    function drawPieChart ( ctx, gX, gY, dataPoints, total ) {
+    function drawPieChart ( ctx, gX, gY, dataPoints, total, hasOthers, hasPositiveNullSum ) {
 
         // Check for zero or negative values
         if ( !isPieDataValid( dataPoints, total ) ) {
@@ -155,35 +148,48 @@ define( [
             return;
         }
 
+        var containsZerosOrNegatives = false;
+
         var lastend = -Math.PI / 2;
 
-        var hasOthers = dataPoints.length > utils.PIE_CHART_OTHERS_LIMIT;
         var palette;
 
-        if ( hasOthers ) {
+        if ( hasOthers && hasPositiveNullSum ) {
+            palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 3, dataPoints.length - 3 )];
+        } else if ( hasOthers || hasPositiveNullSum ) {
             palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 2, dataPoints.length - 2 )];
         } else {
-            var palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 1 )];
+            palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 1 )];
         }
 
+        palette = palette.slice( 0 );
+
         for ( var i = 0; i < dataPoints.length; i++ ) {
+
+            if ( dataPoints[i].value <= 0 ) {
+                containsZerosOrNegatives = true;
+                continue;
+            }
 
             ctx.beginPath();
             ctx.moveTo( gX + graphWidth / 2, gY + graphHeight / 2 );
 
             if ( i < utils.PIE_CHART_OTHERS_LIMIT - 1 || !hasOthers ) {
-                ctx.fillStyle = palette[i];
-                ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, lastend + ( Math.PI * 2 * ( dataPoints[i] / total ) ), false );
+                if ( dataPoints[i].isNull ) {
+                    ctx.fillStyle = "#D2D2D2";
+                } else {
+                    ctx.fillStyle = palette.shift( 0 );
+                }
+                ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, lastend + ( Math.PI * 2 * ( dataPoints[i].value / total ) ), false );
             } else {
                 ctx.fillStyle = "#A5A5A5";
                 ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, -Math.PI / 2, false );
             }
 
-
             ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
 
             ctx.fill();
-            lastend += Math.PI * 2 * ( dataPoints[i] / total );
+            lastend += Math.PI * 2 * ( dataPoints[i].value / total );
         }
     }
 
@@ -390,7 +396,7 @@ define( [
                     } else if ( chartType === 'line' ) {
                         drawLineChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
                     } else if ( chartType === 'pie' ) {
-                        drawPieChart( ctx, gX, gY, dataPoints, measure.total );
+                        drawPieChart( ctx, gX, gY, dataPoints, measure.total, measure.hasOthers, measure.hasPositiveNullSum );
                     }
                 } else {
                     drawChartIcon( ctx, chartType, gX, gY );

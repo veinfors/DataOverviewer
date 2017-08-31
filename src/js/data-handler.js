@@ -7,7 +7,9 @@ define( [
 
     var noop = function () {};
 
-    var PIE_MEASURE_EXPR = "=concat(aggr(if(rank({{aggr_func}}([{{measure}}]),4)<=" + ( utils.PIE_CHART_OTHERS_LIMIT + 1 ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}]),';')&'-'&{{aggr_func}}(TOTAL [{{measure}}])";
+    var PIE_MEASURE_EXPR = "=concat(num(aggr(if(not IsNull([{{dimension}}]) and rank({{aggr_func}}([{{measure}}]),4)<=" + ( utils.PIE_CHART_OTHERS_LIMIT + 1 ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}])),';')";
+    var PIE_TOTALS_ATTR_EXPR = "=if({{aggr_func}}([{{measure}}])>0,{{aggr_func}}(TOTAL aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
+    var PIE_NULLSUM_ATTR_EXPR = "=aggr(if(IsNull([{{dimension}}]),{{aggr_func}}([{{measure}}])),[{{dimension}}])";
 
     /* Private functions */
 
@@ -145,6 +147,28 @@ define( [
         return expression;
     }
 
+    function prepPieMeasureAttrTotalsExpr ( aggrFunc, measure, dimension ) {
+
+        var attrExpression = PIE_TOTALS_ATTR_EXPR;
+
+        attrExpression = attrExpression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
+        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, measure );
+        attrExpression = attrExpression.replace(/\{\{dimension\}\}/g, dimension );
+
+        return attrExpression;
+    }
+
+    function prepPieMeasureAttrNullSumExpr ( aggrFunc, measure, dimension ) {
+
+        var attrExpression = PIE_NULLSUM_ATTR_EXPR;
+
+        attrExpression = attrExpression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
+        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, measure );
+        attrExpression = attrExpression.replace(/\{\{dimension\}\}/g, dimension );
+
+        return attrExpression;
+    }
+
     // Iterate through all measures and add the data to "matrix" - then call drawCallback
     function getPieDataForDimension ( dimIndex, dataInvalidated ) {
 
@@ -173,7 +197,7 @@ define( [
             qAlwaysFullyExpanded: true
         };
 
-        var measureName, measureAggrFunc, measureLibraryId, measureExpression;
+        var measureName, measureAggrFunc, measureLibraryId, measureExpression, totalAttributeExpression, nullSumAttrExpression;
 
         for ( var i = this.rect.top; i < this.rect.top + this.rect.height; i++ ) {
             if ( dataInvalidated || this.granularity !== this.matrix[dimIndex].measures[i].granularity ) {
@@ -183,12 +207,23 @@ define( [
                 measureLibraryId = this.matrix[dimIndex].measures[i].libraryId;
 
                 measureExpression = prepPieMeasureExpression( measureAggrFunc, measureName || measureLibraryId, dimName || dimLibraryId );
+                totalAttributeExpression = prepPieMeasureAttrTotalsExpr( measureAggrFunc, measureName || measureLibraryId, dimName || dimLibraryId );
+                nullSumAttrExpression = prepPieMeasureAttrNullSumExpr( measureAggrFunc, measureName || measureLibraryId, dimName || dimLibraryId );
 
                 newCubeProps.qMeasures.push( {
                     measureIndex: i,
                     qDef: {
                         qDef: measureExpression
-                    }
+                    },
+                    qAttributeExpressions: [
+                        {
+                            qExpression: totalAttributeExpression
+                        },
+                        {
+                            qExpression: nullSumAttrExpression
+                        }
+                    ],
+                    qIsAutoFormat: false
                 } );
             }
         }
@@ -259,27 +294,53 @@ define( [
 
             // Add to matrix
 
-            var index, result, textValues, total, dataPoints;
+            var index, nullSum, total, dataPoints, hasPositiveNullSum, hasOthers;
 
             for ( var i = 0; i < newCubeProps.qMeasures.length; i++ ) {
 
                 index = newCubeProps.qMeasures[i].measureIndex;
 
-                result = p[0].qMatrix[0][i].qText.split( "-" );
-
-                dataPoints = result[0].split( ";" ).map( function ( value ) {
-                    return parseFloat( value );
+                dataPoints = p[0].qMatrix[0][i].qText.split( ";" ).map( function ( value ) {
+                    return {
+                        isNull: false,
+                        value: parseFloat( value )
+                    };
                 } );
 
                 dataPoints.sort( function ( a, b ) {
-                    return b - a;
+                    return utils.sort( b.value, a.value );
                 } );
+
+                total = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[0].qNum );
+                nullSum = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[1].qNum );
+                hasPositiveNullSum = nullSum > ( dataPoints.length < utils.PIE_CHART_OTHERS_LIMIT ? 0 : dataPoints[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1 )].value ); // Sum should also be ranked above PIE_CHART_OTHERS_LIMIT
+                self.matrix[dimIndex].measures[index]["hasPositiveNullSum"] = hasPositiveNullSum;
+
+                hasOthers = dataPoints.length + ( hasPositiveNullSum ? 1 : 0 ) > utils.PIE_CHART_OTHERS_LIMIT;
+
+                if ( hasPositiveNullSum ) {
+
+                    if ( hasOthers ) {
+                        dataPoints[utils.PIE_CHART_OTHERS_LIMIT - 1] = {
+                            isNull: true,
+                            value: nullSum
+                        };
+                    } else {
+                        dataPoints.push( {
+                            isNull: true,
+                            value: nullSum
+                        } )
+                    }
+
+                    dataPoints.sort( function ( a, b ) {
+                        return utils.sort( b.value, a.value );
+                    } );
+                }
 
                 self.matrix[dimIndex].measures[index]['data'] = dataPoints;
 
-                total = parseFloat( result[1] );
-
                 self.matrix[dimIndex].measures[index]['total'] = total;
+                self.matrix[dimIndex].measures[index]['hasOthers'] = hasOthers;
 
                 self.matrix[dimIndex].measures[index]['granularity'] = self.granularity;
             }
@@ -317,7 +378,7 @@ define( [
                 this.rect = newRect; // Careful! extend object?
                 this.granularity = newGranularity;
                 if ( chartType === "pie" ) {
-                    getPieDataForDimension.call( this, this.rect.top, dataInvalidated );
+                    getPieDataForDimension.call( this, this.rect.left, dataInvalidated );
                 } else {
                     getReducedDataForDimension.call( this, this.rect.left, dataInvalidated );
                 }

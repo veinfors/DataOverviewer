@@ -99,11 +99,9 @@ define( [
                 qDef: {
                     qFieldDefs: dimName ? [dimName] : [],
                     autoSort: true
-                },
-                qNullSuppression: true
+                }
             }],
             qMeasures: [],
-            qSuppressMissing: true,
             qAlwaysFullyExpanded: true
         };
 

@@ -102,14 +102,20 @@ function ( qlik, utils, template ) {
 			utils.subscribeFieldUpdates( function ( data ) {
 
 				if ( $scope.definition.axis === 'x' ) {
-					$scope.dimensions = data.qDimensionList.qItems;
+					$scope.dimensions = data.qDimensionList.qItems.slice( 0 ).sort( function ( a, b ) {
+                        return utils.sort( a.qMeta.title, b.qMeta.title );
+                    } );
 					selectAccordingToProps( $scope.data.fields.x, $scope.dimensions, 'dimension' );
 				} else {
-					$scope.measures = data.qMeasureList.qItems;
+					$scope.measures = data.qMeasureList.qItems.slice( 0 ).sort( function ( a, b ) {
+                        return utils.sort( a.qMeta.title, b.qMeta.title );
+                    } );
 					selectAccordingToProps( $scope.data.fields.y, $scope.measures, 'measure' );
 				}
 
-				$scope.fields = data.qFieldList.qItems;
+				$scope.fields = data.qFieldList.qItems.slice( 0 ).sort( function ( a, b ) {
+                    return utils.sort( a.qName, b.qName );
+                } );
 				selectAccordingToProps( $scope.data.fields[$scope.definition.axis], $scope.fields, 'field' );
 
 				unsubscribeSessionId = data.qInfo.qId;

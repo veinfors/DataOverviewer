@@ -61,7 +61,11 @@ function ( qlik, utils, template ) {
 			if ( fieldType === 'field' ) {
 				$scope.data.fields[axis].push( { name: fieldModel.qName, aggrFunc: fieldModel.aggrFunc || defaultAggrFunc } );
 			} else {
-				$scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title } );
+				if ( fieldType === 'measure' ) {
+                    $scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title, measure: fieldModel.qData.measure } );
+				} else {
+                    $scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title } );
+				}
 			}
 
 		}
@@ -74,6 +78,7 @@ function ( qlik, utils, template ) {
 		controller: ["$scope", "$element", function ( $scope, $element ) {
 
 			var unsubscribeSessionId;
+			var app = qlik.currApp( this );
 
 			$scope.aggrFunc = defaultAggrFunc;
 
@@ -99,7 +104,7 @@ function ( qlik, utils, template ) {
 				$scope.pickerForScopeId = null;
 			};
 
-			utils.subscribeFieldUpdates( function ( data ) {
+			utils.subscribeFieldUpdates( app, function ( data ) {
 
 				if ( $scope.definition.axis === 'x' ) {
 					$scope.dimensions = data.qDimensionList.qItems.slice( 0 ).sort( function ( a, b ) {

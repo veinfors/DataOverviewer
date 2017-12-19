@@ -1,5 +1,5 @@
-define( ["qlik"],
-function ( qlik ) {
+define( [],
+function () {
 
     'use strict';
 
@@ -64,10 +64,9 @@ function ( qlik ) {
          * Notifies callback every time fields, dimensions or measures are changed + initial fetch
          * @param callback
          */
-        subscribeFieldUpdates: function ( callback ) {
+        subscribeFieldUpdates: function ( app, callback ) {
 
-            var app = qlik.currApp( this ),
-                initialFetch = true, // Used for perf optimization
+            var initialFetch = true, // Used for perf optimization
                 lastJSONString = '';
 
             return app.createGenericObject( {
@@ -82,7 +81,12 @@ function ( qlik ) {
                     "qType": "dimension"
                 },
                 "qMeasureListDef": {
-                    "qType": "measure"
+                    "qType": "measure",
+                    "qData": {
+                        "title": "/title",
+                        "tags": "/tags",
+                        "measure": "/qMeasure"
+                    }
                 }
             }, function ( data ) {
 
@@ -116,7 +120,23 @@ function ( qlik ) {
             [ "#332288", "#6699cc", "#88ccee", "#44aa99", "#117733", "#999933", "#ddcc77", "#661100", "#cc6677", "#aa4466", "#882255", "#aa4499" ]
         ],
 
-        PIE_CHART_OTHERS_LIMIT: 10
+        PIE_CHART_OTHERS_LIMIT: 10,
+
+        getPaletteForPieChart: function ( dataPoints, total, hasOthers, hasNullsWithinLimit ) {
+
+
+            /*  if ( hasOthers && hasNullsWithinLimit ) {
+                    palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 3, dataPoints.length - 3 )];
+                } else if ( hasOthers || hasNullsWithinLimit ) {
+                    palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 2 )];
+                } else {
+                    palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 1 )];
+                }
+            */
+
+            var paletteIndex = Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1 - ( hasOthers ? 1 : 0 ) - ( hasNullsWithinLimit ? 1 : 0 ), dataPoints.length - 1 - ( hasNullsWithinLimit ? 1 : 0 ) );
+            return this.colorPalette[paletteIndex] || [];
+        }
 
     };
 

@@ -1,6 +1,7 @@
 define( [
-    "qlik"
-], function ( qlik ) {
+    "qlik",
+    "./utils"
+], function ( qlik, utils ) {
 
     var animationTime = 400;
 
@@ -259,7 +260,7 @@ define( [
         dimensionObject.qOtherTotalSpec = {
             "qOtherMode" : "OTHER_COUNTED",
                 "qOtherCounted" : {
-                "qv" : "10"
+                "qv" : "" + utils.PIE_CHART_OTHERS_LIMIT
             },
             "qOtherLimit" : {
                 "qv" : "0"
@@ -438,8 +439,11 @@ define( [
         app.model.createSessionObject( objProps ).then(
             function success() {
                 app.getObject( self.objectElem, id ).then( function () {
-                    activateSnapshottingOfObject.call( self );
-                })
+                    // Await DOM element to come in place
+                    setTimeout( function () {
+                        activateSnapshottingOfObject.call( self );
+                    }, 10 );
+                } );
             }
         );
 
@@ -457,12 +461,13 @@ define( [
 
         // Make sure snapshot counter works - yes, this is an ugly hack
 
-        var self = this;
+        var self = this,
+            obj = objectScope.object || objectScope.$$childHead.object; // backwards compatibility
 
-        objectScope.$$childHead.object.loaded.then( function () {
+        obj.loaded.then( function () {
 
             // Switch layout temporarily go get the snapshot we want
-            self.object = objectScope.$$childHead.object;
+            self.object = obj;
 
             // backwards compatibility (older versions of qlik sense)
             if ( self.object.ext.snapshot ) {

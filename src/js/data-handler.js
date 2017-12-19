@@ -7,9 +7,18 @@ define( [
 
     var noop = function () {};
 
-    var PIE_MEASURE_EXPR = "=concat(num(aggr(if(not IsNull([{{dimension}}]) and rank({{aggr_func}}([{{measure}}]),4)<=" + ( utils.PIE_CHART_OTHERS_LIMIT + 1 ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}])),';')";
-    var PIE_TOTALS_ATTR_EXPR = "=if({{aggr_func}}([{{measure}}])>0,{{aggr_func}}(TOTAL aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
-    var PIE_NULLSUM_ATTR_EXPR = "=aggr(if(IsNull([{{dimension}}]),{{aggr_func}}([{{measure}}])),[{{dimension}}])";
+    var PIE_MEASURE_EXPR = "=concat(num(aggr(if(rank({{aggr_func}}({{measure}}),4)<=" + ( utils.PIE_CHART_OTHERS_LIMIT ) + ",{{aggr_func}}({{measure}})),[{{dimension}}])),';')";
+    //var PIE_TOTALS_ATTR_EXPR = "=if({{aggr_func}}([{{measure}}])>0,{{aggr_func}}(TOTAL aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
+    //var PIE_TOTALS_ATTR_EXPR = "={{aggr_func}}(if(3 > 2, TOTAL aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
+
+    // &'' in the end of attribute expressions to get the same number formatting as in the expression (needed for comparison...)
+    //var PIE_OTHERS_ATTR_EXP = "={{aggr_func}}(aggr(if(num(rank({{aggr_func}}([{{measure}}]),4))>" + ( utils.PIE_CHART_OTHERS_LIMIT - 1 ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}]))&''";
+    var PIE_OTHERS_ATTR_EXP = "=if((nullcount([{{dimension}}])+count([{{dimension}}]))=" + utils.PIE_CHART_OTHERS_LIMIT + ",0,sum(aggr(if(num(rank({{aggr_func}}({{measure}}),4))>" + ( utils.PIE_CHART_OTHERS_LIMIT - 1 ) + ",{{aggr_func}}({{measure}})),[{{dimension}}])))&''";
+
+    //var PIE_TOTALS_ATTR_EXPR = "=num(aggr(if(not IsNull([{{dimension}}]) and rank({{aggr_func}}([{{measure}}]),4)>" + ( utils.PIE_CHART_OTHERS_LIMIT ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}]))";
+
+    //var PIE_TOTALS_ATTR_EXPR = "=if({{aggr_func}}([{{measure}}])>0,rangesum(aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
+    var PIE_NULLSUM_ATTR_EXPR = "=num(aggr(if(IsNull([{{dimension}}]),{{aggr_func}}({{measure}})),[{{dimension}}]))&''";
 
     /* Private functions */
 
@@ -38,11 +47,30 @@ define( [
         return isDim;
     }
 
+    function getNullDataPointIndex ( dataPoints, nullSum ) {
+
+        var index = -1;
+
+        if ( nullSum ) {
+            // Note: iterate backards - That will mimic the pie chart in sense - placing null last of equally sized siblings...
+            for ( var i = dataPoints.length - 1; i >= 0; i-- ) {
+                if ( dataPoints[i].value === nullSum ) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        return index;
+
+    }
+
     // Create a session based (transient) cube to allow property update and no persistance
     function createCube () {
 
         var self = this,
-            app = qlik.currApp( this );
+            app = qlik.currApp( this ),
+            objectModel;
 
         app.createGenericObject( {
             "qHyperCubeDef": {},
@@ -52,9 +80,11 @@ define( [
             }
         }, function ( reply, app ) {
             app.getObject( reply.qInfo.qId ).then( function ( model ) {
-                model.getProperties().then( function () {
-                    self.sessionCube = model;
-                    model.Invalidated.unbind(); // only once!
+                objectModel = typeof model.getProperties === "function" ? model : model.model; // Backwards compatibility
+
+                objectModel.getProperties().then( function () {
+                    self.sessionCube = objectModel;
+                    objectModel.Invalidated.unbind(); // only once!
                     self.proceedUpdate();
                 } );
             } );
@@ -139,18 +169,18 @@ define( [
         var expression = PIE_MEASURE_EXPR;
 
         expression = expression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
-        expression = expression.replace(/\{\{measure\}\}/g, measure );
+        expression = expression.replace(/\{\{measure\}\}/g, aggrFunc ? '[' + measure + ']' : measure );
         expression = expression.replace(/\{\{dimension\}\}/g, dimension );
 
         return expression;
     }
 
-    function prepPieMeasureAttrTotalsExpr ( aggrFunc, measure, dimension ) {
+    function prepPieMeasureAttrOthersExpr ( aggrFunc, measure, dimension ) {
 
-        var attrExpression = PIE_TOTALS_ATTR_EXPR;
+        var attrExpression = PIE_OTHERS_ATTR_EXP;
 
         attrExpression = attrExpression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
-        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, measure );
+        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, aggrFunc ? '[' + measure + ']' : measure );
         attrExpression = attrExpression.replace(/\{\{dimension\}\}/g, dimension );
 
         return attrExpression;
@@ -161,7 +191,7 @@ define( [
         var attrExpression = PIE_NULLSUM_ATTR_EXPR;
 
         attrExpression = attrExpression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
-        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, measure );
+        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, aggrFunc ? '[' + measure + ']' : measure );
         attrExpression = attrExpression.replace(/\{\{dimension\}\}/g, dimension );
 
         return attrExpression;
@@ -195,18 +225,23 @@ define( [
             qAlwaysFullyExpanded: true
         };
 
-        var measureName, measureAggrFunc, measureLibraryId, measureExpression, totalAttributeExpression, nullSumAttrExpression;
+        var measureName, measureAggrFunc, measureLibraryId, measureExpression, othersAttributeExpression, nullSumAttrExpression, measureDef;
 
         for ( var i = this.rect.top; i < this.rect.top + this.rect.height; i++ ) {
             if ( dataInvalidated || this.granularity !== this.matrix[dimIndex].measures[i].granularity ) {
 
                 measureName = this.matrix[dimIndex].measures[i].name;
-                measureAggrFunc = this.matrix[dimIndex].measures[i].aggrFunc || this.aggrFunc;
                 measureLibraryId = this.matrix[dimIndex].measures[i].libraryId;
+                if ( measureLibraryId ) {
+                    measureAggrFunc = '';
+                    measureDef = measureLibraryId = this.matrix[dimIndex].measures[i].measure.qDef;
+                } else {
+                    measureAggrFunc = this.matrix[dimIndex].measures[i].aggrFunc || this.aggrFunc;
+                }
 
-                measureExpression = prepPieMeasureExpression( measureAggrFunc, measureName || measureLibraryId, dimName || dimLibraryId );
-                totalAttributeExpression = prepPieMeasureAttrTotalsExpr( measureAggrFunc, measureName || measureLibraryId, dimName || dimLibraryId );
-                nullSumAttrExpression = prepPieMeasureAttrNullSumExpr( measureAggrFunc, measureName || measureLibraryId, dimName || dimLibraryId );
+                measureExpression = prepPieMeasureExpression( measureAggrFunc, measureName || measureDef, dimName || dimLibraryId );
+                othersAttributeExpression = prepPieMeasureAttrOthersExpr( measureAggrFunc, measureName || measureDef, dimName || dimLibraryId );
+                nullSumAttrExpression = prepPieMeasureAttrNullSumExpr( measureAggrFunc, measureName || measureDef, dimName || dimLibraryId );
 
                 newCubeProps.qMeasures.push( {
                     measureIndex: i,
@@ -215,7 +250,7 @@ define( [
                     },
                     qAttributeExpressions: [
                         {
-                            qExpression: totalAttributeExpression
+                            qExpression: othersAttributeExpression
                         },
                         {
                             qExpression: nullSumAttrExpression
@@ -292,53 +327,57 @@ define( [
 
             // Add to matrix
 
-            var index, nullSum, total, dataPoints, hasPositiveNullSum, hasOthers;
+            var index, nullSum, dataPoints, nullDataPointIndex, othersSum, qText, total;
 
             for ( var i = 0; i < newCubeProps.qMeasures.length; i++ ) {
 
+                total = 0;
+
                 index = newCubeProps.qMeasures[i].measureIndex;
 
-                dataPoints = p[0].qMatrix[0][i].qText.split( ";" ).map( function ( value ) {
-                    return {
-                        isNull: false,
-                        value: parseFloat( value )
-                    };
-                } );
+                qText = p[0].qMatrix[0][i].qText;
+
+                dataPoints = [];
+
+                if ( qText ) {
+                    dataPoints = qText.split( ";" ).map( function ( value ) {
+                        return {
+                            isNull: false,
+                            value: parseFloat( value )
+                        };
+                    } );
+                }
 
                 dataPoints.sort( function ( a, b ) {
                     return utils.sort( b.value, a.value );
                 } );
 
-                total = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[0].qNum );
-                nullSum = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[1].qNum );
-                hasPositiveNullSum = nullSum > ( dataPoints.length < utils.PIE_CHART_OTHERS_LIMIT ? 0 : dataPoints[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1 )].value ); // Sum should also be ranked above PIE_CHART_OTHERS_LIMIT
-                self.matrix[dimIndex].measures[index]["hasPositiveNullSum"] = hasPositiveNullSum;
+                othersSum = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[0].qNum ) || 0;
 
-                hasOthers = dataPoints.length + ( hasPositiveNullSum ? 1 : 0 ) > utils.PIE_CHART_OTHERS_LIMIT;
-
-                if ( hasPositiveNullSum ) {
-
-                    if ( hasOthers ) {
-                        dataPoints[utils.PIE_CHART_OTHERS_LIMIT - 1] = {
-                            isNull: true,
-                            value: nullSum
-                        };
-                    } else {
-                        dataPoints.push( {
-                            isNull: true,
-                            value: nullSum
-                        } )
-                    }
-
-                    dataPoints.sort( function ( a, b ) {
-                        return utils.sort( b.value, a.value );
-                    } );
+                if ( othersSum ) {
+                    dataPoints.pop();
                 }
+
+                nullSum = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[1].qNum ) || 0;
+                nullDataPointIndex = getNullDataPointIndex( dataPoints, nullSum );
+
+                if ( nullDataPointIndex > -1 ) {
+                    dataPoints[nullDataPointIndex].isNull = true;
+                }
+
+                dataPoints.forEach( function ( d ) {
+                    total += d.value;
+                } );
+
+                total += othersSum;
 
                 self.matrix[dimIndex].measures[index]['data'] = dataPoints;
 
+                self.matrix[dimIndex].measures[index]['othersSum'] = othersSum;
                 self.matrix[dimIndex].measures[index]['total'] = total;
-                self.matrix[dimIndex].measures[index]['hasOthers'] = hasOthers;
+
+                self.matrix[dimIndex].measures[index]['hasOthers'] = !!othersSum;
+                self.matrix[dimIndex].measures[index]["hasNullsWithinLimit"] = nullDataPointIndex > -1;
 
                 self.matrix[dimIndex].measures[index]['granularity'] = self.granularity;
             }
@@ -466,9 +505,10 @@ define( [
         }
 
         var self = this,
-            startTime = Date.now();
+            startTime = Date.now(),
+            app = qlik.currApp( self );
 
-        utils.subscribeFieldUpdates( function ( data, initialFetch ) {
+        utils.subscribeFieldUpdates( app, function ( data, initialFetch ) {
             var responseTime = Date.now() - startTime;
 
             self.fields = data;
@@ -529,6 +569,7 @@ define( [
                     measures.push( {
                         libraryId: item.id,
                         title: item.title,
+                        measure: item.measure,
                         name: item.name,
                         aggrFunc: item.aggrFunc,
                         data: []
@@ -547,6 +588,7 @@ define( [
                 dimension['measures'].push( {
                     libraryId: measure.libraryId,
                     title: measure.title,
+                    measure: measure.measure,
                     name: measure.name,
                     aggrFunc: measure.aggrFunc,
                     data: []

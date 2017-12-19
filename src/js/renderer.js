@@ -1,8 +1,7 @@
 define( [
-    'qlik',
     "./transform-tracker",
     "./utils"
-], function ( qlik, TransformTracker, utils ) {
+], function ( TransformTracker, utils ) {
 
     'use strict';
 
@@ -134,7 +133,7 @@ define( [
         return validPieData;
     }
 
-    function drawPieChart ( ctx, gX, gY, dataPoints, total, hasOthers, hasPositiveNullSum ) {
+    function drawPieChart ( ctx, gX, gY, dataPoints, total, hasOthers, hasNullsWithinLimit ) {
 
         // Check for zero or negative values
         if ( !isPieDataValid( dataPoints, total ) ) {
@@ -152,17 +151,9 @@ define( [
 
         var lastend = -Math.PI / 2;
 
-        var palette;
+        var palette = utils.getPaletteForPieChart( dataPoints, total, hasOthers, hasNullsWithinLimit );
 
-        if ( hasOthers && hasPositiveNullSum ) {
-            palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 3, dataPoints.length - 3 )];
-        } else if ( hasOthers || hasPositiveNullSum ) {
-            palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 2, dataPoints.length - 2 )];
-        } else {
-            palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 1 )];
-        }
-
-        palette = palette.slice( 0 );
+        palette = palette ? palette.slice( 0 ) : [];
 
         for ( var i = 0; i < dataPoints.length; i++ ) {
 
@@ -181,15 +172,23 @@ define( [
                     ctx.fillStyle = palette.shift( 0 );
                 }
                 ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, lastend + ( Math.PI * 2 * ( dataPoints[i].value / total ) ), false );
-            } else {
-                ctx.fillStyle = "#A5A5A5";
-                ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, -Math.PI / 2, false );
             }
 
             ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
 
             ctx.fill();
             lastend += Math.PI * 2 * ( dataPoints[i].value / total );
+        }
+
+        if ( hasOthers ) {
+
+            ctx.beginPath();
+            ctx.moveTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+            ctx.fillStyle = "#A5A5A5";
+            ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, -Math.PI / 2, false );
+            ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            ctx.fill();
         }
     }
 
@@ -396,7 +395,7 @@ define( [
                     } else if ( chartType === 'line' ) {
                         drawLineChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
                     } else if ( chartType === 'pie' ) {
-                        drawPieChart( ctx, gX, gY, dataPoints, measure.total, measure.hasOthers, measure.hasPositiveNullSum );
+                        drawPieChart( ctx, gX, gY, dataPoints, measure.total, measure.hasOthers, measure.hasNullsWithinLimit );
                     }
                 } else {
                     drawChartIcon( ctx, chartType, gX, gY );

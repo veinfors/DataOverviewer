@@ -29,11 +29,18 @@
 .dataoverviewer .zoom-out,
 .dataoverviewer .close-real-object {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 3px;
+    right: 3px;
     display: inline-block;
-    line-height: 24px;
     z-index: 5;
+}
+
+.dataoverviewer .settings-button:before,
+.dataoverviewer .reset-zoom:before,
+.dataoverviewer .zoom-in:before,
+.dataoverviewer .zoom-out:before,
+.dataoverviewer .close-real-object:before {
+    font-size: 20px;
 }
 
 .dataoverviewer .zoom-in {
@@ -173,7 +180,7 @@
 /* -------------------- On the fly settings ------------------- */
 
 .dataoverviewer .settings-button {
-    right: 40px;
+    right: 34px;
 }
 
 .dataoverviewer .settings-container {
@@ -214,7 +221,7 @@
 .dataoverviewer .settings-container .chart-btn {
     font-size: 45px;
     height: 1em;
-    line-height: 0.8em;
+    line-height: 1em;
     width: 1em;
     display: inline-block;
     text-align: center;
@@ -232,9 +239,17 @@
     background: transparent !important;
 }
 
+.dataoverviewer .settings-container .chart-btn:before {
+    font-size: 26px;
+}
+
 .pp-component.do-chart-type-props .chart-btn {
-    font-size: 75px;
+    font-size: 55px;
     margin: 5px;
+}
+
+.pp-component.do-chart-type-props .chart-btn:before {
+    font-size: 45px;
 }
 
 .do-chart-type-props .chart-btn:hover,
@@ -254,12 +269,12 @@
     border: 2px solid #ff9326;
 }
 
-.aggr-btn-group .qui-button {
+.aggr-btn-group .lui-button {
     padding: 1px 1px;
     min-width: 39px;
 }
 
-.aggr-btn-group .qui-button span {
+.aggr-btn-group .lui-button span {
     padding: 0 5px;
 }
 
@@ -359,15 +374,15 @@
 
 /* animation for revealing popup in a nice way */
 @-webkit-keyframes animNarrow {
-    100% {  width: 103px; }
+    100% {  width: 153px; }
 }
 
 @-o-keyframes animNarrow {
-    100% {  width: 103px; }
+    100% {  width: 153px; }
 }
 
 @keyframes animNarrow {
-    100% {  width: 103px; }
+    100% {  width: 153px; }
 }
 
 @-webkit-keyframes animWide {

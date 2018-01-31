@@ -1,6 +1,7 @@
 define( [
-    "qlik"
-], function ( qlik ) {
+    "qlik",
+    "./utils"
+], function ( qlik, utils ) {
 
     var animationTime = 400;
 
@@ -142,8 +143,7 @@ define( [
                 "max": 10,
                 "logarithmic": false
             },
-            "visualization": "linechart",
-            "version": 0.96
+            "visualization": "linechart"
         };
 
         return props;
@@ -248,12 +248,145 @@ define( [
                 "min": 0,
                 "max": 10
             },
-            "visualization": "barchart",
-            "version": 0.96
+            "visualization": "barchart"
         };
 
         return props;
 
+    }
+
+    function getDefaultPiechartProps ( id, dimensionObject, measureObject ) {
+
+        dimensionObject.qOtherTotalSpec = {
+            "qOtherMode" : "OTHER_COUNTED",
+                "qOtherCounted" : {
+                "qv" : "" + utils.PIE_CHART_OTHERS_LIMIT
+            },
+            "qOtherLimit" : {
+                "qv" : "0"
+            },
+            "qOtherLimitMode" : "OTHER_GE_LIMIT",
+                "qForceBadValueKeeping" : true,
+                "qApplyEvenWhenPossiblyWrongResult" : true,
+                "qOtherSortMode" : "OTHER_SORT_DESCENDING",
+                "qTotalMode" : "TOTAL_OFF",
+                "qReferencedExpression" : {}
+        };
+
+        dimensionObject.qDef.othersLabel = "Others";
+
+        dimensionObject.qDef.qSortCriterias = [{
+            "qSortByAscii" : 1,
+            "qSortByLoadOrder" : 1,
+            "qExpression" : {}
+        }];
+
+        dimensionObject.qAttributeDimensions = [{
+            "qDef": dimensionObject.qDef.qFieldDefs[0],
+            "qSortBy": {
+                "qSortByAscii": 1,
+                "qExpression": {}
+            },
+            "id": "colorByAlternative",
+            "label": dimensionObject.qDef.qFieldDefs[0]
+        }];
+
+        measureObject.qSortBy = {
+            "qSortByNumeric" : -1,
+                "qSortByLoadOrder" : 1,
+                "qExpression" : {}
+        };
+
+        var props = {
+            "qInfo" : {
+                "qId" : id,
+                "qType" : "piechart"
+            },
+            "qMetaDef" : {},
+            "qHyperCubeDef" : {
+                "qDimensions": [dimensionObject],
+                "qMeasures": [measureObject],
+                "qInterColumnSortOrder" : [1, 0],
+                "qSuppressMissing" : true,
+                "qInitialDataFetch" : [{
+                    "qLeft" : 0,
+                    "qTop" : 0,
+                    "qWidth" : 10,
+                    "qHeight" : 500
+                }
+                ],
+                "qReductionMode" : "N",
+                "qMode" : "S",
+                "qPseudoDimPos" : -1,
+                "qNoOfLeftDims" : -1,
+                "qMaxStackedCells" : 5000,
+                "qCalcCond" : {},
+                "qTitle" : {},
+                "customErrorMessage" : {
+                    "calcCond" : ""
+                },
+                "qLayoutExclude" : {
+                    "qHyperCubeDef" : {
+                        "qDimensions" : [],
+                        "qMeasures" : [],
+                        "qInterColumnSortOrder" : [],
+                        "qInitialDataFetch" : [],
+                        "qReductionMode" : "N",
+                        "qMode" : "S",
+                        "qPseudoDimPos" : -1,
+                        "qNoOfLeftDims" : -1,
+                        "qMaxStackedCells" : 5000,
+                        "qCalcCond" : {},
+                        "qTitle" : {}
+                    }
+                }
+            },
+            "showTitles" : true,
+            "title" : "",
+            "subtitle" : "",
+            "footnote" : "",
+            "showDetails" : false,
+            "donut" : {
+                "showAsDonut" : false
+            },
+            "dimensionTitle" : true,
+            "dataPoint" : {
+                "auto" : true,
+                "labelMode" : "share"
+            },
+            "color" : {
+                "auto" : false,
+                "mode" : "byDimension",
+                "useBaseColors" : "off",
+                "paletteColor" : {
+                    "index" : 6
+                },
+                "persistent" : false,
+                "useDimColVal" : true,
+                "expressionIsColor" : true,
+                "expressionLabel" : "",
+                "measureScheme" : "sg",
+                "reverseScheme" : false,
+                "dimensionScheme" : "12",
+                "autoMinMax" : true,
+                "measureMin" : 0,
+                "measureMax" : 10,
+                /*"byDimDef" : {
+                    "label" : "[Address Number Header]",
+                    "key" : "[Address Number Header]",
+                    "type" : "expression"
+                },
+                "altLabel" : "[Address Number Header]"*/
+            },
+            "legend" : {
+                "show" : false,
+                "dock" : "auto",
+                "showTitle" : true
+            },
+            "visualization" : "piechart"
+        };
+
+        return props;
     }
 
     function createObjectElement ( animPoint ) {
@@ -297,15 +430,20 @@ define( [
 
         if ( chartType === 'bar' ) {
             objProps = getDefaultBarchartProps( id, dimensionObject, measureObject );
-        } else {
+        } else if ( chartType === 'line' ) {
             objProps = getDefaultLinechartProps( id, dimensionObject, measureObject );
+        } else {
+            objProps = getDefaultPiechartProps( id, dimensionObject, measureObject );
         }
 
         app.model.createSessionObject( objProps ).then(
             function success() {
                 app.getObject( self.objectElem, id ).then( function () {
-                    activateSnapshottingOfObject.call( self );
-                })
+                    // Await DOM element to come in place
+                    setTimeout( function () {
+                        activateSnapshottingOfObject.call( self );
+                    }, 10 );
+                } );
             }
         );
 
@@ -323,13 +461,20 @@ define( [
 
         // Make sure snapshot counter works - yes, this is an ugly hack
 
-        var self = this;
+        var self = this,
+            obj = objectScope.object || objectScope.$$childHead.object; // backwards compatibility
 
-        objectScope.$$childHead.object.loaded.then( function () {
+        obj.loaded.then( function () {
 
             // Switch layout temporarily go get the snapshot we want
-            self.object = objectScope.$$childHead.object;
-            self.object.ext.snapshot.canTakeSnapshot = false;
+            self.object = obj;
+
+            // backwards compatibility (older versions of qlik sense)
+            if ( self.object.ext.snapshot ) {
+                self.object.ext.snapshot.canTakeSnapshot = false;
+            } else if ( self.object.ext.support ) {
+                self.object.ext.support.snapshot = false;
+            }
 
             self.object.layout.qInfo.qId = gridScope.object.layout.qInfo.qId;
 
@@ -342,7 +487,13 @@ define( [
 
         var gridScope = this.$scope;
 
-        this.$scope.ext.snapshot.canTakeSnapshot = true;
+        // backwards compatibility (older versions of qlik sense)
+        if ( this.$scope.ext.snapshot ) {
+            this.$scope.ext.snapshot.canTakeSnapshot = true;
+        } else if ( this.$scope.ext.support ) {
+            this.$scope.ext.support.snapshot = true;
+        }
+
         gridScope.object.layout = gridScope.object.model.layout = gridScope.ext.model.layout = this.gridLayoutRef;
     }
 
@@ -368,7 +519,7 @@ define( [
 
             // To make selections toolbar visible
             self.$element.find( '.dataoverviewer' ).css( 'overflow', 'visible' );
-            self.$element.parents( '.qv-object' ).css( 'overflow', 'visible' );
+            self.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', 'visible' );
         }, animPoint ? animationTime : 0 );
 
     };
@@ -383,7 +534,7 @@ define( [
 
         // Prevent field titles from overflowing
         this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
-        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;
@@ -408,7 +559,7 @@ define( [
 
         // Prevent field titles from overflowing
         this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
-        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;

@@ -1,8 +1,7 @@
 define( [
-    'qlik',
     "./transform-tracker",
     "./utils"
-], function ( qlik, TransformTracker, utils ) {
+], function ( TransformTracker, utils ) {
 
     'use strict';
 
@@ -127,12 +126,78 @@ define( [
 
     }
 
+    function isPieDataValid ( dataPoints, total ) {
+
+        var validPieData = total > 0 && dataPoints[0].value > 0;
+
+        return validPieData;
+    }
+
+    function drawPieChart ( ctx, gX, gY, dataPoints, total, hasOthers, hasNullsWithinLimit ) {
+
+        // Check for zero or negative values
+        if ( !isPieDataValid( dataPoints, total ) ) {
+
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = "12px Verdana";
+            ctx.fillText( "Invalid data", gX + graphWidth / 2, gY + graphHeight / 2, graphWidth );
+
+            return;
+        }
+
+        var containsZerosOrNegatives = false;
+
+        var lastend = -Math.PI / 2;
+
+        var palette = utils.getPaletteForPieChart( dataPoints, total, hasOthers, hasNullsWithinLimit );
+
+        palette = palette ? palette.slice( 0 ) : [];
+
+        for ( var i = 0; i < dataPoints.length; i++ ) {
+
+            if ( dataPoints[i].value <= 0 ) {
+                containsZerosOrNegatives = true;
+                continue;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            if ( i < utils.PIE_CHART_OTHERS_LIMIT - 1 || !hasOthers ) {
+                if ( dataPoints[i].isNull ) {
+                    ctx.fillStyle = "#D2D2D2";
+                } else {
+                    ctx.fillStyle = palette.shift( 0 );
+                }
+                ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, lastend + ( Math.PI * 2 * ( dataPoints[i].value / total ) ), false );
+            }
+
+            ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            ctx.fill();
+            lastend += Math.PI * 2 * ( dataPoints[i].value / total );
+        }
+
+        if ( hasOthers ) {
+
+            ctx.beginPath();
+            ctx.moveTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+            ctx.fillStyle = "#A5A5A5";
+            ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, -Math.PI / 2, false );
+            ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            ctx.fill();
+        }
+    }
+
     function drawChartIcon ( ctx, chartType, gX, gY ) {
 
         ctx.fillStyle = "#A5A5A5";
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = "50px QlikView Icons";
+        ctx.font = "50px LUI icons";
 
         var charCode;
 
@@ -140,6 +205,8 @@ define( [
             charCode = '0x0021';
         } else if ( chartType === 'line' ) {
             charCode = '0x0025';
+        } else if ( chartType === 'pie' ) {
+            charCode = '0x0026';
         }
 
         ctx.fillText( String.fromCharCode( charCode ), gX + graphWidth / 2, gY + graphHeight / 2 - 4 );
@@ -321,18 +388,14 @@ define( [
 
                 gY = j * graphHeight + j * graphSpace + graphSpace / 2;
 
-                //ctx.clearRect( gX - ( graphSpace / 4 ), gY - ( graphHeight / 2 ), graphWidth + graphSpace / 2, graphHeight + graphSpace / 2);
-
-                //ctx.strokeStyle = 'green';
-                //ctx.strokeRect( gX, gY, graphWidth, graphHeight);
-                //ctx.strokeStyle = 'blue';
-
                 if ( !chartsAsIcons && dataPoints.length ) {
 
                     if ( chartType === 'bar' ) {
                         drawBarChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
                     } else if ( chartType === 'line' ) {
                         drawLineChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
+                    } else if ( chartType === 'pie' ) {
+                        drawPieChart( ctx, gX, gY, dataPoints, measure.total, measure.hasOthers, measure.hasNullsWithinLimit );
                     }
                 } else {
                     drawChartIcon( ctx, chartType, gX, gY );
@@ -433,7 +496,7 @@ define( [
         drawCanvas.call( this );
 
         if ( !this.isSnapshot && s > this.optimizer.zoomDataLimit && !Object.keys( this.animation ).length ) {
-            this.dataHandler.throttledUpdate( this.visibleArea, granularity, drawCanvas.bind( this ), dataInvalidated );
+            this.dataHandler.throttledUpdate( this.visibleArea, granularity, drawCanvas.bind( this ), dataInvalidated, this.chartType );
         }
     };
 
@@ -506,7 +569,7 @@ define( [
         var gridHeight = graphHeight + graphSpace,
             gridWidth = graphWidth + graphSpace,
             transformedPoint = this.ctx.transformedPoint( point.x, point.y ),
-            dimensionIndex = Math.floor( ( transformedPoint.x  ) / gridWidth),
+            dimensionIndex = Math.floor( ( transformedPoint.x  ) / gridWidth ),
             measureIndex = Math.floor( ( transformedPoint.y  ) / gridHeight );
 
         if ( this.dataHandler.matrix[dimensionIndex] && this.dataHandler.matrix[0].measures[measureIndex] ) {

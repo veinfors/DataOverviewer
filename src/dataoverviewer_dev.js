@@ -169,6 +169,16 @@ function ( qlik, template, DataHandler, utils, Renderer, EventHandler, Optimizer
                     setGridSnapshotData.call( this, layout );
                 }
             };
+
+            $scope.$on( "$destroy", function () {
+                var app = qlik.currApp();
+                app.model.Validated.unbind( $scope.newData );
+                $scope.object.model.Validated.unbind( $scope.propertiesChanged );
+                $scope.dataHandler.destroy();
+                $scope.realObject.destroy();
+                $scope.eventHandler.destroy();
+            } );
+
         }],
         paint: function() {
             this.onStateChanged = onStateChanged.bind( this );
@@ -260,14 +270,6 @@ function ( qlik, template, DataHandler, utils, Renderer, EventHandler, Optimizer
 					}
                 }
             }
-        },
-        destroy: function () {
-            var app = qlik.currApp();
-            app.model.Validated.unbind( this.$scope.newData );
-            this.$scope.object.model.Validated.unbind( this.$scope.propertiesChanged );
-            this.$scope.dataHandler.destroy();
-            this.$scope.realObject.destroy();
-            this.$scope.eventHandler.destroy();
         }
     };
 

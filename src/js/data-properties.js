@@ -61,7 +61,11 @@ function ( qlik, utils, template ) {
 			if ( fieldType === 'field' ) {
 				$scope.data.fields[axis].push( { name: fieldModel.qName, aggrFunc: fieldModel.aggrFunc || defaultAggrFunc } );
 			} else {
-				$scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title } );
+				if ( fieldType === 'measure' ) {
+                    $scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title, measure: fieldModel.qData.measure } );
+				} else {
+                    $scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title } );
+				}
 			}
 
 		}
@@ -74,6 +78,7 @@ function ( qlik, utils, template ) {
 		controller: ["$scope", "$element", function ( $scope, $element ) {
 
 			var unsubscribeSessionId;
+			var app = qlik.currApp( this );
 
 			$scope.aggrFunc = defaultAggrFunc;
 
@@ -99,17 +104,23 @@ function ( qlik, utils, template ) {
 				$scope.pickerForScopeId = null;
 			};
 
-			utils.subscribeFieldUpdates( function ( data ) {
+			utils.subscribeFieldUpdates( app, function ( data ) {
 
 				if ( $scope.definition.axis === 'x' ) {
-					$scope.dimensions = data.qDimensionList.qItems;
+					$scope.dimensions = data.qDimensionList.qItems.slice( 0 ).sort( function ( a, b ) {
+                        return utils.sort( a.qMeta.title, b.qMeta.title );
+                    } );
 					selectAccordingToProps( $scope.data.fields.x, $scope.dimensions, 'dimension' );
 				} else {
-					$scope.measures = data.qMeasureList.qItems;
+					$scope.measures = data.qMeasureList.qItems.slice( 0 ).sort( function ( a, b ) {
+                        return utils.sort( a.qMeta.title, b.qMeta.title );
+                    } );
 					selectAccordingToProps( $scope.data.fields.y, $scope.measures, 'measure' );
 				}
 
-				$scope.fields = data.qFieldList.qItems;
+				$scope.fields = data.qFieldList.qItems.slice( 0 ).sort( function ( a, b ) {
+                    return utils.sort( a.qName, b.qName );
+                } );
 				selectAccordingToProps( $scope.data.fields[$scope.definition.axis], $scope.fields, 'field' );
 
 				unsubscribeSessionId = data.qInfo.qId;

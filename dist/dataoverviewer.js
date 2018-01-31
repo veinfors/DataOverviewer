@@ -1,8 +1,8 @@
 
-define('text!html/template.html',[],function () { return '<div qv-extension class="dataoverviewer" ng-class="{\'interactive\': interactive, \'auto-mode\': autoMode, \'insufficient-fields\': dataHandler.insufficientFields }">\r\n\r\n\t<div class="dimension-titles-container" ng-show="!realObjectVisible" ng-style="dimensionTitlesPositioning" qva-context-menu="openContextMenu($event)">\r\n\t\t<span class="dimension-title" ng-repeat="dimension in dimensionTitles " title="{{dimension}}">{{dimension}}</span>\r\n\t</div>\r\n\t<div class="dimension-scrollbar" ng-style="dimensionScrollbar"></div>\r\n\t<div class="measure-titles-container" ng-show="!realObjectVisible" ng-style="measureTitlesPositioning" qva-context-menu="openContextMenu($event)">\r\n\t\t<span class="measure-title" ng-repeat="measure in measureTitles" title="{{measure}}">{{measure}}</span>\r\n\t</div>\r\n\t<div class="measure-scrollbar" ng-style="measureScrollbar"></div>\r\n\t<canvas class="grid-canvas" qva-activate="openRealObject($event)"></canvas>\r\n\r\n\t<button class="qui-plainbuttonicon settings-button" ng-if="!realObjectVisible && interactive" ng-class="{\'qui-active\': settingsOpen}" qva-activate="openSettings($event)" data-icon="V" title="Settings"></button>\r\n\t<button class="qui-plainbuttonicon reset-zoom" ng-if="!realObjectVisible && interactive" qva-activate="resetZoom()" data-icon="ü" title="Reset zoom"></button>\r\n\t<button class="qui-plainbuttonicon zoom-in" ng-if="!realObjectVisible && interactive" qva-activate="zoomIn()" data-icon="Y" title="Zoom in"></button>\r\n\t<button class="qui-plainbuttonicon zoom-out" ng-if="!realObjectVisible && interactive" qva-activate="zoomOut()" data-icon="Z" title="Zoom out"></button>\r\n\t<button class="qui-plainbuttonicon close-real-object" ng-if="realObjectVisible && interactive" qva-activate="closeRealObject()" data-icon="E" title="Close"></button>\r\n\r\n\t<div class="settings-container" ng-show="settingsOpen" qva-outside="closeSettings($event)">\r\n\t\t\t<button class="chart-type-bar chart-btn qui-plainbuttonicon" qva-activate="setChartType( \'bar\' )" data-icon="!" title="Bar chart"></button>\r\n\t\t\t<button class="chart-type-line chart-btn qui-plainbuttonicon" qva-activate="setChartType( \'line\' )" data-icon="%" title="Line chart"></button>\r\n\t\t\t<p class="do-props-aggr-picker-label" ng-if="autoMode">Aggregation function</p>\r\n\t\t\t<div class="qui-buttongroup aggr-btn-group" ng-if="autoMode">\r\n\t\t\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Sum\'}" qva-activate="setAggrFunc(\'Sum\')"><span>Sum</span></button>\r\n\t\t\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Avg\'}" qva-activate="setAggrFunc(\'Avg\')"><span>Avg</span></button>\r\n\t\t\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Count\'}" qva-activate="setAggrFunc(\'Count\')"><span>Count</span></button>\r\n\t\t\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Max\'}" qva-activate="setAggrFunc(\'Max\')"><span>Max</span></button>\r\n\t\t\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Min\'}" qva-activate="setAggrFunc(\'Min\')"><span>Min</span></button>\r\n\t\t\t</div>\r\n\t</div>\r\n\t<div class="do-needs-x-and-y-fields">Needs data on X and Y axis</div>\r\n</div>';});
+define('text!html/template.html',[],function () { return '<div qv-extension class="dataoverviewer" ng-class="{\'interactive\': interactive, \'auto-mode\': autoMode, \'insufficient-fields\': dataHandler.insufficientFields }">\r\n\r\n\t<div class="dimension-titles-container" ng-show="!realObjectVisible" ng-style="dimensionTitlesPositioning" qva-context-menu="openContextMenu($event)">\r\n\t\t<span class="dimension-title" ng-repeat="dimension in dimensionTitles " title="{{dimension}}">{{dimension}}</span>\r\n\t</div>\r\n\t<div class="dimension-scrollbar" ng-style="dimensionScrollbar"></div>\r\n\t<div class="measure-titles-container" ng-show="!realObjectVisible" ng-style="measureTitlesPositioning" qva-context-menu="openContextMenu($event)">\r\n\t\t<span class="measure-title" ng-repeat="measure in measureTitles" title="{{measure}}">{{measure}}</span>\r\n\t</div>\r\n\t<div class="measure-scrollbar" ng-style="measureScrollbar"></div>\r\n\t<canvas class="grid-canvas" qva-activate="openRealObject($event)"></canvas>\r\n\r\n\t<button class="qui-plainbuttonicon settings-button" ng-if="!realObjectVisible && interactive" ng-class="{\'qui-active\': settingsOpen}" qva-activate="openSettings($event)" data-icon="V" title="Settings"></button>\r\n\t<button class="qui-plainbuttonicon reset-zoom" ng-if="!realObjectVisible && interactive" qva-activate="resetZoom()" data-icon="ü" title="Reset zoom"></button>\r\n\t<button class="qui-plainbuttonicon zoom-in" ng-if="!realObjectVisible && interactive" qva-activate="zoomIn()" data-icon="Y" title="Zoom in"></button>\r\n\t<button class="qui-plainbuttonicon zoom-out" ng-if="!realObjectVisible && interactive" qva-activate="zoomOut()" data-icon="Z" title="Zoom out"></button>\r\n\t<button class="qui-plainbuttonicon close-real-object" ng-if="realObjectVisible && interactive" qva-activate="closeRealObject()" data-icon="E" title="Close"></button>\r\n\r\n\t<div class="settings-container" ng-show="settingsOpen" qva-outside="closeSettings($event)">\r\n\t\t\t<button class="chart-type-bar chart-btn qui-plainbuttonicon" qva-activate="setChartType( \'bar\' )" data-icon="!" title="Bar chart"></button>\r\n\t\t\t<button class="chart-type-line chart-btn qui-plainbuttonicon" qva-activate="setChartType( \'line\' )" data-icon="%" title="Line chart"></button>\r\n\t\t\t<button class="chart-type-pie chart-btn qui-plainbuttonicon" qva-activate="setChartType( \'pie\' )" data-icon="&" title="Pie chart"></button>\r\n\t\t\t<p class="do-props-aggr-picker-label" ng-if="autoMode">Aggregation function</p>\r\n\t\t\t<div class="lui-buttongroup aggr-btn-group" ng-if="autoMode">\r\n\t\t\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Sum\'}" qva-activate="setAggrFunc(\'Sum\')"><span>Sum</span></button>\r\n\t\t\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Avg\'}" qva-activate="setAggrFunc(\'Avg\')"><span>Avg</span></button>\r\n\t\t\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Count\'}" qva-activate="setAggrFunc(\'Count\')"><span>Count</span></button>\r\n\t\t\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Max\'}" qva-activate="setAggrFunc(\'Max\')"><span>Max</span></button>\r\n\t\t\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Min\'}" qva-activate="setAggrFunc(\'Min\')"><span>Min</span></button>\r\n\t\t\t</div>\r\n\t</div>\r\n\t<div class="do-needs-x-and-y-fields">Needs data on X and Y axis</div>\r\n</div>';});
 
-define( 'js/utils',["qlik"],
-function ( qlik ) {
+define( 'js/utils',[],
+function () {
 
     'use strict';
 
@@ -67,10 +67,9 @@ function ( qlik ) {
          * Notifies callback every time fields, dimensions or measures are changed + initial fetch
          * @param callback
          */
-        subscribeFieldUpdates: function ( callback ) {
+        subscribeFieldUpdates: function ( app, callback ) {
 
-            var app = qlik.currApp( this ),
-                initialFetch = true, // Used for perf optimization
+            var initialFetch = true, // Used for perf optimization
                 lastJSONString = '';
 
             return app.createGenericObject( {
@@ -85,7 +84,12 @@ function ( qlik ) {
                     "qType": "dimension"
                 },
                 "qMeasureListDef": {
-                    "qType": "measure"
+                    "qType": "measure",
+                    "qData": {
+                        "title": "/title",
+                        "tags": "/tags",
+                        "measure": "/qMeasure"
+                    }
                 }
             }, function ( data ) {
 
@@ -102,6 +106,39 @@ function ( qlik ) {
                     initialFetch = false;
                 }
             } );
+        },
+
+        colorPalette: [
+            [ "#4477aa" ],
+            [ "#4477aa", "#cc6677" ],
+            [ "#4477aa", "#ddcc77", "#cc6677" ],
+            [ "#4477aa", "#117733", "#ddcc77", "#cc6677" ],
+            [ "#332288", "#88ccee", "#117733", "#ddcc77", "#cc6677" ],
+            [ "#332288", "#88ccee", "#117733", "#ddcc77", "#cc6677", "#aa4499" ],
+            [ "#332288", "#44aa99", "#88ccee", "#117733", "#ddcc77", "#cc6677", "#aa4499" ],
+            [ "#332288", "#44aa99", "#88ccee", "#117733", "#999933", "#ddcc77", "#cc6677", "#aa4499" ],
+            [ "#332288", "#44aa99", "#88ccee", "#117733", "#999933", "#ddcc77", "#cc6677", "#882255", "#aa4499" ],
+            [ "#332288", "#44aa99", "#88ccee", "#117733", "#999933", "#ddcc77", "#661100", "#cc6677", "#882255", "#aa4499" ],
+            [ "#332288", "#6699cc", "#44aa99", "#88ccee", "#117733", "#999933", "#ddcc77", "#661100", "#cc6677", "#882255", "#aa4499" ],
+            [ "#332288", "#6699cc", "#88ccee", "#44aa99", "#117733", "#999933", "#ddcc77", "#661100", "#cc6677", "#aa4466", "#882255", "#aa4499" ]
+        ],
+
+        PIE_CHART_OTHERS_LIMIT: 10,
+
+        getPaletteForPieChart: function ( dataPoints, total, hasOthers, hasNullsWithinLimit ) {
+
+
+            /*  if ( hasOthers && hasNullsWithinLimit ) {
+                    palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 3, dataPoints.length - 3 )];
+                } else if ( hasOthers || hasNullsWithinLimit ) {
+                    palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 2 )];
+                } else {
+                    palette = utils.colorPalette[Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1, dataPoints.length - 1 )];
+                }
+            */
+
+            var paletteIndex = Math.min( utils.PIE_CHART_OTHERS_LIMIT - 1 - ( hasOthers ? 1 : 0 ) - ( hasNullsWithinLimit ? 1 : 0 ), dataPoints.length - 1 - ( hasNullsWithinLimit ? 1 : 0 ) );
+            return this.colorPalette[paletteIndex] || [];
         }
 
     };
@@ -119,9 +156,22 @@ define( 'js/data-handler',[
 
     var noop = function () {};
 
+    var PIE_MEASURE_EXPR = "=concat(num(aggr(if(rank({{aggr_func}}({{measure}}),4)<=" + ( utils.PIE_CHART_OTHERS_LIMIT ) + ",{{aggr_func}}({{measure}})),[{{dimension}}])),';')";
+    //var PIE_TOTALS_ATTR_EXPR = "=if({{aggr_func}}([{{measure}}])>0,{{aggr_func}}(TOTAL aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
+    //var PIE_TOTALS_ATTR_EXPR = "={{aggr_func}}(if(3 > 2, TOTAL aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
+
+    // &'' in the end of attribute expressions to get the same number formatting as in the expression (needed for comparison...)
+    //var PIE_OTHERS_ATTR_EXP = "={{aggr_func}}(aggr(if(num(rank({{aggr_func}}([{{measure}}]),4))>" + ( utils.PIE_CHART_OTHERS_LIMIT - 1 ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}]))&''";
+    var PIE_OTHERS_ATTR_EXP = "=if((nullcount([{{dimension}}])+count([{{dimension}}]))=" + utils.PIE_CHART_OTHERS_LIMIT + ",0,sum(aggr(if(num(rank({{aggr_func}}({{measure}}),4))>" + ( utils.PIE_CHART_OTHERS_LIMIT - 1 ) + ",{{aggr_func}}({{measure}})),[{{dimension}}])))&''";
+
+    //var PIE_TOTALS_ATTR_EXPR = "=num(aggr(if(not IsNull([{{dimension}}]) and rank({{aggr_func}}([{{measure}}]),4)>" + ( utils.PIE_CHART_OTHERS_LIMIT ) + ",{{aggr_func}}([{{measure}}])),[{{dimension}}]))";
+
+    //var PIE_TOTALS_ATTR_EXPR = "=if({{aggr_func}}([{{measure}}])>0,rangesum(aggr({{aggr_func}}([{{measure}}]),[{{dimension}}])))";
+    var PIE_NULLSUM_ATTR_EXPR = "=num(aggr(if(IsNull([{{dimension}}]),{{aggr_func}}({{measure}})),[{{dimension}}]))&''";
+
     /* Private functions */
 
-    function isDimension( field ) {
+    function isDimension ( field ) {
 
         if ( this.fieldsAsDimension.contains( field.qName ) ) {
             return true;
@@ -131,7 +181,7 @@ define( 'js/data-handler',[
 
         var isDim = false;
 
-        field.qTags.forEach( function( value ) {
+        field.qTags.forEach( function ( value ) {
 
             //if ( value === '$ascii' || value === '$text' || value === '$key' || value === '$timestamp' || value === '$date' ) {
             if ( value.match( /^(\$ascii|\$text|\$key|\$timestamp|\$date|\$geopolygon)$/ ) ) {
@@ -146,34 +196,61 @@ define( 'js/data-handler',[
         return isDim;
     }
 
+    function getNullDataPointIndex ( dataPoints, nullSum ) {
+
+        var index = -1;
+
+        if ( nullSum ) {
+            // Note: iterate backards - That will mimic the pie chart in sense - placing null last of equally sized siblings...
+            for ( var i = dataPoints.length - 1; i >= 0; i-- ) {
+                if ( dataPoints[i].value === nullSum ) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        return index;
+
+    }
+
     // Create a session based (transient) cube to allow property update and no persistance
     function createCube () {
 
         var self = this,
-            app = qlik.currApp( this );
+            app = qlik.currApp( this ),
+            objectModel;
 
         app.createGenericObject( {
-            "qHyperCubeDef":{},
-            "qInfo":{"qType":"mashup",
-            "qId": 'id-' + Date.now() }
+            "qHyperCubeDef": {},
+            "qInfo": {
+                "qType": "mashup",
+                "qId": 'id-' + Date.now()
+            }
         }, function ( reply, app ) {
             app.getObject( reply.qInfo.qId ).then( function ( model ) {
-                model.getProperties().then( function () {
-                    self.sessionCube = model;
-                    model.Invalidated.unbind(); // only once!
+                objectModel = typeof model.getProperties === "function" ? model : model.model; // Backwards compatibility
+
+                objectModel.getProperties().then( function () {
+                    self.sessionCube = objectModel;
+                    objectModel.Invalidated.unbind(); // only once!
                     self.proceedUpdate();
-                });
+                } );
             } );
         } );
     }
 
     function updateCubeProps ( sessionCube, newCubeProps, updated ) {
 
-        $.extend( sessionCube.properties.qHyperCubeDef, newCubeProps, true );
 
-        sessionCube.save().then( function () {
-            sessionCube.getLayout().then( function ( cubeLayout ) {
-                updated( cubeLayout );
+        sessionCube.getProperties().then( function ( props ) {
+
+            $.extend( props.qHyperCubeDef, newCubeProps, true );
+
+            sessionCube.setProperties( props ).then( function () {
+                sessionCube.getLayout().then( function ( cubeLayout ) {
+                    updated( cubeLayout );
+                } );
             } );
         } );
 
@@ -196,16 +273,14 @@ define( 'js/data-handler',[
             dimLibraryId = this.matrix[dimIndex].libraryId;
 
         var newCubeProps = {
-            qDimensions: [ {
+            qDimensions: [{
                 qLibraryId: dimLibraryId,
                 qDef: {
                     qFieldDefs: dimName ? [dimName] : [],
                     autoSort: true
-                },
-                qNullSuppression: true
-            } ],
+                }
+            }],
             qMeasures: [],
-            qSuppressMissing: true,
             qAlwaysFullyExpanded: true
         };
 
@@ -231,14 +306,122 @@ define( 'js/data-handler',[
 
         if ( newCubeProps.qMeasures.length ) {
             updateCubeProps( this.sessionCube, newCubeProps, function ( cubeLayout ) {
-                fetchCubeData.call( self, newCubeProps, cubeLayout, dimIndex, dataInvalidated );
+                fetchReducedDataForOneDim.call( self, newCubeProps, cubeLayout, dimIndex, dataInvalidated );
             } );
         } else {
             getReducedDataForDimension.call( this, dimIndex + 1, dataInvalidated );
         }
     }
 
-    function fetchCubeData ( newCubeProps, cubeLayout, dimIndex, dataInvalidated ) {
+    function prepPieMeasureExpression ( aggrFunc, measure, dimension ) {
+
+        var expression = PIE_MEASURE_EXPR;
+
+        expression = expression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
+        expression = expression.replace(/\{\{measure\}\}/g, aggrFunc ? '[' + measure + ']' : measure );
+        expression = expression.replace(/\{\{dimension\}\}/g, dimension );
+
+        return expression;
+    }
+
+    function prepPieMeasureAttrOthersExpr ( aggrFunc, measure, dimension ) {
+
+        var attrExpression = PIE_OTHERS_ATTR_EXP;
+
+        attrExpression = attrExpression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
+        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, aggrFunc ? '[' + measure + ']' : measure );
+        attrExpression = attrExpression.replace(/\{\{dimension\}\}/g, dimension );
+
+        return attrExpression;
+    }
+
+    function prepPieMeasureAttrNullSumExpr ( aggrFunc, measure, dimension ) {
+
+        var attrExpression = PIE_NULLSUM_ATTR_EXPR;
+
+        attrExpression = attrExpression.replace(/\{\{aggr_func\}\}/g, aggrFunc );
+        attrExpression = attrExpression.replace(/\{\{measure\}\}/g, aggrFunc ? '[' + measure + ']' : measure );
+        attrExpression = attrExpression.replace(/\{\{dimension\}\}/g, dimension );
+
+        return attrExpression;
+    }
+
+    // Iterate through all measures and add the data to "matrix" - then call drawCallback
+    function getPieDataForDimension ( dimIndex, dataInvalidated ) {
+
+        this.fetchInProgress = true;
+
+        if ( this.cancelling || dimIndex >= this.rect.left + this.rect.width ) {
+            this.fetchInProgress = false;
+            if ( this.cancelling ) {
+                this.cancelling();
+            }
+            return;
+        }
+
+        var dummyDimExpression = "ValueList('dummy')",
+            dimName = this.matrix[dimIndex].name,
+            dimLibraryId = this.matrix[dimIndex].libraryId;
+
+        var newCubeProps = {
+            qDimensions: [{
+                qDef: {
+                    qFieldDefs: [dummyDimExpression]
+                }
+            }],
+            qMeasures: [],
+            qSuppressMissing: true,
+            qAlwaysFullyExpanded: true
+        };
+
+        var measureName, measureAggrFunc, measureLibraryId, measureExpression, othersAttributeExpression, nullSumAttrExpression, measureDef;
+
+        for ( var i = this.rect.top; i < this.rect.top + this.rect.height; i++ ) {
+            if ( dataInvalidated || this.granularity !== this.matrix[dimIndex].measures[i].granularity ) {
+
+                measureName = this.matrix[dimIndex].measures[i].name;
+                measureLibraryId = this.matrix[dimIndex].measures[i].libraryId;
+                if ( measureLibraryId ) {
+                    measureAggrFunc = '';
+                    measureDef = measureLibraryId = this.matrix[dimIndex].measures[i].measure.qDef;
+                } else {
+                    measureAggrFunc = this.matrix[dimIndex].measures[i].aggrFunc || this.aggrFunc;
+                }
+
+                measureExpression = prepPieMeasureExpression( measureAggrFunc, measureName || measureDef, dimName || dimLibraryId );
+                othersAttributeExpression = prepPieMeasureAttrOthersExpr( measureAggrFunc, measureName || measureDef, dimName || dimLibraryId );
+                nullSumAttrExpression = prepPieMeasureAttrNullSumExpr( measureAggrFunc, measureName || measureDef, dimName || dimLibraryId );
+
+                newCubeProps.qMeasures.push( {
+                    measureIndex: i,
+                    qDef: {
+                        qDef: measureExpression
+                    },
+                    qAttributeExpressions: [
+                        {
+                            qExpression: othersAttributeExpression
+                        },
+                        {
+                            qExpression: nullSumAttrExpression
+                        }
+                    ],
+                    qIsAutoFormat: false
+                } );
+            }
+        }
+
+        var self = this;
+
+        if ( newCubeProps.qMeasures.length ) {
+            updateCubeProps( this.sessionCube, newCubeProps, function ( cubeLayout ) {
+                fetchPieDataForOneDim.call( self, newCubeProps, cubeLayout, dimIndex, dataInvalidated );
+            } );
+        } else {
+            getPieDataForDimension.call( this, dimIndex + 1, dataInvalidated );
+        }
+    }
+
+    function fetchReducedDataForOneDim ( newCubeProps, cubeLayout, dimIndex, dataInvalidated ) {
 
         var self = this,
             pages = [{
@@ -248,8 +431,11 @@ define( 'js/data-handler',[
                 qHeight: this.granularity//500
             }];
 
-        self.sessionCube.rpc( "GetHyperCubeReducedData", "qDataPages", ['/qHyperCubeDef', pages, -1, "D1"]).then( function ( p ) {
-        //self.sessionCube.rpc( "GetHyperCubeData", "qDataPages", ["/qHyperCubeDef", pages]).then( function ( p ) {
+        // Keep 2 variants for backwards compatibility (old Qlik Sense versions)
+        var reducedDataPromise = self.sessionCube.rpc ? self.sessionCube.rpc( "GetHyperCubeReducedData", "qDataPages", ['/qHyperCubeDef', pages, -1, "D1"] )
+            : self.sessionCube.getHyperCubeReducedData( "/qHyperCubeDef", pages, -1, "D1" );
+
+        reducedDataPromise.then( function ( p ) {
 
             // Add to matrix
 
@@ -274,7 +460,84 @@ define( 'js/data-handler',[
         } );
     }
 
-    function update ( newRect, newGranularity, drawCallback, dataInvalidated ) {
+    function fetchPieDataForOneDim ( newCubeProps, cubeLayout, dimIndex, dataInvalidated ) {
+
+        var self = this,
+            pages = [{
+                qTop: 0,
+                qLeft: 0,
+                qWidth: newCubeProps.qMeasures.length + 1,
+                qHeight: this.granularity//500
+            }];
+
+        var dataPromise = self.sessionCube.getHyperCubeData( "/qHyperCubeDef", pages );
+
+        dataPromise.then( function ( p ) {
+
+            // Add to matrix
+
+            var index, nullSum, dataPoints, nullDataPointIndex, othersSum, qText, total;
+
+            for ( var i = 0; i < newCubeProps.qMeasures.length; i++ ) {
+
+                total = 0;
+
+                index = newCubeProps.qMeasures[i].measureIndex;
+
+                qText = p[0].qMatrix[0][i].qText;
+
+                dataPoints = [];
+
+                if ( qText ) {
+                    dataPoints = qText.split( ";" ).map( function ( value ) {
+                        return {
+                            isNull: false,
+                            value: parseFloat( value )
+                        };
+                    } );
+                }
+
+                dataPoints.sort( function ( a, b ) {
+                    return utils.sort( b.value, a.value );
+                } );
+
+                othersSum = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[0].qNum ) || 0;
+
+                if ( othersSum ) {
+                    dataPoints.pop();
+                }
+
+                nullSum = parseFloat( p[0].qMatrix[0][i].qAttrExps.qValues[1].qNum ) || 0;
+                nullDataPointIndex = getNullDataPointIndex( dataPoints, nullSum );
+
+                if ( nullDataPointIndex > -1 ) {
+                    dataPoints[nullDataPointIndex].isNull = true;
+                }
+
+                dataPoints.forEach( function ( d ) {
+                    total += d.value;
+                } );
+
+                total += othersSum;
+
+                self.matrix[dimIndex].measures[index]['data'] = dataPoints;
+
+                self.matrix[dimIndex].measures[index]['othersSum'] = othersSum;
+                self.matrix[dimIndex].measures[index]['total'] = total;
+
+                self.matrix[dimIndex].measures[index]['hasOthers'] = !!othersSum;
+                self.matrix[dimIndex].measures[index]["hasNullsWithinLimit"] = nullDataPointIndex > -1;
+
+                self.matrix[dimIndex].measures[index]['granularity'] = self.granularity;
+            }
+
+            // Keep fetching...
+            self.drawCallback( self.matrix, self.rect );
+            getPieDataForDimension.call( self, dimIndex + 1, dataInvalidated );
+        } );
+    }
+
+    function update ( newRect, newGranularity, drawCallback, dataInvalidated, chartType ) {
 
         this.drawCallback = drawCallback;
 
@@ -285,6 +548,8 @@ define( 'js/data-handler',[
         }
 
         function proceedUpdate () {
+
+            var self = this;
 
             this.proceedUpdate = noop;
 
@@ -298,10 +563,13 @@ define( 'js/data-handler',[
                 // start new fetch
                 this.rect = newRect; // Careful! extend object?
                 this.granularity = newGranularity;
-                getReducedDataForDimension.call( this, this.rect.left, dataInvalidated );
+                if ( chartType === "pie" ) {
+                    getPieDataForDimension.call( this, this.rect.left, dataInvalidated );
+                } else {
+                    getReducedDataForDimension.call( this, this.rect.left, dataInvalidated );
+                }
             } else if ( this.fetchInProgress ) {
 
-                // Note: cancelling ongoing requests are not fully supported - therefore wait for ongoing requests to finish
                 // Will await ongoing dimension fetch before starting to fetch new data
 
                 self.cancelling = function () {
@@ -309,7 +577,11 @@ define( 'js/data-handler',[
                     self.rect = self.nextRect; // Careful! extend object?
                     self.granularity = self.nextGranularity;
                     // Start new fetch!
-                    getReducedDataForDimension.call( self, self.rect.left, dataInvalidated );
+                    if ( chartType === "pie" ) {
+                        getPieDataForDimension.call( self, self.rect.left, dataInvalidated );
+                    } else {
+                        getReducedDataForDimension.call( self, self.rect.left, dataInvalidated );
+                    }
                 };
 
             }
@@ -382,9 +654,10 @@ define( 'js/data-handler',[
         }
 
         var self = this,
-            startTime = Date.now();
+            startTime = Date.now(),
+            app = qlik.currApp( self );
 
-        utils.subscribeFieldUpdates( function ( data, initialFetch ) {
+        utils.subscribeFieldUpdates( app, function ( data, initialFetch ) {
             var responseTime = Date.now() - startTime;
 
             self.fields = data;
@@ -405,7 +678,7 @@ define( 'js/data-handler',[
 
         var i, j, matrix = this.matrix;
 
-        for ( i = 0; i <  matrix.length; i++ ) {
+        for ( i = 0; i < matrix.length; i++ ) {
             for ( j = 0; j < matrix[i].measures.length; j++ ) {
                 delete matrix[i].measures[j].granularity;
                 matrix[i].measures[j].data = [];
@@ -426,7 +699,7 @@ define( 'js/data-handler',[
 
         // Support old objects missing fields settings
         if ( !fieldProps || fieldProps.auto ) {
-            this.fields.qFieldList.qItems.forEach( function( item ) {
+            this.fields.qFieldList.qItems.forEach( function ( item ) {
 
                 if ( isDimension.call( self, item ) ) {
                     self.matrix.push( { name: item.qName, measures: [] } );
@@ -442,7 +715,14 @@ define( 'js/data-handler',[
                 } );
 
                 fieldProps.y.forEach( function ( item ) {
-                    measures.push( { libraryId: item.id, title: item.title, name: item.name, aggrFunc: item.aggrFunc, data: [] } );
+                    measures.push( {
+                        libraryId: item.id,
+                        title: item.title,
+                        measure: item.measure,
+                        name: item.name,
+                        aggrFunc: item.aggrFunc,
+                        data: []
+                    } );
                 } );
             }
         }
@@ -454,7 +734,14 @@ define( 'js/data-handler',[
         self.matrix.forEach( function ( dimension ) {
             dimension['measures'] = [];
             measures.forEach( function ( measure ) {
-                dimension['measures'].push( { libraryId: measure.libraryId, title: measure.title, name: measure.name, aggrFunc: measure.aggrFunc, data: [] } );
+                dimension['measures'].push( {
+                    libraryId: measure.libraryId,
+                    title: measure.title,
+                    measure: measure.measure,
+                    name: measure.name,
+                    aggrFunc: measure.aggrFunc,
+                    data: []
+                } );
             } );
         } );
 
@@ -466,7 +753,7 @@ define( 'js/data-handler',[
 
         // Destroy session objects to unsubscribe from data updates
         if ( this.sessionCube ) {
-            this.sessionCube.close();
+            qlik.currApp().destroySessionObject( this.sessionCube.id );
         }
 
         if ( this.fields ) {
@@ -584,10 +871,9 @@ define( 'js/transform-tracker',[], function () {
     return transformTracker;
 } );
 define( 'js/renderer',[
-    'qlik',
     "./transform-tracker",
     "./utils"
-], function ( qlik, TransformTracker, utils ) {
+], function ( TransformTracker, utils ) {
 
     'use strict';
 
@@ -712,12 +998,78 @@ define( 'js/renderer',[
 
     }
 
+    function isPieDataValid ( dataPoints, total ) {
+
+        var validPieData = total > 0 && dataPoints[0].value > 0;
+
+        return validPieData;
+    }
+
+    function drawPieChart ( ctx, gX, gY, dataPoints, total, hasOthers, hasNullsWithinLimit ) {
+
+        // Check for zero or negative values
+        if ( !isPieDataValid( dataPoints, total ) ) {
+
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = "12px Verdana";
+            ctx.fillText( "Invalid data", gX + graphWidth / 2, gY + graphHeight / 2, graphWidth );
+
+            return;
+        }
+
+        var containsZerosOrNegatives = false;
+
+        var lastend = -Math.PI / 2;
+
+        var palette = utils.getPaletteForPieChart( dataPoints, total, hasOthers, hasNullsWithinLimit );
+
+        palette = palette ? palette.slice( 0 ) : [];
+
+        for ( var i = 0; i < dataPoints.length; i++ ) {
+
+            if ( dataPoints[i].value <= 0 ) {
+                containsZerosOrNegatives = true;
+                continue;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            if ( i < utils.PIE_CHART_OTHERS_LIMIT - 1 || !hasOthers ) {
+                if ( dataPoints[i].isNull ) {
+                    ctx.fillStyle = "#D2D2D2";
+                } else {
+                    ctx.fillStyle = palette.shift( 0 );
+                }
+                ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, lastend + ( Math.PI * 2 * ( dataPoints[i].value / total ) ), false );
+            }
+
+            ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            ctx.fill();
+            lastend += Math.PI * 2 * ( dataPoints[i].value / total );
+        }
+
+        if ( hasOthers ) {
+
+            ctx.beginPath();
+            ctx.moveTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+            ctx.fillStyle = "#A5A5A5";
+            ctx.arc( gX + graphWidth / 2, gY + graphHeight / 2, graphHeight / 2, lastend, -Math.PI / 2, false );
+            ctx.lineTo( gX + graphWidth / 2, gY + graphHeight / 2 );
+
+            ctx.fill();
+        }
+    }
+
     function drawChartIcon ( ctx, chartType, gX, gY ) {
 
         ctx.fillStyle = "#A5A5A5";
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = "50px QlikView Icons";
+        ctx.font = "50px LUI icons";
 
         var charCode;
 
@@ -725,6 +1077,8 @@ define( 'js/renderer',[
             charCode = '0x0021';
         } else if ( chartType === 'line' ) {
             charCode = '0x0025';
+        } else if ( chartType === 'pie' ) {
+            charCode = '0x0026';
         }
 
         ctx.fillText( String.fromCharCode( charCode ), gX + graphWidth / 2, gY + graphHeight / 2 - 4 );
@@ -906,18 +1260,14 @@ define( 'js/renderer',[
 
                 gY = j * graphHeight + j * graphSpace + graphSpace / 2;
 
-                //ctx.clearRect( gX - ( graphSpace / 4 ), gY - ( graphHeight / 2 ), graphWidth + graphSpace / 2, graphHeight + graphSpace / 2);
-
-                //ctx.strokeStyle = 'green';
-                //ctx.strokeRect( gX, gY, graphWidth, graphHeight);
-                //ctx.strokeStyle = 'blue';
-
                 if ( !chartsAsIcons && dataPoints.length ) {
 
                     if ( chartType === 'bar' ) {
                         drawBarChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
                     } else if ( chartType === 'line' ) {
                         drawLineChart( ctx, gX, gY, dataPoints, measure.max, measure.min );
+                    } else if ( chartType === 'pie' ) {
+                        drawPieChart( ctx, gX, gY, dataPoints, measure.total, measure.hasOthers, measure.hasNullsWithinLimit );
                     }
                 } else {
                     drawChartIcon( ctx, chartType, gX, gY );
@@ -1018,7 +1368,7 @@ define( 'js/renderer',[
         drawCanvas.call( this );
 
         if ( !this.isSnapshot && s > this.optimizer.zoomDataLimit && !Object.keys( this.animation ).length ) {
-            this.dataHandler.throttledUpdate( this.visibleArea, granularity, drawCanvas.bind( this ), dataInvalidated );
+            this.dataHandler.throttledUpdate( this.visibleArea, granularity, drawCanvas.bind( this ), dataInvalidated, this.chartType );
         }
     };
 
@@ -1091,7 +1441,7 @@ define( 'js/renderer',[
         var gridHeight = graphHeight + graphSpace,
             gridWidth = graphWidth + graphSpace,
             transformedPoint = this.ctx.transformedPoint( point.x, point.y ),
-            dimensionIndex = Math.floor( ( transformedPoint.x  ) / gridWidth),
+            dimensionIndex = Math.floor( ( transformedPoint.x  ) / gridWidth ),
             measureIndex = Math.floor( ( transformedPoint.y  ) / gridHeight );
 
         if ( this.dataHandler.matrix[dimensionIndex] && this.dataHandler.matrix[0].measures[measureIndex] ) {
@@ -1289,6 +1639,13 @@ define( 'js/event-handler',[
             activeChartBtn.className = activeChartBtn.className.replace( ' active-charttype', '' );
         }
 
+        var invalidateData = false;
+
+        if ( $scope.chartType !== newType && newType === "pie" || $scope.chartType === "pie" ) {
+            $scope.dataHandler.clearMatrixData();
+            invalidateData = true; // invalidate data when changing from/to pie chart (different data model)
+        }
+
         // Change current chartType and re-draw chart
         $scope.chartType = newType || $scope.chartType;
 
@@ -1300,7 +1657,7 @@ define( 'js/event-handler',[
         if ( this.realObject.visible ) {
             this.realObject.updateChartType( $scope.chartType );
         } else {
-            this.renderer.render();
+            this.renderer.render( invalidateData );
         }
 
         // Add "active chart" class to correct button
@@ -1702,8 +2059,9 @@ define( 'js/field-handler',[], function () {
 
 } );
 define( 'js/real-object',[
-    "qlik"
-], function ( qlik ) {
+    "qlik",
+    "./utils"
+], function ( qlik, utils ) {
 
     var animationTime = 400;
 
@@ -1845,8 +2203,7 @@ define( 'js/real-object',[
                 "max": 10,
                 "logarithmic": false
             },
-            "visualization": "linechart",
-            "version": 0.96
+            "visualization": "linechart"
         };
 
         return props;
@@ -1951,12 +2308,145 @@ define( 'js/real-object',[
                 "min": 0,
                 "max": 10
             },
-            "visualization": "barchart",
-            "version": 0.96
+            "visualization": "barchart"
         };
 
         return props;
 
+    }
+
+    function getDefaultPiechartProps ( id, dimensionObject, measureObject ) {
+
+        dimensionObject.qOtherTotalSpec = {
+            "qOtherMode" : "OTHER_COUNTED",
+                "qOtherCounted" : {
+                "qv" : "" + utils.PIE_CHART_OTHERS_LIMIT
+            },
+            "qOtherLimit" : {
+                "qv" : "0"
+            },
+            "qOtherLimitMode" : "OTHER_GE_LIMIT",
+                "qForceBadValueKeeping" : true,
+                "qApplyEvenWhenPossiblyWrongResult" : true,
+                "qOtherSortMode" : "OTHER_SORT_DESCENDING",
+                "qTotalMode" : "TOTAL_OFF",
+                "qReferencedExpression" : {}
+        };
+
+        dimensionObject.qDef.othersLabel = "Others";
+
+        dimensionObject.qDef.qSortCriterias = [{
+            "qSortByAscii" : 1,
+            "qSortByLoadOrder" : 1,
+            "qExpression" : {}
+        }];
+
+        dimensionObject.qAttributeDimensions = [{
+            "qDef": dimensionObject.qDef.qFieldDefs[0],
+            "qSortBy": {
+                "qSortByAscii": 1,
+                "qExpression": {}
+            },
+            "id": "colorByAlternative",
+            "label": dimensionObject.qDef.qFieldDefs[0]
+        }];
+
+        measureObject.qSortBy = {
+            "qSortByNumeric" : -1,
+                "qSortByLoadOrder" : 1,
+                "qExpression" : {}
+        };
+
+        var props = {
+            "qInfo" : {
+                "qId" : id,
+                "qType" : "piechart"
+            },
+            "qMetaDef" : {},
+            "qHyperCubeDef" : {
+                "qDimensions": [dimensionObject],
+                "qMeasures": [measureObject],
+                "qInterColumnSortOrder" : [1, 0],
+                "qSuppressMissing" : true,
+                "qInitialDataFetch" : [{
+                    "qLeft" : 0,
+                    "qTop" : 0,
+                    "qWidth" : 10,
+                    "qHeight" : 500
+                }
+                ],
+                "qReductionMode" : "N",
+                "qMode" : "S",
+                "qPseudoDimPos" : -1,
+                "qNoOfLeftDims" : -1,
+                "qMaxStackedCells" : 5000,
+                "qCalcCond" : {},
+                "qTitle" : {},
+                "customErrorMessage" : {
+                    "calcCond" : ""
+                },
+                "qLayoutExclude" : {
+                    "qHyperCubeDef" : {
+                        "qDimensions" : [],
+                        "qMeasures" : [],
+                        "qInterColumnSortOrder" : [],
+                        "qInitialDataFetch" : [],
+                        "qReductionMode" : "N",
+                        "qMode" : "S",
+                        "qPseudoDimPos" : -1,
+                        "qNoOfLeftDims" : -1,
+                        "qMaxStackedCells" : 5000,
+                        "qCalcCond" : {},
+                        "qTitle" : {}
+                    }
+                }
+            },
+            "showTitles" : true,
+            "title" : "",
+            "subtitle" : "",
+            "footnote" : "",
+            "showDetails" : false,
+            "donut" : {
+                "showAsDonut" : false
+            },
+            "dimensionTitle" : true,
+            "dataPoint" : {
+                "auto" : true,
+                "labelMode" : "share"
+            },
+            "color" : {
+                "auto" : false,
+                "mode" : "byDimension",
+                "useBaseColors" : "off",
+                "paletteColor" : {
+                    "index" : 6
+                },
+                "persistent" : false,
+                "useDimColVal" : true,
+                "expressionIsColor" : true,
+                "expressionLabel" : "",
+                "measureScheme" : "sg",
+                "reverseScheme" : false,
+                "dimensionScheme" : "12",
+                "autoMinMax" : true,
+                "measureMin" : 0,
+                "measureMax" : 10,
+                /*"byDimDef" : {
+                    "label" : "[Address Number Header]",
+                    "key" : "[Address Number Header]",
+                    "type" : "expression"
+                },
+                "altLabel" : "[Address Number Header]"*/
+            },
+            "legend" : {
+                "show" : false,
+                "dock" : "auto",
+                "showTitle" : true
+            },
+            "visualization" : "piechart"
+        };
+
+        return props;
     }
 
     function createObjectElement ( animPoint ) {
@@ -2000,15 +2490,20 @@ define( 'js/real-object',[
 
         if ( chartType === 'bar' ) {
             objProps = getDefaultBarchartProps( id, dimensionObject, measureObject );
-        } else {
+        } else if ( chartType === 'line' ) {
             objProps = getDefaultLinechartProps( id, dimensionObject, measureObject );
+        } else {
+            objProps = getDefaultPiechartProps( id, dimensionObject, measureObject );
         }
 
         app.model.createSessionObject( objProps ).then(
             function success() {
                 app.getObject( self.objectElem, id ).then( function () {
-                    activateSnapshottingOfObject.call( self );
-                })
+                    // Await DOM element to come in place
+                    setTimeout( function () {
+                        activateSnapshottingOfObject.call( self );
+                    }, 10 );
+                } );
             }
         );
 
@@ -2026,13 +2521,20 @@ define( 'js/real-object',[
 
         // Make sure snapshot counter works - yes, this is an ugly hack
 
-        var self = this;
+        var self = this,
+            obj = objectScope.object || objectScope.$$childHead.object; // backwards compatibility
 
-        objectScope.$$childHead.object.loaded.then( function () {
+        obj.loaded.then( function () {
 
             // Switch layout temporarily go get the snapshot we want
-            self.object = objectScope.$$childHead.object;
-            self.object.ext.snapshot.canTakeSnapshot = false;
+            self.object = obj;
+
+            // backwards compatibility (older versions of qlik sense)
+            if ( self.object.ext.snapshot ) {
+                self.object.ext.snapshot.canTakeSnapshot = false;
+            } else if ( self.object.ext.support ) {
+                self.object.ext.support.snapshot = false;
+            }
 
             self.object.layout.qInfo.qId = gridScope.object.layout.qInfo.qId;
 
@@ -2045,7 +2547,13 @@ define( 'js/real-object',[
 
         var gridScope = this.$scope;
 
-        this.$scope.ext.snapshot.canTakeSnapshot = true;
+        // backwards compatibility (older versions of qlik sense)
+        if ( this.$scope.ext.snapshot ) {
+            this.$scope.ext.snapshot.canTakeSnapshot = true;
+        } else if ( this.$scope.ext.support ) {
+            this.$scope.ext.support.snapshot = true;
+        }
+
         gridScope.object.layout = gridScope.object.model.layout = gridScope.ext.model.layout = this.gridLayoutRef;
     }
 
@@ -2071,7 +2579,7 @@ define( 'js/real-object',[
 
             // To make selections toolbar visible
             self.$element.find( '.dataoverviewer' ).css( 'overflow', 'visible' );
-            self.$element.parents( '.qv-object' ).css( 'overflow', 'visible' );
+            self.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', 'visible' );
         }, animPoint ? animationTime : 0 );
 
     };
@@ -2086,7 +2594,7 @@ define( 'js/real-object',[
 
         // Prevent field titles from overflowing
         this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
-        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;
@@ -2111,7 +2619,7 @@ define( 'js/real-object',[
 
         // Prevent field titles from overflowing
         this.$element.find( '.dataoverviewer' ).css( 'overflow', '' );
-        this.$element.parents( '.qv-object' ).css( 'overflow', '' );
+        this.$element.parents( '.qv-object, .qv-inner-object' ).css( 'overflow', '' );
 
         this.visible = this.$scope.realObjectVisible = false;
         this.chartType = null;
@@ -2128,7 +2636,7 @@ define( 'js/real-object',[
     return realObject;
 } );
 
-define('text!html/properties-data.html',[],function () { return '<div class="pp-component do-props">\r\n\t<p class="do-props-label" ng-if="dimensions">Dimensions</p>\r\n\t<ul qva-activate="onClick($event, \'dimension\')">\r\n\t\t<li ng-repeat="dimension in dimensions track by dimension.qMeta.title" class="do-props-list-item" ng-class="{\'selected\': dimension.selected}">\r\n\t\t\t<span class="do-props-item-name">{{dimension.qMeta.title}}</span>\r\n\t\t</li>\r\n\t</ul>\r\n\t<p class="do-props-label" ng-if="measures">Measures</p>\r\n\t<ul qva-activate="onClick($event, \'measure\')">\r\n\t\t<li ng-repeat="measure in measures track by measure.qMeta.title" class="do-props-list-item" ng-class="{\'selected\': measure.selected}">\r\n\t\t\t<span class="do-props-item-name">{{measure.qMeta.title}}</span>\r\n\t\t</li>\r\n\t</ul>\r\n\t<p class="do-props-label">Fields</p>\r\n\t<ul qva-activate="onClick($event, \'field\')">\r\n\t\t<li ng-repeat="field in fields track by field.qName" class="do-props-list-item" ng-class="{\'selected\': field.selected}">\r\n\t\t\t<button class="do-props-aggr-btn" ng-if="definition.axis === \'y\' && field.selected" ng-class="{\'active\': pickerForScopeId === $id }">{{field.aggrFunc || \'Sum\'}}</button><span class="do-props-item-name">{{field.qName}}</span>\r\n\t\t</li>\r\n\t</ul>\r\n\r\n\t<div class="do-props-aggr-picker" ng-show="aggrPickerOpen" qva-outside="closeAggrPicker($event)" ng-style="aggrPickerPosition">\r\n\t\t<p class="do-props-aggr-picker-label">Aggregation function</p>\r\n\t\t<div class="qui-buttongroup aggr-btn-group">\r\n\t\t\t<button class="qui-button" ng-class="{\'qui-active\': pickingAggrForModel.aggrFunc === \'Sum\'}" qva-activate="setAggrFunc(\'Sum\')"><span>Sum</span></button>\r\n\t\t\t<button class="qui-button" ng-class="{\'qui-active\': pickingAggrForModel.aggrFunc === \'Avg\'}" qva-activate="setAggrFunc(\'Avg\')"><span>Avg</span></button>\r\n\t\t\t<button class="qui-button" ng-class="{\'qui-active\': pickingAggrForModel.aggrFunc === \'Count\'}" qva-activate="setAggrFunc(\'Count\')"><span>Count</span></button>\r\n\t\t\t<button class="qui-button" ng-class="{\'qui-active\': pickingAggrForModel.aggrFunc === \'Max\'}" qva-activate="setAggrFunc(\'Max\')"><span>Max</span></button>\r\n\t\t\t<button class="qui-button" ng-class="{\'qui-active\': pickingAggrForModel.aggrFunc === \'Min\'}" qva-activate="setAggrFunc(\'Min\')"><span>Min</span></button>\r\n\t\t</div>\r\n\t</div>\r\n</div>';});
+define('text!html/properties-data.html',[],function () { return '<div class="pp-component do-props">\r\n\t<p class="do-props-label" ng-if="dimensions">Dimensions</p>\r\n\t<ul qva-activate="onClick($event, \'dimension\')">\r\n\t\t<li ng-repeat="dimension in dimensions track by dimension.qMeta.title" class="do-props-list-item" ng-class="{\'selected\': dimension.selected}">\r\n\t\t\t<span class="do-props-item-name">{{dimension.qMeta.title}}</span>\r\n\t\t</li>\r\n\t</ul>\r\n\t<p class="do-props-label" ng-if="measures">Measures</p>\r\n\t<ul qva-activate="onClick($event, \'measure\')">\r\n\t\t<li ng-repeat="measure in measures track by measure.qMeta.title" class="do-props-list-item" ng-class="{\'selected\': measure.selected}">\r\n\t\t\t<span class="do-props-item-name">{{measure.qMeta.title}}</span>\r\n\t\t</li>\r\n\t</ul>\r\n\t<p class="do-props-label">Fields</p>\r\n\t<ul qva-activate="onClick($event, \'field\')">\r\n\t\t<li ng-repeat="field in fields track by field.qName" class="do-props-list-item" ng-class="{\'selected\': field.selected}">\r\n\t\t\t<button class="do-props-aggr-btn" ng-if="definition.axis === \'y\' && field.selected" ng-class="{\'active\': pickerForScopeId === $id }">{{field.aggrFunc || \'Sum\'}}</button><span class="do-props-item-name">{{field.qName}}</span>\r\n\t\t</li>\r\n\t</ul>\r\n\r\n\t<div class="do-props-aggr-picker" ng-show="aggrPickerOpen" qva-outside="closeAggrPicker($event)" ng-style="aggrPickerPosition">\r\n\t\t<p class="do-props-aggr-picker-label">Aggregation function</p>\r\n\t\t<div class="lui-buttongroup aggr-btn-group">\r\n\t\t\t<button class="lui-button" ng-class="{\'lui-active\': pickingAggrForModel.aggrFunc === \'Sum\'}" qva-activate="setAggrFunc(\'Sum\')"><span>Sum</span></button>\r\n\t\t\t<button class="lui-button" ng-class="{\'lui-active\': pickingAggrForModel.aggrFunc === \'Avg\'}" qva-activate="setAggrFunc(\'Avg\')"><span>Avg</span></button>\r\n\t\t\t<button class="lui-button" ng-class="{\'lui-active\': pickingAggrForModel.aggrFunc === \'Count\'}" qva-activate="setAggrFunc(\'Count\')"><span>Count</span></button>\r\n\t\t\t<button class="lui-button" ng-class="{\'lui-active\': pickingAggrForModel.aggrFunc === \'Max\'}" qva-activate="setAggrFunc(\'Max\')"><span>Max</span></button>\r\n\t\t\t<button class="lui-button" ng-class="{\'lui-active\': pickingAggrForModel.aggrFunc === \'Min\'}" qva-activate="setAggrFunc(\'Min\')"><span>Min</span></button>\r\n\t\t</div>\r\n\t</div>\r\n</div>';});
 
 define( 'js/data-properties',[
 	"qlik",
@@ -2193,7 +2701,11 @@ function ( qlik, utils, template ) {
 			if ( fieldType === 'field' ) {
 				$scope.data.fields[axis].push( { name: fieldModel.qName, aggrFunc: fieldModel.aggrFunc || defaultAggrFunc } );
 			} else {
-				$scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title } );
+				if ( fieldType === 'measure' ) {
+                    $scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title, measure: fieldModel.qData.measure } );
+				} else {
+                    $scope.data.fields[axis].push( { id: fieldModel.qInfo.qId, title: fieldModel.qMeta.title } );
+				}
 			}
 
 		}
@@ -2206,6 +2718,7 @@ function ( qlik, utils, template ) {
 		controller: ["$scope", "$element", function ( $scope, $element ) {
 
 			var unsubscribeSessionId;
+			var app = qlik.currApp( this );
 
 			$scope.aggrFunc = defaultAggrFunc;
 
@@ -2231,17 +2744,23 @@ function ( qlik, utils, template ) {
 				$scope.pickerForScopeId = null;
 			};
 
-			utils.subscribeFieldUpdates( function ( data ) {
+			utils.subscribeFieldUpdates( app, function ( data ) {
 
 				if ( $scope.definition.axis === 'x' ) {
-					$scope.dimensions = data.qDimensionList.qItems;
+					$scope.dimensions = data.qDimensionList.qItems.slice( 0 ).sort( function ( a, b ) {
+                        return utils.sort( a.qMeta.title, b.qMeta.title );
+                    } );
 					selectAccordingToProps( $scope.data.fields.x, $scope.dimensions, 'dimension' );
 				} else {
-					$scope.measures = data.qMeasureList.qItems;
+					$scope.measures = data.qMeasureList.qItems.slice( 0 ).sort( function ( a, b ) {
+                        return utils.sort( a.qMeta.title, b.qMeta.title );
+                    } );
 					selectAccordingToProps( $scope.data.fields.y, $scope.measures, 'measure' );
 				}
 
-				$scope.fields = data.qFieldList.qItems;
+				$scope.fields = data.qFieldList.qItems.slice( 0 ).sort( function ( a, b ) {
+                    return utils.sort( a.qName, b.qName );
+                } );
 				selectAccordingToProps( $scope.data.fields[$scope.definition.axis], $scope.fields, 'field' );
 
 				unsubscribeSessionId = data.qInfo.qId;
@@ -2293,7 +2812,7 @@ function ( qlik, utils, template ) {
 	return component;
 } );
 
-define('text!html/properties-aggr.html',[],function () { return '<div class="pp-component do-aggr-props">\r\n\t<p class="do-props-label">Aggregation function</p>\r\n\t<div class="qui-buttongroup aggr-btn-group">\r\n\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Sum\'}" qva-activate="setAggrFunc(\'Sum\')"><span>Sum</span></button>\r\n\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Avg\'}" qva-activate="setAggrFunc(\'Avg\')"><span>Avg</span></button>\r\n\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Count\'}" qva-activate="setAggrFunc(\'Count\')"><span>Count</span></button>\r\n\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Max\'}" qva-activate="setAggrFunc(\'Max\')"><span>Max</span></button>\r\n\t\t<button class="qui-button" ng-class="{\'qui-active\': aggrFunc === \'Min\'}" qva-activate="setAggrFunc(\'Min\')"><span>Min</span></button>\r\n\t</div>\r\n</div>';});
+define('text!html/properties-aggr.html',[],function () { return '<div class="pp-component do-aggr-props">\r\n\t<p class="do-props-label">Aggregation function</p>\r\n\t<div class="lui-buttongroup aggr-btn-group">\r\n\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Sum\'}" qva-activate="setAggrFunc(\'Sum\')"><span>Sum</span></button>\r\n\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Avg\'}" qva-activate="setAggrFunc(\'Avg\')"><span>Avg</span></button>\r\n\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Count\'}" qva-activate="setAggrFunc(\'Count\')"><span>Count</span></button>\r\n\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Max\'}" qva-activate="setAggrFunc(\'Max\')"><span>Max</span></button>\r\n\t\t<button class="lui-button" ng-class="{\'lui-active\': aggrFunc === \'Min\'}" qva-activate="setAggrFunc(\'Min\')"><span>Min</span></button>\r\n\t</div>\r\n</div>';});
 
 define( 'js/aggr-props',[
 	"text!html/properties-aggr.html"],
@@ -2321,7 +2840,7 @@ function ( template ) {
 	return component;
 } );
 
-define('text!html/properties-chart-type.html',[],function () { return '<div class="pp-component do-chart-type-props">\r\n\t<p class="do-props-label">Chart type</p>\r\n\t<button class="chart-type-bar chart-btn qui-plainbuttonicon" ng-class="{\'active-charttype\': chartType === \'bar\'}" qva-activate="setChartType( \'bar\' )" data-icon="!" title="Bar chart"></button>\r\n\t<button class="chart-type-line chart-btn qui-plainbuttonicon" ng-class="{\'active-charttype\': chartType === \'line\'}" qva-activate="setChartType( \'line\' )" data-icon="%" title="Line chart"></button>\r\n</div>';});
+define('text!html/properties-chart-type.html',[],function () { return '<div class="pp-component do-chart-type-props">\r\n\t<p class="do-props-label">Chart type</p>\r\n\t<button class="chart-type-bar chart-btn qui-plainbuttonicon" ng-class="{\'active-charttype\': chartType === \'bar\'}" qva-activate="setChartType( \'bar\' )" data-icon="!" title="Bar chart"></button>\r\n\t<button class="chart-type-line chart-btn qui-plainbuttonicon" ng-class="{\'active-charttype\': chartType === \'line\'}" qva-activate="setChartType( \'line\' )" data-icon="%" title="Line chart"></button>\r\n\t<button class="chart-type-pie chart-btn qui-plainbuttonicon" ng-class="{\'active-charttype\': chartType === \'pie\'}" qva-activate="setChartType( \'pie\' )" data-icon="&" title="Pie chart"></button>\r\n</div>';});
 
 define( 'js/chart-props',[
 	"text!html/properties-chart-type.html"],
@@ -2349,7 +2868,7 @@ function ( template ) {
 	return component;
 } );
 
-define('text!css/styling.css',[],function () { return '.qv-object-dataoverviewer {\r\n    font-size: inherit;\r\n}\r\n\r\n.dataoverviewer {\r\n    width: 100%;\r\n    height: 100%;\r\n    position: relative;\r\n    overflow: hidden;\r\n}\r\n\r\n.qv-snapshot-enabled .dataoverviewer {\r\n    padding-right: 2px;\r\n    padding-bottom: 2px;\r\n}\r\n\r\n.dataoverviewer .grid-canvas {\r\n    position: absolute;\r\n    top: 0;\r\n    right: 0;\r\n    border-left: 1px solid gray;\r\n    border-bottom: 1px solid gray;\r\n    z-index: 2;\r\n}\r\n\r\n.dataoverviewer .settings-button,\r\n.dataoverviewer .reset-zoom,\r\n.dataoverviewer .zoom-in,\r\n.dataoverviewer .zoom-out,\r\n.dataoverviewer .close-real-object {\r\n    position: absolute;\r\n    top: 10px;\r\n    right: 10px;\r\n    display: inline-block;\r\n    line-height: 24px;\r\n    z-index: 5;\r\n}\r\n\r\n.dataoverviewer .zoom-in {\r\n    top: 45px;\r\n}\r\n\r\n.dataoverviewer .zoom-out {\r\n    top: 70px;\r\n}\r\n\r\n.do-needs-x-and-y-fields {\r\n    display: none;\r\n}\r\n\r\n.insufficient-fields .do-needs-x-and-y-fields {\r\n    display: block;\r\n    text-align: center;\r\n    position: absolute;\r\n    z-index: 6;\r\n    width: 100%;\r\n    height: 100%;\r\n    top: 47%;\r\n    font-size: 15px;\r\n    font-weight: bold;\r\n}\r\n\r\n.insufficient-fields .dimension-titles-container,\r\n.insufficient-fields .dimension-scrollbar,\r\n.insufficient-fields .measure-titles-container,\r\n.insufficient-fields .measure-scrollbar,\r\n.insufficient-fields .qui-plainbuttonicon,\r\n.insufficient-fields .grid-canvas {\r\n    display: none;\r\n}\r\n\r\n/* ------------------ "Real objects" ------------------ */\r\n\r\n.dataoverviewer .real-object {\r\n    position: absolute;\r\n    z-index: 4;\r\n    height: 0%;\r\n    width: 0%;\r\n    -webkit-transition: 0.4s ease-in-out;\r\n    -moz-transition: 0.4s ease-in-out;\r\n    -o-transition: 0.4s ease-in-out;\r\n    transition: 0.4s ease-in-out;\r\n    background-color: white;\r\n    border: 1px solid lightgray;\r\n    -webkit-box-sizing: border-box;\r\n    -moz-box-sizing: border-box;\r\n    box-sizing: border-box;\r\n}\r\n\r\n.dataoverviewer .real-object.maximized {\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n\r\n/* ---------- Dimension and measure titles ----------- */\r\n\r\n.dataoverviewer .measure-titles-container {\r\n    position: absolute;\r\n    z-index: 4;\r\n    top: 0;\r\n    left: 0;\r\n    bottom: 0;\r\n}\r\n\r\n.dataoverviewer .dimension-titles-container {\r\n    position: absolute;\r\n    z-index: 4;\r\n    bottom: 0;\r\n    left: 0;\r\n    white-space: nowrap;\r\n    overflow: visible;\r\n    left: 9.8em;\r\n    width: 5.8em;\r\n    margin-right: 8.5em;\r\n}\r\n\r\n.dataoverviewer .dimension-title,\r\n.dataoverviewer .measure-title {\r\n    border-radius: 0.5em;\r\n    line-height: 1.6em;\r\n    border: 1px solid gray;\r\n    width: 93%;\r\n    font-size: 0.9em;\r\n    margin-bottom: inherit;\r\n    margin-right: inherit;\r\n    position: relative;\r\n    text-align: center;\r\n    display: block;\r\n    -webkit-box-sizing: border-box;\r\n    -moz-box-sizing: border-box;\r\n    box-sizing: border-box;\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n    text-overflow: ellipsis;\r\n    cursor: default;\r\n}\r\n\r\n.dataoverviewer:not(.auto-mode) .dimension-title,\r\n.dataoverviewer:not(.auto-mode) .measure-title {\r\n    border: none;\r\n    text-align: right;\r\n}\r\n\r\n.dataoverviewer .dimension-title {\r\n    display: inline-block;\r\n    transform: rotate(-45deg);\r\n    bottom: 2em;\r\n}\r\n\r\n.dataoverviewer .dimension-scrollbar {\r\n    position: absolute;\r\n    bottom: 68px;\r\n    background-color: lightgray;\r\n    border-radius: 3px;\r\n    height: 6px;\r\n    z-index: 3;\r\n    min-top: 0px;\r\n}\r\n\r\n.dataoverviewer .measure-scrollbar {\r\n    position: absolute;\r\n    left: 67px;\r\n    background-color: lightgray;\r\n    border-radius: 3px;\r\n    width: 6px;\r\n    z-index: 3;\r\n    min-top: 0px;\r\n}\r\n\r\n/* -------------------- On the fly settings ------------------- */\r\n\r\n.dataoverviewer .settings-button {\r\n    right: 40px;\r\n}\r\n\r\n.dataoverviewer .settings-container {\r\n    position: absolute;\r\n    top: 45px;\r\n    right: 10px;\r\n    width: 0;\r\n    height: auto;\r\n    background-color: white;\r\n    z-index: 5;\r\n    border-radius: 5px;\r\n    border: 1px solid gray;\r\n    text-align: center;\r\n    padding: 5px;\r\n    box-shadow: 0 4px 8px -1px #404040;\r\n    -webkit-animation: animNarrow 0.4s forwards;\r\n    -o-animation: animNarrow 0.4s forwards;\r\n    animation: animNarrow 0.4s forwards;\r\n    overflow: hidden;\r\n    white-space: nowrap;\r\n}\r\n\r\n.dataoverviewer.auto-mode .settings-container {\r\n    -webkit-animation: animWide 0.4s forwards;\r\n    -o-animation: animWide 0.4s forwards;\r\n    animation: animWide 0.4s forwards;\r\n    height: 108px;\r\n    padding: 5px 0px;\r\n}\r\n\r\n.dataoverviewer.interactive .grid-canvas,\r\n.dataoverviewer.interactive.auto-mode .dimension-title,\r\n.dataoverviewer.interactive.auto-mode .measure-title {\r\n    cursor: pointer;\r\n}\r\n\r\n.do-chart-type-props .chart-btn,\r\n.dataoverviewer .settings-container .chart-btn {\r\n    font-size: 45px;\r\n    height: 1em;\r\n    line-height: 0.8em;\r\n    width: 1em;\r\n    display: inline-block;\r\n    text-align: center;\r\n    vertical-align: middle;\r\n    border: 2px solid white;\r\n    border-radius: 6px;\r\n    -webkit-box-sizing: content-box;\r\n    -moz-box-sizing: content-box;\r\n    box-sizing: content-box;\r\n    margin-bottom: 3px;\r\n    -webkit-box-shadow: none;\r\n    -moz-box-shadow: none;\r\n    box-shadow: none;\r\n    color: #595959 !important;\r\n    background: transparent !important;\r\n}\r\n\r\n.pp-component.do-chart-type-props .chart-btn {\r\n    font-size: 75px;\r\n    margin: 5px;\r\n}\r\n\r\n.do-chart-type-props .chart-btn:hover,\r\n.dataoverviewer .settings-container .chart-btn:hover {\r\n    border: 2px solid #595959;\r\n    color: #595959;\r\n}\r\n\r\n.do-chart-type-props .active-charttype,\r\n.dataoverviewer .settings-container .active-charttype {\r\n    color: #595959;\r\n    border: 2px solid #ff9326;\r\n}\r\n\r\n.do-chart-type-props .active-charttype:hover,\r\n.dataoverviewer .settings-container .active-charttype:hover {\r\n    border: 2px solid #ff9326;\r\n}\r\n\r\n.aggr-btn-group .qui-button {\r\n    padding: 1px 1px;\r\n    min-width: 39px;\r\n}\r\n\r\n.aggr-btn-group .qui-button span {\r\n    padding: 0 5px;\r\n}\r\n\r\n.settings-container .aggr-btn-group,\r\n.do-props-aggr-picker .aggr-btn-group {\r\n    position: absolute;\r\n    left: 5px;\r\n}\r\n\r\n/* --------------- Properties panel -------------- */\r\n\r\n.do-props {\r\n    padding: 0;\r\n    position: relative;\r\n}\r\n\r\n.do-props .do-props-list-item {\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n    height: 30px;\r\n    line-height: 30px;\r\n    cursor: pointer;\r\n    border-bottom: 1px solid #d9d9d9;\r\n    padding: 5px;\r\n}\r\n\r\n.do-props .do-props-list-item:hover {\r\n    background-color: #F2F2F2;\r\n}\r\n\r\n.do-props .do-props-list-item.selected {\r\n    background-color: #52CC52;\r\n    color: #FFFFFF;\r\n    border-bottom: 1px solid #BAEBBA;\r\n}\r\n\r\n.do-props .do-props-label {\r\n    font-weight: bold;\r\n    border-bottom: 3px solid #595959;\r\n    padding: 5px;\r\n}\r\n\r\n.do-props .do-props-aggr-btn {\r\n    background-color: white;\r\n    border: 1px solid darkgray;\r\n    padding: 5px;\r\n    margin-right: 4px;\r\n    cursor: pointer;\r\n    border-radius: 3px;\r\n    line-height: 17px;\r\n}\r\n\r\n.do-props .do-props-aggr-btn:hover {\r\n    border: 1px solid black;\r\n}\r\n\r\n.do-props .do-props-aggr-btn.active {\r\n    color: #ffffff;\r\n    border-color: #595959;\r\n    background: #595959;\r\n}\r\n\r\n.do-props-aggr-picker {\r\n    position: absolute;\r\n    width: 0;\r\n    height: 61px;\r\n    background-color: white;\r\n    z-index: 5;\r\n    border-radius: 5px;\r\n    border: 1px solid gray;\r\n    text-align: center;\r\n    padding-top: 5px;\r\n    box-shadow: 0 4px 8px -1px #404040;\r\n    -webkit-animation: animWide 0.6s forwards;\r\n    -o-animation: animWide 0.6s forwards;\r\n    animation: animWide 0.6s forwards;\r\n    overflow: hidden;\r\n    white-space: nowrap;\r\n}\r\n\r\n.do-props-aggr-picker-label {\r\n    text-align: left;\r\n    margin: 5px;\r\n}\r\n\r\n.do-aggr-props .aggr-btn-group {\r\n    margin: 5px 0px;\r\n}\r\n\r\n.do-chart-type-props {\r\n    text-align: center;\r\n}\r\n\r\n.do-chart-type-props .do-props-label {\r\n    text-align: left;\r\n}\r\n\r\n/* animation for revealing popup in a nice way */\r\n@-webkit-keyframes animNarrow {\r\n    100% {  width: 103px; }\r\n}\r\n\r\n@-o-keyframes animNarrow {\r\n    100% {  width: 103px; }\r\n}\r\n\r\n@keyframes animNarrow {\r\n    100% {  width: 103px; }\r\n}\r\n\r\n@-webkit-keyframes animWide {\r\n    100% {  width: 214px; }\r\n}\r\n\r\n@-o-keyframes animWide {\r\n    100% {  width: 214px; }\r\n}\r\n\r\n@keyframes animWide {\r\n    100% {  width: 214px; }\r\n}';});
+define('text!css/styling.css',[],function () { return '.qv-object-dataoverviewer {\r\n    font-size: inherit;\r\n}\r\n\r\n.dataoverviewer {\r\n    width: 100%;\r\n    height: 100%;\r\n    position: relative;\r\n    overflow: hidden;\r\n}\r\n\r\n.qv-snapshot-enabled .dataoverviewer {\r\n    padding-right: 2px;\r\n    padding-bottom: 2px;\r\n}\r\n\r\n.dataoverviewer .grid-canvas {\r\n    position: absolute;\r\n    top: 0;\r\n    right: 0;\r\n    border-left: 1px solid gray;\r\n    border-bottom: 1px solid gray;\r\n    z-index: 2;\r\n}\r\n\r\n.dataoverviewer .settings-button,\r\n.dataoverviewer .reset-zoom,\r\n.dataoverviewer .zoom-in,\r\n.dataoverviewer .zoom-out,\r\n.dataoverviewer .close-real-object {\r\n    position: absolute;\r\n    top: 3px;\r\n    right: 3px;\r\n    display: inline-block;\r\n    z-index: 5;\r\n}\r\n\r\n.dataoverviewer .settings-button:before,\r\n.dataoverviewer .reset-zoom:before,\r\n.dataoverviewer .zoom-in:before,\r\n.dataoverviewer .zoom-out:before,\r\n.dataoverviewer .close-real-object:before {\r\n    font-size: 20px;\r\n}\r\n\r\n.dataoverviewer .zoom-in {\r\n    top: 45px;\r\n}\r\n\r\n.dataoverviewer .zoom-out {\r\n    top: 70px;\r\n}\r\n\r\n.do-needs-x-and-y-fields {\r\n    display: none;\r\n}\r\n\r\n.insufficient-fields .do-needs-x-and-y-fields {\r\n    display: block;\r\n    text-align: center;\r\n    position: absolute;\r\n    z-index: 6;\r\n    width: 100%;\r\n    height: 100%;\r\n    top: 47%;\r\n    font-size: 15px;\r\n    font-weight: bold;\r\n}\r\n\r\n.insufficient-fields .dimension-titles-container,\r\n.insufficient-fields .dimension-scrollbar,\r\n.insufficient-fields .measure-titles-container,\r\n.insufficient-fields .measure-scrollbar,\r\n.insufficient-fields .qui-plainbuttonicon,\r\n.insufficient-fields .grid-canvas {\r\n    display: none;\r\n}\r\n\r\n/* ------------------ "Real objects" ------------------ */\r\n\r\n.dataoverviewer .real-object {\r\n    position: absolute;\r\n    z-index: 4;\r\n    height: 0%;\r\n    width: 0%;\r\n    -webkit-transition: 0.4s ease-in-out;\r\n    -moz-transition: 0.4s ease-in-out;\r\n    -o-transition: 0.4s ease-in-out;\r\n    transition: 0.4s ease-in-out;\r\n    background-color: white;\r\n    border: 1px solid lightgray;\r\n    -webkit-box-sizing: border-box;\r\n    -moz-box-sizing: border-box;\r\n    box-sizing: border-box;\r\n}\r\n\r\n.dataoverviewer .real-object.maximized {\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n\r\n/* ---------- Dimension and measure titles ----------- */\r\n\r\n.dataoverviewer .measure-titles-container {\r\n    position: absolute;\r\n    z-index: 4;\r\n    top: 0;\r\n    left: 0;\r\n    bottom: 0;\r\n}\r\n\r\n.dataoverviewer .dimension-titles-container {\r\n    position: absolute;\r\n    z-index: 4;\r\n    bottom: 0;\r\n    left: 0;\r\n    white-space: nowrap;\r\n    overflow: visible;\r\n    left: 9.8em;\r\n    width: 5.8em;\r\n    margin-right: 8.5em;\r\n}\r\n\r\n.dataoverviewer .dimension-title,\r\n.dataoverviewer .measure-title {\r\n    border-radius: 0.5em;\r\n    line-height: 1.6em;\r\n    border: 1px solid gray;\r\n    width: 93%;\r\n    font-size: 0.9em;\r\n    margin-bottom: inherit;\r\n    margin-right: inherit;\r\n    position: relative;\r\n    text-align: center;\r\n    display: block;\r\n    -webkit-box-sizing: border-box;\r\n    -moz-box-sizing: border-box;\r\n    box-sizing: border-box;\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n    text-overflow: ellipsis;\r\n    cursor: default;\r\n}\r\n\r\n.dataoverviewer:not(.auto-mode) .dimension-title,\r\n.dataoverviewer:not(.auto-mode) .measure-title {\r\n    border: none;\r\n    text-align: right;\r\n}\r\n\r\n.dataoverviewer .dimension-title {\r\n    display: inline-block;\r\n    transform: rotate(-45deg);\r\n    bottom: 2em;\r\n}\r\n\r\n.dataoverviewer .dimension-scrollbar {\r\n    position: absolute;\r\n    bottom: 68px;\r\n    background-color: lightgray;\r\n    border-radius: 3px;\r\n    height: 6px;\r\n    z-index: 3;\r\n    min-top: 0px;\r\n}\r\n\r\n.dataoverviewer .measure-scrollbar {\r\n    position: absolute;\r\n    left: 67px;\r\n    background-color: lightgray;\r\n    border-radius: 3px;\r\n    width: 6px;\r\n    z-index: 3;\r\n    min-top: 0px;\r\n}\r\n\r\n/* -------------------- On the fly settings ------------------- */\r\n\r\n.dataoverviewer .settings-button {\r\n    right: 34px;\r\n}\r\n\r\n.dataoverviewer .settings-container {\r\n    position: absolute;\r\n    top: 45px;\r\n    right: 10px;\r\n    width: 0;\r\n    height: auto;\r\n    background-color: white;\r\n    z-index: 5;\r\n    border-radius: 5px;\r\n    border: 1px solid gray;\r\n    text-align: center;\r\n    padding: 5px;\r\n    box-shadow: 0 4px 8px -1px #404040;\r\n    -webkit-animation: animNarrow 0.4s forwards;\r\n    -o-animation: animNarrow 0.4s forwards;\r\n    animation: animNarrow 0.4s forwards;\r\n    overflow: hidden;\r\n    white-space: nowrap;\r\n}\r\n\r\n.dataoverviewer.auto-mode .settings-container {\r\n    -webkit-animation: animWide 0.4s forwards;\r\n    -o-animation: animWide 0.4s forwards;\r\n    animation: animWide 0.4s forwards;\r\n    height: 108px;\r\n    padding: 5px 0px;\r\n}\r\n\r\n.dataoverviewer.interactive .grid-canvas,\r\n.dataoverviewer.interactive.auto-mode .dimension-title,\r\n.dataoverviewer.interactive.auto-mode .measure-title {\r\n    cursor: pointer;\r\n}\r\n\r\n.do-chart-type-props .chart-btn,\r\n.dataoverviewer .settings-container .chart-btn {\r\n    font-size: 45px;\r\n    height: 1em;\r\n    line-height: 1em;\r\n    width: 1em;\r\n    display: inline-block;\r\n    text-align: center;\r\n    vertical-align: middle;\r\n    border: 2px solid white;\r\n    border-radius: 6px;\r\n    -webkit-box-sizing: content-box;\r\n    -moz-box-sizing: content-box;\r\n    box-sizing: content-box;\r\n    margin-bottom: 3px;\r\n    -webkit-box-shadow: none;\r\n    -moz-box-shadow: none;\r\n    box-shadow: none;\r\n    color: #595959 !important;\r\n    background: transparent !important;\r\n}\r\n\r\n.dataoverviewer .settings-container .chart-btn:before {\r\n    font-size: 26px;\r\n}\r\n\r\n.pp-component.do-chart-type-props .chart-btn {\r\n    font-size: 55px;\r\n    margin: 5px;\r\n}\r\n\r\n.pp-component.do-chart-type-props .chart-btn:before {\r\n    font-size: 45px;\r\n}\r\n\r\n.do-chart-type-props .chart-btn:hover,\r\n.dataoverviewer .settings-container .chart-btn:hover {\r\n    border: 2px solid #595959;\r\n    color: #595959;\r\n}\r\n\r\n.do-chart-type-props .active-charttype,\r\n.dataoverviewer .settings-container .active-charttype {\r\n    color: #595959;\r\n    border: 2px solid #ff9326;\r\n}\r\n\r\n.do-chart-type-props .active-charttype:hover,\r\n.dataoverviewer .settings-container .active-charttype:hover {\r\n    border: 2px solid #ff9326;\r\n}\r\n\r\n.aggr-btn-group .lui-button {\r\n    padding: 1px 1px;\r\n    min-width: 39px;\r\n}\r\n\r\n.aggr-btn-group .lui-button span {\r\n    padding: 0 5px;\r\n}\r\n\r\n.settings-container .aggr-btn-group,\r\n.do-props-aggr-picker .aggr-btn-group {\r\n    position: absolute;\r\n    left: 5px;\r\n}\r\n\r\n/* --------------- Properties panel -------------- */\r\n\r\n.do-props {\r\n    padding: 0;\r\n    position: relative;\r\n}\r\n\r\n.do-props .do-props-list-item {\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n    height: 30px;\r\n    line-height: 30px;\r\n    cursor: pointer;\r\n    border-bottom: 1px solid #d9d9d9;\r\n    padding: 5px;\r\n}\r\n\r\n.do-props .do-props-list-item:hover {\r\n    background-color: #F2F2F2;\r\n}\r\n\r\n.do-props .do-props-list-item.selected {\r\n    background-color: #52CC52;\r\n    color: #FFFFFF;\r\n    border-bottom: 1px solid #BAEBBA;\r\n}\r\n\r\n.do-props .do-props-label {\r\n    font-weight: bold;\r\n    border-bottom: 3px solid #595959;\r\n    padding: 5px;\r\n}\r\n\r\n.do-props .do-props-aggr-btn {\r\n    background-color: white;\r\n    border: 1px solid darkgray;\r\n    padding: 5px;\r\n    margin-right: 4px;\r\n    cursor: pointer;\r\n    border-radius: 3px;\r\n    line-height: 17px;\r\n}\r\n\r\n.do-props .do-props-aggr-btn:hover {\r\n    border: 1px solid black;\r\n}\r\n\r\n.do-props .do-props-aggr-btn.active {\r\n    color: #ffffff;\r\n    border-color: #595959;\r\n    background: #595959;\r\n}\r\n\r\n.do-props-aggr-picker {\r\n    position: absolute;\r\n    width: 0;\r\n    height: 61px;\r\n    background-color: white;\r\n    z-index: 5;\r\n    border-radius: 5px;\r\n    border: 1px solid gray;\r\n    text-align: center;\r\n    padding-top: 5px;\r\n    box-shadow: 0 4px 8px -1px #404040;\r\n    -webkit-animation: animWide 0.6s forwards;\r\n    -o-animation: animWide 0.6s forwards;\r\n    animation: animWide 0.6s forwards;\r\n    overflow: hidden;\r\n    white-space: nowrap;\r\n}\r\n\r\n.do-props-aggr-picker-label {\r\n    text-align: left;\r\n    margin: 5px;\r\n}\r\n\r\n.do-aggr-props .aggr-btn-group {\r\n    margin: 5px 0px;\r\n}\r\n\r\n.do-chart-type-props {\r\n    text-align: center;\r\n}\r\n\r\n.do-chart-type-props .do-props-label {\r\n    text-align: left;\r\n}\r\n\r\n/* animation for revealing popup in a nice way */\r\n@-webkit-keyframes animNarrow {\r\n    100% {  width: 153px; }\r\n}\r\n\r\n@-o-keyframes animNarrow {\r\n    100% {  width: 153px; }\r\n}\r\n\r\n@keyframes animNarrow {\r\n    100% {  width: 153px; }\r\n}\r\n\r\n@-webkit-keyframes animWide {\r\n    100% {  width: 214px; }\r\n}\r\n\r\n@-o-keyframes animWide {\r\n    100% {  width: 214px; }\r\n}\r\n\r\n@keyframes animWide {\r\n    100% {  width: 214px; }\r\n}';});
 
 define([
     "qlik",
@@ -2522,6 +3041,16 @@ function ( qlik, template, DataHandler, utils, Renderer, EventHandler, Optimizer
                     setGridSnapshotData.call( this, layout );
                 }
             };
+
+            $scope.$on( "$destroy", function () {
+                var app = qlik.currApp();
+                app.model.Validated.unbind( $scope.newData );
+                $scope.object.model.Validated.unbind( $scope.propertiesChanged );
+                $scope.dataHandler.destroy();
+                $scope.realObject.destroy();
+                $scope.eventHandler.destroy();
+            } );
+
         }],
         paint: function() {
             this.onStateChanged = onStateChanged.bind( this );
@@ -2613,14 +3142,6 @@ function ( qlik, template, DataHandler, utils, Renderer, EventHandler, Optimizer
 					}
                 }
             }
-        },
-        destroy: function () {
-            var app = qlik.currApp();
-            app.model.Validated.unbind( this.$scope.newData );
-            this.$scope.object.model.Validated.unbind( this.$scope.propertiesChanged );
-            this.$scope.dataHandler.destroy();
-            this.$scope.realObject.destroy();
-            this.$scope.eventHandler.destroy();
         }
     };
 

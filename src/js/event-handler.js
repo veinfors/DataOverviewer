@@ -131,6 +131,13 @@ define( [
             activeChartBtn.className = activeChartBtn.className.replace( ' active-charttype', '' );
         }
 
+        var invalidateData = false;
+
+        if ( $scope.chartType !== newType && newType === "pie" || $scope.chartType === "pie" ) {
+            $scope.dataHandler.clearMatrixData();
+            invalidateData = true; // invalidate data when changing from/to pie chart (different data model)
+        }
+
         // Change current chartType and re-draw chart
         $scope.chartType = newType || $scope.chartType;
 
@@ -142,7 +149,7 @@ define( [
         if ( this.realObject.visible ) {
             this.realObject.updateChartType( $scope.chartType );
         } else {
-            this.renderer.render();
+            this.renderer.render( invalidateData );
         }
 
         // Add "active chart" class to correct button

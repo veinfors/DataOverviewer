@@ -153,7 +153,7 @@ define( [
         }
 
         // Add "active chart" class to correct button
-        this.$element.find( '.chart-type-' + $scope.chartType ).addClass( 'active-charttype' );
+        this.$element.find( '.lui-icon--' + $scope.chartType + '-chart' ).addClass( 'active-charttype' );
     }
 
     function setAggrFunc ( newFunc ) {

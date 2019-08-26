@@ -10,16 +10,16 @@
 	<div class="measure-scrollbar" ng-style="measureScrollbar"></div>
 	<canvas class="grid-canvas" qva-activate="openRealObject($event)"></canvas>
 
-	<button class="qui-plainbuttonicon settings-button" ng-if="!realObjectVisible && interactive" ng-class="{'qui-active': settingsOpen}" qva-activate="openSettings($event)" data-icon="V" title="Settings"></button>
-	<button class="qui-plainbuttonicon reset-zoom" ng-if="!realObjectVisible && interactive" qva-activate="resetZoom()" data-icon="ü" title="Reset zoom"></button>
-	<button class="qui-plainbuttonicon zoom-in" ng-if="!realObjectVisible && interactive" qva-activate="zoomIn()" data-icon="Y" title="Zoom in"></button>
-	<button class="qui-plainbuttonicon zoom-out" ng-if="!realObjectVisible && interactive" qva-activate="zoomOut()" data-icon="Z" title="Zoom out"></button>
-	<button class="qui-plainbuttonicon close-real-object" ng-if="realObjectVisible && interactive" qva-activate="closeRealObject()" data-icon="E" title="Close"></button>
+	<button class="nav-button lui-icon lui-icon--cogwheel" ng-if="!realObjectVisible && interactive" ng-class="{'qui-active': settingsOpen}" qva-activate="openSettings($event)" data-icon="V" title="Settings"></button>
+	<button class="nav-button lui-icon lui-icon--home" ng-if="!realObjectVisible && interactive" qva-activate="resetZoom()" data-icon="ü" title="Reset zoom"></button>
+	<button class="nav-button lui-icon lui-icon--zoom-in" ng-if="!realObjectVisible && interactive" qva-activate="zoomIn()" data-icon="Y" title="Zoom in"></button>
+	<button class="nav-button lui-icon lui-icon--zoom-out" ng-if="!realObjectVisible && interactive" qva-activate="zoomOut()" data-icon="Z" title="Zoom out"></button>
+	<button class="nav-button lui-icon lui-icon--close" ng-if="realObjectVisible && interactive" qva-activate="closeRealObject()" data-icon="E" title="Close"></button>
 
 	<div class="settings-container" ng-show="settingsOpen" qva-outside="closeSettings($event)">
-			<button class="chart-type-bar chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'bar' )" data-icon="!" title="Bar chart"></button>
-			<button class="chart-type-line chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'line' )" data-icon="%" title="Line chart"></button>
-			<button class="chart-type-pie chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'pie' )" data-icon="&" title="Pie chart"></button>
+			<button class="lui-icon lui-icon--bar-chart chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'bar' )" data-icon="!" title="Bar chart"></button>
+			<button class="lui-icon lui-icon--line-chart chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'line' )" data-icon="%" title="Line chart"></button>
+			<button class="lui-icon lui-icon--pie-chart chart-btn qui-plainbuttonicon" qva-activate="setChartType( 'pie' )" data-icon="&" title="Pie chart"></button>
 			<p class="do-props-aggr-picker-label" ng-if="autoMode">Aggregation function</p>
 			<div class="lui-buttongroup aggr-btn-group" ng-if="autoMode">
 				<button class="lui-button" ng-class="{'lui-active': aggrFunc === 'Sum'}" qva-activate="setAggrFunc('Sum')"><span>Sum</span></button>

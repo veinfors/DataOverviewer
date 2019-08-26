@@ -199,17 +199,17 @@ define( [
         ctx.textBaseline = 'middle';
         ctx.font = "50px LUI icons";
 
-        var charCode;
+        var content;
 
         if ( chartType === 'bar' ) {
-            charCode = '0x0021';
+            content = 'bar_chart';
         } else if ( chartType === 'line' ) {
-            charCode = '0x0025';
+            content = 'line_chart';
         } else if ( chartType === 'pie' ) {
-            charCode = '0x0026';
+            content = 'pie_chart';
         }
 
-        ctx.fillText( String.fromCharCode( charCode ), gX + graphWidth / 2, gY + graphHeight / 2 - 4 );
+        ctx.fillText( content, gX + graphWidth / 2, gY + graphHeight / 2 - 4 );
         ctx.fillStyle = barColor;
     }
 

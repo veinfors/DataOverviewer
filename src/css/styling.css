@@ -23,23 +23,24 @@
     z-index: 2;
 }
 
-.dataoverviewer .settings-button,
-.dataoverviewer .reset-zoom,
-.dataoverviewer .zoom-in,
-.dataoverviewer .zoom-out,
-.dataoverviewer .close-real-object {
+.dataoverviewer .lui-icon--cogwheel,
+.dataoverviewer .lui-icon--home,
+.dataoverviewer .lui-icon--zoom-in,
+.dataoverviewer .lui-icon--zoom-out,
+.dataoverviewer .lui-icon--close {
     position: absolute;
     top: 3px;
     right: 3px;
     display: inline-block;
     z-index: 5;
+    cursor: pointer;
 }
 
-.dataoverviewer .settings-button:before,
-.dataoverviewer .reset-zoom:before,
-.dataoverviewer .zoom-in:before,
-.dataoverviewer .zoom-out:before,
-.dataoverviewer .close-real-object:before {
+.dataoverviewer .lui-icon--cogwheel:before,
+.dataoverviewer .lui-icon--home:before,
+.dataoverviewer .lui-icon--zoom-in:before,
+.dataoverviewer .lui-icon--zoom-out:before,
+.dataoverviewer .lui-icon--close:before {
     font-size: 20px;
 }
 
@@ -71,7 +72,7 @@
 .insufficient-fields .dimension-scrollbar,
 .insufficient-fields .measure-titles-container,
 .insufficient-fields .measure-scrollbar,
-.insufficient-fields .qui-plainbuttonicon,
+.insufficient-fields .nav-button,
 .insufficient-fields .grid-canvas {
     display: none;
 }

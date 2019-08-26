@@ -24,9 +24,9 @@ define( [
 
     function isDimension ( field ) {
 
-        if ( this.fieldsAsDimension.contains( field.qName ) ) {
+        if ( this.fieldsAsDimension.includes( field.qName ) ) {
             return true;
-        } else if ( this.fieldsAsMeasure.contains( field.qName ) ) {
+        } else if ( this.fieldsAsMeasure.includes( field.qName ) ) {
             return false;
         }
 
@@ -471,11 +471,11 @@ define( [
     // This is only supported "on the fly" - not persisted in properties
     DataHandler.prototype.dimToMeasure = function ( dimName ) {
 
-        if ( this.fieldsAsDimension.contains( dimName ) ) {
+        if ( this.fieldsAsDimension.includes( dimName ) ) {
             this.fieldsAsDimension.splice( this.fieldsAsDimension.indexOf( dimName ), 1 );
         }
 
-        if ( !this.fieldsAsMeasure.contains( dimName ) ) {
+        if ( !this.fieldsAsMeasure.includes( dimName ) ) {
             this.fieldsAsMeasure.push( dimName );
         }
     };
@@ -483,11 +483,11 @@ define( [
     // This is only supported "on the fly" - not persisted in properties
     DataHandler.prototype.measureToDim = function ( measureName ) {
 
-        if ( this.fieldsAsMeasure.contains( measureName ) ) {
+        if ( this.fieldsAsMeasure.includes( measureName ) ) {
             this.fieldsAsMeasure.splice( this.fieldsAsMeasure.indexOf( measureName ), 1 );
         }
 
-        if ( !this.fieldsAsDimension.contains( measureName ) ) {
+        if ( !this.fieldsAsDimension.includes( measureName ) ) {
             this.fieldsAsDimension.push( measureName );
         }
     };
